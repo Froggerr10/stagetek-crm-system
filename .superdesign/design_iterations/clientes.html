@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes - STAGETEK CRM</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* ========================================
+           CSS VARIABLES (DESIGN TOKENS)
+           ======================================== */
+        :root {
+            /* Colors */
+            --background: #0a0a0a;
+            --primary: #e90101;
+            --primary-medium: #c10101;
+            --primary-dark: #a10101;
+
+            /* Card & Glassmorphism */
+            --card: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --blur-lg: blur(24px) saturate(180%);
+            --blur-md: blur(12px) saturate(150%);
+
+            /* Effects */
+            --primary-glow: rgba(233, 1, 1, 0.4);
+            --primary-glow-strong: rgba(233, 1, 1, 0.6);
+
+            /* Text */
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --text-dimmed: rgba(255, 255, 255, 0.4);
+
+            /* Status Colors */
+            --status-active: #22c55e;
+            --status-pending: #FBBC05;
+            --status-inactive: #9ca3af;
+
+            /* Spacing */
+            --spacing-2: 8px;
+            --spacing-3: 12px;
+            --spacing-4: 16px;
+            --spacing-5: 20px;
+            --spacing-6: 24px;
+            --spacing-8: 32px;
+
+            /* Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+
+            /* Transitions */
+            --transition-all: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========================================
+           RESET & BASE
+           ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* ========================================
+           LAYOUT
+           ======================================== */
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 256px;
+            background: rgba(255, 255, 255, 0.02);
+            border-right: 1px solid rgba(255, 255, 255, 0.06);
+            padding: var(--spacing-6);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: var(--spacing-8);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-all);
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .sidebar-nav a.active {
+            background: rgba(233, 1, 1, 0.15);
+            color: var(--primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 256px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            height: 64px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 0 var(--spacing-6);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-search {
+            position: relative;
+            width: 400px;
+        }
+
+        .top-bar-search input {
+            width: 100%;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 0 16px 0 40px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .top-bar-search input::placeholder {
+            color: var(--text-dimmed);
+        }
+
+        .top-bar-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-bar-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* ========================================
+           PAGE HEADER
+           ======================================== */
+        .page-header {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header-left h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-stats {
+            display: flex;
+            gap: var(--spacing-6);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-item i {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .stat-item span {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .stat-item strong {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-left: 4px;
+        }
+
+        .btn-primary {
+            height: 40px;
+            padding: 0 20px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-medium));
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-all);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--primary-glow-strong);
+        }
+
+        /* ========================================
+           FILTERS BAR
+           ======================================== */
+        .filters-bar {
+            padding: var(--spacing-4) var(--spacing-6);
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-search {
+            position: relative;
+            width: 400px;
+            flex-shrink: 0;
+        }
+
+        .filter-search input {
+            width: 100%;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 0 16px 0 40px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: var(--transition-all);
+        }
+
+        .filter-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .filter-search i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+
+        .filter-dropdown {
+            height: 40px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 0 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-all);
+        }
+
+        .filter-dropdown:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .filter-dropdown i {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .filter-dropdown select {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .filter-dropdown select option {
+            background: #1a1a1a;
+            color: var(--text-primary);
+        }
+
+        .btn-clear-filters {
+            height: 40px;
+            padding: 0 16px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-all);
+        }
+
+        .btn-clear-filters:hover {
+            color: var(--text-primary);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-clear-filters.hidden {
+            display: none;
+        }
+
+        /* ========================================
+           DATA TABLE
+           ======================================== */
+        .table-container {
+            padding: 0 var(--spacing-6) var(--spacing-6) var(--spacing-6);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: background 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .data-table td {
+            padding: 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Client Cell */
+        .client-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .row-checkbox {
+            width: 18px;
+            height: 18px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .client-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-medium));
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .client-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .client-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .client-email {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* CNPJ */
+        .cnpj {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Phone Cell */
+        .phone-cell {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .phone-cell i {
+            width: 14px;
+            height: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Revenue */
+        .revenue {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--status-active);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--status-active);
+        }
+
+        .status-pending {
+            background: rgba(251, 188, 5, 0.15);
+            color: var(--status-pending);
+        }
+
+        .status-inactive {
+            background: rgba(107, 114, 128, 0.15);
+            color: var(--status-inactive);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .action-btn i {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ========================================
+           PAGINATION
+           ======================================== */
+        .pagination {
+            padding: var(--spacing-4) var(--spacing-6);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pagination-info {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition-all);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .pagination-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ========================================
+           MODAL
+           ======================================== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-container {
+            width: 600px;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: var(--card);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: var(--spacing-6);
+            overflow-y: auto;
+            max-height: calc(90vh - 160px);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-4);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            padding: 0 16px;
+            color: white;
+            font-size: 14px;
+            transition: var(--transition-all);
+        }
+
+        .form-group textarea {
+            height: 100px;
+            padding: 12px 16px;
+            resize: vertical;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: var(--text-dimmed);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .form-group select option {
+            background: #1a1a1a;
+            color: var(--text-primary);
+        }
+
+        /* CNPJ Input with Search Button */
+        .input-with-button {
+            position: relative;
+        }
+
+        .input-with-button input {
+            padding-right: 48px;
+        }
+
+        .input-search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+        }
+
+        .input-search-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .input-search-btn i {
+            width: 16px;
+            height: 16px;
+        }
+
+        .modal-footer {
+            padding: var(--spacing-6);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            height: 44px;
+            padding: 0 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-submit {
+            height: 44px;
+            padding: 0 24px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-medium));
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: var(--transition-all);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--primary-glow-strong);
+        }
+
+        /* ========================================
+           MOBILE CARDS (hidden on desktop)
+           ======================================== */
+        .cards-container {
+            display: none;
+            padding: var(--spacing-4);
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .client-card {
+            background: var(--card);
+            backdrop-filter: var(--blur-md);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+        }
+
+        .card-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: var(--spacing-4);
+            padding-bottom: var(--spacing-4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .card-row i {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+        }
+
+        .card-footer {
+            display: flex;
+            gap: 8px;
+            margin-top: var(--spacing-4);
+        }
+
+        .card-action {
+            flex: 1;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-md);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition-all);
+        }
+
+        .card-action:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* ========================================
+           EMPTY STATE
+           ======================================== */
+        .empty-state {
+            padding: 80px 24px;
+            text-align: center;
+            display: none;
+        }
+
+        .empty-state.active {
+            display: block;
+        }
+
+        .empty-state i {
+            width: 48px;
+            height: 48px;
+            color: var(--text-muted);
+            margin: 0 auto 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* ========================================
+           RESPONSIVE
+           ======================================== */
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .top-bar-search {
+                width: 200px;
+            }
+
+            .filter-search {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .page-stats {
+                flex-wrap: wrap;
+            }
+
+            .filters-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filter-search {
+                width: 100%;
+            }
+
+            .filter-dropdown {
+                width: 100%;
+            }
+
+            /* Hide desktop table, show mobile cards */
+            .table-container {
+                display: none;
+            }
+
+            .cards-container {
+                display: flex;
+            }
+
+            .pagination {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .modal-container {
+                width: 100vw;
+                height: 100vh;
+                max-width: 100vw;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span>STAGETEK</span>
+            </div>
+
+            <nav>
+                <ul class="sidebar-nav">
+                    <li><a href="dashboard.html"><i data-lucide="layout-dashboard"></i> Dashboard</a></li>
+                    <li><a href="clientes.html" class="active"><i data-lucide="users"></i> Clientes</a></li>
+                    <li><a href="funil-vendas.html"><i data-lucide="kanban-square"></i> Funil de Vendas</a></li>
+                    <li><a href="#"><i data-lucide="package"></i> Produtos</a></li>
+                    <li><a href="#"><i data-lucide="calendar"></i> Eventos</a></li>
+                    <li><a href="#"><i data-lucide="bar-chart-3"></i> Relatórios</a></li>
+                    <li><a href="config-funis.html"><i data-lucide="settings"></i> Configurações</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="top-bar-search">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Buscar...">
+                </div>
+
+                <div class="top-bar-actions">
+                    <div class="top-bar-avatar">DC</div>
+                </div>
+            </header>
+
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-header-left">
+                    <h1>Clientes</h1>
+                    <div class="page-stats">
+                        <div class="stat-item">
+                            <i data-lucide="users"></i>
+                            <span>Total:</span>
+                            <strong>127 clientes</strong>
+                        </div>
+                        <div class="stat-item">
+                            <i data-lucide="briefcase"></i>
+                            <span>Vendas:</span>
+                            <strong>R$ 1,2M</strong>
+                        </div>
+                        <div class="stat-item">
+                            <i data-lucide="trending-up"></i>
+                            <span>Crescimento:</span>
+                            <strong>+12% este mês</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" id="newClientBtn">
+                    <i data-lucide="plus"></i>
+                    Novo Cliente
+                </button>
+            </div>
+
+            <!-- Filters Bar -->
+            <div class="filters-bar">
+                <div class="filter-search">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar por nome, CNPJ, e-mail...">
+                </div>
+
+                <div class="filter-dropdown">
+                    <i data-lucide="filter"></i>
+                    <select id="statusFilter">
+                        <option value="all">Todos os status</option>
+                        <option value="active">Ativo</option>
+                        <option value="pending">Pendente</option>
+                        <option value="inactive">Inativo</option>
+                    </select>
+                </div>
+
+                <div class="filter-dropdown">
+                    <i data-lucide="tag"></i>
+                    <select id="segmentFilter">
+                        <option value="all">Todos os segmentos</option>
+                        <option value="eventos">Eventos</option>
+                        <option value="entretenimento">Entretenimento</option>
+                        <option value="corporativo">Corporativo</option>
+                        <option value="teatro">Teatro</option>
+                    </select>
+                </div>
+
+                <div class="filter-dropdown">
+                    <i data-lucide="arrow-up-down"></i>
+                    <select id="sortFilter">
+                        <option value="newest">Mais recentes</option>
+                        <option value="oldest">Mais antigos</option>
+                        <option value="az">A-Z</option>
+                        <option value="za">Z-A</option>
+                        <option value="revenue">Maior receita</option>
+                    </select>
+                </div>
+
+                <button class="btn-clear-filters hidden" id="clearFiltersBtn">
+                    <i data-lucide="x"></i>
+                    Limpar
+                </button>
+            </div>
+
+            <!-- Desktop: Data Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>CNPJ</th>
+                            <th>Telefone</th>
+                            <th>Eventos</th>
+                            <th>Receita Total</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Rows will be inserted by JavaScript -->
+                    </tbody>
+                </table>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState">
+                    <i data-lucide="user-x"></i>
+                    <h3>Nenhum cliente encontrado</h3>
+                    <p>Tente ajustar os filtros ou adicione um novo cliente</p>
+                    <button class="btn-primary">Novo Cliente</button>
+                </div>
+            </div>
+
+            <!-- Mobile: Cards -->
+            <div class="cards-container" id="cardsContainer">
+                <!-- Cards will be inserted by JavaScript -->
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <div class="pagination-info">
+                    Mostrando <strong id="paginationStart">1</strong>-<strong id="paginationEnd">7</strong> de <strong id="paginationTotal">127</strong> clientes
+                </div>
+
+                <div class="pagination-controls">
+                    <button class="pagination-btn" disabled>
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <button class="pagination-btn active">1</button>
+                    <button class="pagination-btn">2</button>
+                    <button class="pagination-btn">3</button>
+                    <button class="pagination-btn">...</button>
+                    <button class="pagination-btn">18</button>
+                    <button class="pagination-btn">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Novo/Editar Cliente -->
+    <div class="modal-overlay" id="clientModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2 id="modalTitle">Novo Cliente</h2>
+                <button class="modal-close" id="closeModalBtn">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="clientForm" class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="companyName">Nome da Empresa *</label>
+                        <input type="text" id="companyName" placeholder="Ex: STAGETEK Equipamentos LTDA" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contactName">Nome do Contato *</label>
+                        <input type="text" id="contactName" placeholder="João Silva" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cnpj">CNPJ *</label>
+                        <div class="input-with-button">
+                            <input type="text" id="cnpj" placeholder="00.000.000/0000-00" required>
+                            <button type="button" class="input-search-btn" id="searchCNPJBtn" title="Buscar dados na Receita">
+                                <i data-lucide="search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail *</label>
+                        <input type="email" id="email" placeholder="contato@empresa.com.br" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Telefone</label>
+                        <input type="tel" id="phone" placeholder="(00) 00000-0000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="segment">Segmento</label>
+                        <select id="segment">
+                            <option value="">Selecione...</option>
+                            <option value="eventos">Eventos</option>
+                            <option value="entretenimento">Entretenimento</option>
+                            <option value="corporativo">Corporativo</option>
+                            <option value="teatro">Teatro</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" placeholder="00000-000">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="address">Endereço</label>
+                        <input type="text" id="address" placeholder="Rua, número">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="city">Cidade</label>
+                        <input type="text" id="city" placeholder="São Paulo">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">Estado</label>
+                        <select id="state">
+                            <option value="">Selecione...</option>
+                            <option value="SP">São Paulo</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PR">Paraná</option>
+                            <!-- Add more states as needed -->
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="notes">Observações</label>
+                        <textarea id="notes" placeholder="Notas sobre o cliente..."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="cancelBtn">Cancelar</button>
+                <button type="submit" form="clientForm" class="btn-submit">Salvar Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========================================
+        // DATA
+        // ========================================
+        const mockClients = [
+            {
+                id: 1,
+                name: 'João Carlos',
+                initials: 'JC',
+                cnpj: '12.345.678/0001-99',
+                email: 'joao@empresa.com',
+                phone: '(11) 98765-4321',
+                events: 3,
+                revenue: 37500,
+                status: 'active',
+                segment: 'eventos'
+            },
+            {
+                id: 2,
+                name: 'Maria Silva',
+                initials: 'MS',
+                cnpj: '98.765.432/0001-11',
+                email: 'maria@eventos.com',
+                phone: '(11) 91234-5678',
+                events: 5,
+                revenue: 72400,
+                status: 'active',
+                segment: 'eventos'
+            },
+            {
+                id: 3,
+                name: 'Pedro Rodrigues',
+                initials: 'PR',
+                cnpj: '45.678.912/0001-22',
+                email: 'pedro@producao.com',
+                phone: '(11) 99887-6543',
+                events: 2,
+                revenue: 16400,
+                status: 'active',
+                segment: 'entretenimento'
+            },
+            {
+                id: 4,
+                name: 'Ana Costa',
+                initials: 'AC',
+                cnpj: '78.912.345/0001-33',
+                email: 'ana@live.com',
+                phone: '(11) 96543-2109',
+                events: 1,
+                revenue: 15700,
+                status: 'pending',
+                segment: 'corporativo'
+            },
+            {
+                id: 5,
+                name: 'Ricardo Santos',
+                initials: 'RS',
+                cnpj: '32.165.498/0001-44',
+                email: 'ricardo@shows.com',
+                phone: '(11) 94321-8765',
+                events: 4,
+                revenue: 64800,
+                status: 'active',
+                segment: 'entretenimento'
+            },
+            {
+                id: 6,
+                name: 'Fernanda Lima',
+                initials: 'FL',
+                cnpj: '65.498.732/0001-55',
+                email: 'fernanda@teatro.com',
+                phone: '(11) 97654-3210',
+                events: 2,
+                revenue: 28900,
+                status: 'active',
+                segment: 'teatro'
+            },
+            {
+                id: 7,
+                name: 'Carlos Mendes',
+                initials: 'CM',
+                cnpj: '15.975.348/0001-66',
+                email: 'carlos@corp.com',
+                phone: '(11) 95432-1098',
+                events: 0,
+                revenue: 0,
+                status: 'inactive',
+                segment: 'corporativo'
+            }
+        ];
+
+        let filteredClients = [...mockClients];
+
+        // ========================================
+        // RENDER FUNCTIONS
+        // ========================================
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                active: 'Ativo',
+                pending: 'Pendente',
+                inactive: 'Inativo'
+            };
+            return statusMap[status] || status;
+        }
+
+        function renderTableRow(client) {
+            return `
+                <tr>
+                    <td>
+                        <div class="client-cell">
+                            <input type="checkbox" class="row-checkbox">
+                            <div class="client-avatar">${client.initials}</div>
+                            <div class="client-info">
+                                <div class="client-name">${client.name}</div>
+                                <div class="client-email">${client.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="cnpj">${client.cnpj}</span>
+                    </td>
+                    <td>
+                        <div class="phone-cell">
+                            <i data-lucide="phone"></i>
+                            <span>${client.phone}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span>${client.events} evento${client.events !== 1 ? 's' : ''}</span>
+                    </td>
+                    <td>
+                        <span class="revenue">${formatCurrency(client.revenue)}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${client.status}">${getStatusText(client.status)}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn" title="Editar">
+                                <i data-lucide="pencil"></i>
+                            </button>
+                            <button class="action-btn" title="Ver Detalhes">
+                                <i data-lucide="eye"></i>
+                            </button>
+                            <button class="action-btn" title="Menu">
+                                <i data-lucide="more-vertical"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function renderMobileCard(client) {
+            return `
+                <div class="client-card">
+                    <div class="card-header">
+                        <div class="client-avatar">${client.initials}</div>
+                        <div class="card-info">
+                            <div class="client-name">${client.name}</div>
+                            <div class="client-email">${client.email}</div>
+                        </div>
+                        <span class="status-badge status-${client.status}">${getStatusText(client.status)}</span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="card-row">
+                            <i data-lucide="briefcase"></i>
+                            <span>${client.cnpj}</span>
+                        </div>
+                        <div class="card-row">
+                            <i data-lucide="phone"></i>
+                            <span>${client.phone}</span>
+                        </div>
+                        <div class="card-row">
+                            <i data-lucide="calendar"></i>
+                            <span>${client.events} evento${client.events !== 1 ? 's' : ''}</span>
+                        </div>
+                        <div class="card-row">
+                            <i data-lucide="dollar-sign"></i>
+                            <span class="revenue">${formatCurrency(client.revenue)}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button class="card-action">
+                            <i data-lucide="pencil"></i>
+                            Editar
+                        </button>
+                        <button class="card-action">
+                            <i data-lucide="eye"></i>
+                            Ver
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderClients() {
+            const tableBody = document.getElementById('tableBody');
+            const cardsContainer = document.getElementById('cardsContainer');
+            const emptyState = document.getElementById('emptyState');
+
+            if (filteredClients.length === 0) {
+                tableBody.innerHTML = '';
+                cardsContainer.innerHTML = '';
+                emptyState.classList.add('active');
+            } else {
+                emptyState.classList.remove('active');
+                tableBody.innerHTML = filteredClients.map(renderTableRow).join('');
+                cardsContainer.innerHTML = filteredClients.map(renderMobileCard).join('');
+            }
+
+            // Re-init Lucide icons
+            lucide.createIcons();
+
+            // Update pagination
+            document.getElementById('paginationStart').textContent = filteredClients.length > 0 ? 1 : 0;
+            document.getElementById('paginationEnd').textContent = filteredClients.length;
+        }
+
+        // ========================================
+        // FILTER FUNCTIONS
+        // ========================================
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const segmentFilter = document.getElementById('segmentFilter').value;
+
+            filteredClients = mockClients.filter(client => {
+                const matchSearch =
+                    client.name.toLowerCase().includes(searchTerm) ||
+                    client.cnpj.includes(searchTerm) ||
+                    client.email.toLowerCase().includes(searchTerm);
+
+                const matchStatus = statusFilter === 'all' || client.status === statusFilter;
+                const matchSegment = segmentFilter === 'all' || client.segment === segmentFilter;
+
+                return matchSearch && matchStatus && matchSegment;
+            });
+
+            // Show/hide clear filters button
+            const clearBtn = document.getElementById('clearFiltersBtn');
+            if (searchTerm || statusFilter !== 'all' || segmentFilter !== 'all') {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            renderClients();
+        }
+
+        // ========================================
+        // MODAL FUNCTIONS
+        // ========================================
+        const modal = document.getElementById('clientModal');
+        const newClientBtn = document.getElementById('newClientBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const clientForm = document.getElementById('clientForm');
+
+        function openModal() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            clientForm.reset();
+        }
+
+        newClientBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // ========================================
+        // CNPJ AUTOCOMPLETE (Mock)
+        // ========================================
+        const searchCNPJBtn = document.getElementById('searchCNPJBtn');
+
+        searchCNPJBtn.addEventListener('click', async function() {
+            const cnpjInput = document.getElementById('cnpj');
+            const cnpj = cnpjInput.value.replace(/\D/g, '');
+
+            if (cnpj.length !== 14) {
+                alert('CNPJ inválido');
+                return;
+            }
+
+            // Mock loading state
+            searchCNPJBtn.disabled = true;
+            searchCNPJBtn.innerHTML = '<i data-lucide="loader" class="spin"></i>';
+            lucide.createIcons();
+
+            // Simulate API call
+            setTimeout(() => {
+                // Mock response
+                const mockData = {
+                    nome: 'STAGETEK EQUIPAMENTOS LTDA',
+                    cep: '01310-100',
+                    logradouro: 'Av. Paulista, 1578',
+                    cidade: 'São Paulo',
+                    estado: 'SP'
+                };
+
+                document.getElementById('companyName').value = mockData.nome;
+                document.getElementById('cep').value = mockData.cep;
+                document.getElementById('address').value = mockData.logradouro;
+                document.getElementById('city').value = mockData.cidade;
+                document.getElementById('state').value = mockData.estado;
+
+                alert('Dados preenchidos automaticamente!');
+
+                searchCNPJBtn.disabled = false;
+                searchCNPJBtn.innerHTML = '<i data-lucide="search"></i>';
+                lucide.createIcons();
+            }, 1500);
+        });
+
+        // ========================================
+        // FORM SUBMIT
+        // ========================================
+        clientForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                companyName: document.getElementById('companyName').value,
+                contactName: document.getElementById('contactName').value,
+                cnpj: document.getElementById('cnpj').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                segment: document.getElementById('segment').value,
+                cep: document.getElementById('cep').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                notes: document.getElementById('notes').value
+            };
+
+            console.log('Form submitted:', formData);
+            alert('Cliente salvo com sucesso!');
+            closeModal();
+        });
+
+        // ========================================
+        // EVENT LISTENERS
+        // ========================================
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('statusFilter').addEventListener('change', applyFilters);
+        document.getElementById('segmentFilter').addEventListener('change', applyFilters);
+        document.getElementById('clearFiltersBtn').addEventListener('click', function() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('segmentFilter').value = 'all';
+            applyFilters();
+        });
+
+        // ========================================
+        // INIT
+        // ========================================
+        renderClients();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
