@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGETEK - Login Minimalista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stagetek_theme.css">
+    <style>
+        body {
+            font-family: var(--font-sans);
+            background-color: #f8f9fa;
+        }
+        .login-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            transition: var(--transition-all);
+        }
+        .stagetek-logo {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2rem;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            transition: var(--transition-all);
+        }
+        .btn-primary:hover {
+            background-color: #c10101;
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+        .input-group input {
+            padding-left: 40px;
+            border: 1px solid #e5e7eb;
+            border-radius: var(--radius-md);
+            height: 44px;
+            width: 100%;
+            transition: var(--transition-all);
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(233, 1, 1, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="login-card w-full max-w-[450px] p-12">
+        <div class="text-center mb-8">
+            <h1 class="stagetek-logo">STAGETEK</h1>
+            <p class="text-sm text-gray-600 mt-2">Sistema de Gestão Comercial B2B</p>
+            <div class="border-b mt-6 mb-8"></div>
+        </div>
+
+        <div class="space-y-6">
+            <p class="text-sm font-medium mb-4">Acesso rápido</p>
+            <button class="w-full h-11 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5 mr-2">
+                Continuar com Google
+            </button>
+
+            <div class="relative flex items-center gap-3 my-6">
+                <div class="flex-grow border-t"></div>
+                <span class="text-sm text-gray-500">OU</span>
+                <div class="flex-grow border-t"></div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">E-mail</label>
+                    <div class="input-group">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                        <input type="email" placeholder="seu@email.com">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-medium">Senha</label>
+                    <div class="input-group">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                        <input type="password" placeholder="Sua senha">
+                        <button class="absolute right-3 top-1/2 -translate-y-1/2">
+                            <i data-lucide="eye" class="w-5 h-5 text-gray-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" class="rounded border-gray-300">
+                    <span class="text-sm">Lembrar de mim</span>
+                </label>
+                <a href="#" class="text-sm text-[#e90101] hover:underline">Esqueceu a senha?</a>
+            </div>
+
+            <button class="btn-primary w-full h-11 rounded-md font-medium mt-6">
+                Entrar
+            </button>
+
+            <p class="text-sm text-gray-600 text-center mt-6">
+                Não tem conta? 
+                <a href="#" class="text-[#e90101] font-medium hover:underline">Solicite acesso</a>
+            </p>
+
+            <div class="border-t mt-8 pt-6">
+                <p class="text-xs text-gray-500 text-center">Built with Protocol Notecraft™</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

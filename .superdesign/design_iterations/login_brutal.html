@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGETEK - Login Neo-Brutalista</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stagetek_theme.css">
+    <style>
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #ffffff;
+            background-image: radial-gradient(#e90101 0.5px, #ffffff 0.5px);
+            background-size: 10px 10px;
+        }
+        .login-card {
+            background: white;
+            border: 3px solid black;
+            box-shadow: var(--shadow-brutal);
+            transition: var(--transition-all);
+        }
+        .login-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-brutal-lg);
+        }
+        .stagetek-logo {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2rem;
+            text-shadow: 2px 2px 0 black;
+        }
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid black;
+            box-shadow: 3px 3px 0 black;
+            transition: var(--transition-all);
+        }
+        .btn-primary:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 black;
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: black;
+        }
+        .input-group input {
+            padding-left: 40px;
+            border: 2px solid black;
+            height: 44px;
+            width: 100%;
+            transition: var(--transition-all);
+            background: white;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+        }
+        .divider {
+            position: relative;
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 2px;
+            background-color: black;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+        .google-btn {
+            border: 2px solid black;
+            box-shadow: 3px 3px 0 black;
+            transition: var(--transition-all);
+        }
+        .google-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 black;
+        }
+        .checkbox-brutal {
+            width: 16px;
+            height: 16px;
+            border: 2px solid black;
+            appearance: none;
+            position: relative;
+        }
+        .checkbox-brutal:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="login-card w-full max-w-[450px] p-12">
+        <div class="text-center mb-8">
+            <h1 class="stagetek-logo">STAGETEK</h1>
+            <p class="text-sm font-bold mt-2">Sistema de Gestão Comercial B2B</p>
+            <div class="border-b-2 border-black mt-6 mb-8"></div>
+        </div>
+
+        <div class="space-y-6">
+            <p class="text-sm font-bold mb-4">>> Acesso rápido</p>
+            <button class="google-btn w-full h-11 flex items-center justify-center bg-white hover:bg-gray-50 transition-colors">
+                <img src="https://www.google.com/favicon.ico" alt="Google" class="w-5 h-5 mr-2">
+                Continuar com Google
+            </button>
+
+            <div class="divider">
+                <span class="bg-white px-4 font-bold">OU</span>
+            </div>
+
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label class="text-sm font-bold">> E-mail</label>
+                    <div class="input-group">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                        <input type="email" placeholder="seu@email.com">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="text-sm font-bold">> Senha</label>
+                    <div class="input-group">
+                        <i data-lucide="lock" class="w-5 h-5"></i>
+                        <input type="password" placeholder="Sua senha">
+                        <button class="absolute right-3 top-1/2 -translate-y-1/2">
+                            <i data-lucide="eye" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-4">
+                <label class="flex items-center gap-2">
+                    <input type="checkbox" class="checkbox-brutal">
+                    <span class="text-sm font-bold">Lembrar de mim</span>
+                </label>
+                <a href="#" class="text-sm font-bold text-[#e90101] hover:underline">[?] Esqueceu a senha?</a>
+            </div>
+
+            <button class="btn-primary w-full h-11 font-bold mt-6">
+                ENTRAR >>
+            </button>
+
+            <p class="text-sm font-bold text-center mt-6">
+                Não tem conta? 
+                <a href="#" class="text-[#e90101] hover:underline">[Solicite acesso]</a>
+            </p>
+
+            <div class="border-t-2 border-black mt-8 pt-6">
+                <p class="text-xs font-bold text-center">Built with Protocol Notecraft™</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

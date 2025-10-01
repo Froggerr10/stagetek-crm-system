@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGETEK - Login Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="premium_theme.css">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top left, #1a0404, var(--background));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--foreground);
+            position: relative;
+            padding: var(--spacing-4);
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(233,1,1,0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(233,1,1,0.1), transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                radial-gradient(rgba(233,1,1,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Main Container */
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card);
+            backdrop-filter: var(--blur-lg) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            box-shadow: 
+                var(--shadow-md),
+                var(--shadow-inner);
+            padding: var(--spacing-12);
+            position: relative;
+            z-index: 2;
+            animation: cardEntrance 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Logo & Header */
+        .logo {
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-align: center;
+            letter-spacing: -0.5px;
+            text-shadow: 
+                0 0 20px rgba(233,1,1,0.4),
+                0 2px 4px rgba(0,0,0,0.3);
+            animation: logoPulse 2s infinite;
+        }
+
+        .tagline {
+            color: var(--muted);
+            text-align: center;
+            font-size: 14px;
+            margin-top: var(--spacing-2);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--card-border);
+            margin: var(--spacing-8) 0;
+        }
+
+        /* OAuth Section */
+        .oauth-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .google-button {
+            width: 100%;
+            height: 48px;
+            background: var(--input);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-md);
+            color: var(--foreground);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-3);
+            backdrop-filter: var(--blur-sm);
+            transition: var(--transition-all);
+            cursor: pointer;
+        }
+
+        .google-button:hover {
+            background: var(--input-hover);
+            border-color: var(--card-border);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Divider */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            margin: var(--spacing-8) 0;
+            gap: var(--spacing-4);
+        }
+
+        .or-divider::before,
+        .or-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--card-border);
+        }
+
+        .or-divider span {
+            color: var(--muted-foreground);
+            font-size: 12px;
+            font-weight: 500;
+            padding: 0 var(--spacing-4);
+            background: radial-gradient(circle, var(--card) 0%, transparent 70%);
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--foreground);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: var(--spacing-4);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            pointer-events: none;
+            transition: var(--transition-colors);
+        }
+
+        .input {
+            width: 100%;
+            height: 48px;
+            background: var(--input);
+            border: 1px solid var(--input-border);
+            border-radius: var(--radius-md);
+            padding: 0 var(--spacing-4) 0 44px;
+            color: var(--foreground);
+            font-size: 15px;
+            transition: var(--transition-all);
+        }
+
+        .input::placeholder {
+            color: var(--input-placeholder);
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: var(--input-focus);
+            box-shadow: 
+                0 0 0 4px var(--primary-glow),
+                0 0 20px rgba(233,1,1,0.15);
+        }
+
+        .input:focus + i {
+            color: var(--primary);
+        }
+
+        /* Password Toggle */
+        .password-toggle {
+            position: absolute;
+            right: var(--spacing-4);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: var(--transition-colors);
+            background: none;
+            border: none;
+            padding: var(--spacing-1);
+        }
+
+        .password-toggle:hover {
+            color: var(--foreground);
+        }
+
+        /* Remember & Forgot */
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--spacing-4);
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .checkbox {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid var(--input-border);
+            border-radius: 4px;
+            background: var(--input);
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition-all);
+        }
+
+        .checkbox:checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition-colors);
+        }
+
+        .forgot-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            height: 52px;
+            margin-top: var(--spacing-6);
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            transition: var(--transition-all);
+            box-shadow: 
+                0 4px 12px var(--primary-glow),
+                0 0 20px rgba(233,1,1,0.2);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, var(--primary-hover) 0%, #d10101 100%);
+            box-shadow: 
+                0 8px 20px var(--primary-glow-strong),
+                0 0 30px rgba(233,1,1,0.3);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        /* Sign Up Prompt */
+        .signup-prompt {
+            text-align: center;
+            margin-top: var(--spacing-8);
+        }
+
+        .signup-prompt span {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .signup-link {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: var(--spacing-1);
+            transition: var(--transition-colors);
+        }
+
+        .signup-link:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: var(--spacing-8);
+            padding-top: var(--spacing-6);
+            border-top: 1px solid var(--card-border);
+        }
+
+        .footer p {
+            color: var(--muted-foreground);
+            font-size: 11px;
+        }
+
+        /* Animations */
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes logoPulse {
+            0%, 100% {
+                text-shadow: 
+                    0 0 20px rgba(233,1,1,0.4),
+                    0 2px 4px rgba(0,0,0,0.3);
+            }
+            50% {
+                text-shadow: 
+                    0 0 30px rgba(233,1,1,0.6),
+                    0 2px 4px rgba(0,0,0,0.3);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .login-container {
+                padding: var(--spacing-8) var(--spacing-6);
+            }
+
+            .logo {
+                font-size: 32px;
+            }
+
+            .submit-button {
+                height: 48px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="logo">STAGETEK</h1>
+        <p class="tagline">Sistema de Gestão Comercial B2B</p>
+        <div class="divider"></div>
+
+        <p class="oauth-label">Acesso rápido</p>
+        <button class="google-button">
+            <i data-lucide="chrome" class="w-5 h-5"></i>
+            Continuar com Google
+        </button>
+
+        <div class="or-divider">
+            <span>OU</span>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label class="form-label">E-mail</label>
+                <div class="input-wrapper">
+                    <input type="email" class="input" placeholder="seu@email.com">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <div class="input-wrapper">
+                    <input type="password" class="input" placeholder="Sua senha">
+                    <i data-lucide="lock" class="w-5 h-5"></i>
+                    <button type="button" class="password-toggle">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="checkbox-wrapper">
+                    <input type="checkbox" class="checkbox">
+                    <span class="checkbox-label">Lembrar de mim</span>
+                </label>
+                <a href="#" class="forgot-link">Esqueceu a senha?</a>
+            </div>
+
+            <button type="submit" class="submit-button">Entrar</button>
+        </form>
+
+        <div class="signup-prompt">
+            <span>Não tem conta?</span>
+            <a href="#" class="signup-link">Solicite acesso</a>
+        </div>
+
+        <footer class="footer">
+            <p>Built with Protocol Notecraft™</p>
+        </footer>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Password visibility toggle
+        document.querySelector('.password-toggle').addEventListener('click', function() {
+            const input = this.parentElement.querySelector('input');
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.setAttribute('data-lucide', 'eye-off');
+            } else {
+                input.type = 'password';
+                icon.setAttribute('data-lucide', 'eye');
+            }
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
