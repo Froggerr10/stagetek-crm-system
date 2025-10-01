@@ -4,215 +4,348 @@
 
 ## 🎯 Contexto do Projeto
 
-Este é um **sistema CRM profissional** para gestão de eventos, clientes e equipamentos da STAGETEK. Desenvolvido 100% seguindo **Protocol Notecraft™**.
+**STAGETEK = Fabricante B2B de Equipamentos para Entretenimento**
 
-**Versão**: 1.0.0
-**Stack**: HTML5, CSS3, JavaScript (Vanilla), Chart.js
+- 🏭 **Indústria**: Fabricação de peças de aço, talhas, estruturas
+- 🛒 **Revenda**: Equipamentos de som e luz
+- 🌍 **Mercado**: Nacional (BR) + Internacional (exportação)
+- 👥 **Usuários**: 5 máximo (uso interno)
+- 💰 **Budget**: ZERO (Supabase Free + Vercel Free)
+
+**Versão**: 2.0.0 (Reboot completo)
+**Stack**: React + Vite + TypeScript + Tailwind 3.4 + Supabase
 **Padrão**: Atomic Design + Protocol Notecraft™
+**Mobile**: PWA (Progressive Web App) - Mobile-first obrigatório
 
 ---
 
-## ⚠️ REGRAS ABSOLUTAS - NÃO NEGOCIÁVEIS
+## ⚠️ STACK TECNOLÓGICA DEFINIDA
 
-### 1. **Protocol Notecraft™ SEMPRE**
-- ✅ Leia `/protocol/PROTOCOL-NOTECRAFT.md` ANTES de escrever qualquer código
-- ✅ **Atoms**: máximo 20 linhas
-- ✅ **Molecules**: máximo 35 linhas
-- ✅ **Organisms**: máximo 50 linhas
-- ✅ **Templates**: máximo 30 linhas
-- ❌ NUNCA exceda esses limites
-
-### 2. **Branding STAGETEK**
-- ✅ Leia `/protocol/BRANDING-STANDARDS.md` ANTES de criar layouts
-- ✅ Cores: APENAS `var(--stagetek-red-primary)` (#e90101)
-- ✅ Logos: 32px (navbar), 120px (hero), 24px (footer)
-- ✅ Dark mode toggle: SEMPRE com ícone dinâmico (lua/sol)
-- ✅ Footer: SEMPRE com texto Protocol Notecraft™
-- ❌ NUNCA use emojis como ícones
-- ❌ NUNCA use cores hardcoded
-
-### 3. **Design Tokens Obrigatórios**
-```css
-/* ✅ SEMPRE use CSS Custom Properties */
-padding: var(--space-4);
-color: var(--stagetek-red-primary);
-border-radius: var(--radius-md);
-
-/* ❌ NUNCA faça isso */
-padding: 16px;
-color: #e90101;
-border-radius: 8px;
+### **Frontend**
+```
+✅ React 18 + TypeScript
+✅ Vite (build tool)
+✅ Tailwind CSS 3.4 (estável)
+✅ shadcn/ui (componentes base)
+✅ Recharts (gráficos)
+✅ React Hook Form + Zod (forms + validação)
+✅ dnd-kit (drag-and-drop mobile-friendly)
+✅ date-fns (datas PT-BR)
+✅ Zustand (state management leve)
 ```
 
-### 4. **Gradientes e Efeitos**
-```css
-/* ✅ CORRETO - Gradiente sutil */
-background: linear-gradient(135deg, rgba(233, 1, 1, 0.1) 0%, rgba(134, 33, 40, 0.05) 100%);
-border: 2px solid rgba(233, 1, 1, 0.2);
-
-/* ❌ ERRADO - Cor sólida chapada */
-background: #e90101;
+### **Backend/BaaS**
+```
+✅ Supabase (Free Tier):
+   - PostgreSQL (500MB)
+   - Auth (autenticação)
+   - Storage (2GB arquivos)
+   - Realtime (WebSockets)
+   - Edge Functions (serverless)
 ```
 
-### 5. **Ícones Profissionais**
-```html
-<!-- ✅ CORRETO - SVG Feather Icons -->
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-  <circle cx="12" cy="12" r="10"></circle>
-</svg>
+### **Integrações** (via API direta, SEM Rube MCP)
+```
+✅ E-mail: Resend API (grátis 100/dia)
+✅ Slack: Webhook (grátis)
+✅ Google Calendar: Google Calendar API
+✅ WhatsApp: WhatsApp Business API (fase 4)
+✅ CNPJ/CEP: brasil-api-mcp (MCP instalado)
+```
 
-<!-- ❌ ERRADO - Emoji -->
-<div>🚀</div>
+### **Deploy**
+```
+✅ Vercel (Free Tier)
+   - Deploy automático via GitHub
+   - Edge Functions
+   - Preview deploys
+   - SSL grátis
+```
+
+### **AI** (Opcional - Fases avançadas)
+```
+✅ Claude API (Lead Scoring, análises)
+✅ Whisper API (transcrição de calls - opcional)
 ```
 
 ---
 
-## 📁 Estrutura do Projeto
+## 📁 Estrutura do Projeto (NOVA)
 
 ```
 stagetek-crm-system/
 ├── .claude/
-│   └── CLAUDE.md              ← VOCÊ ESTÁ AQUI
+│   └── CLAUDE.md                    ← VOCÊ ESTÁ AQUI
 ├── protocol/
-│   ├── PROTOCOL-NOTECRAFT.md  ← LER SEMPRE
-│   └── BRANDING-STANDARDS.md  ← LER SEMPRE
-├── design-system/
-│   ├── base.css               ← Design system base (25KB)
-│   └── components.css         ← Componentes dashboard (11KB)
-├── components/
-│   ├── atoms/                 ← Componentes ≤20 linhas
-│   ├── molecules/             ← Componentes ≤35 linhas
-│   └── organisms/             ← Componentes ≤50 linhas
-├── pages/
-│   ├── dashboard.html         ✅ PRONTO (com 4 gráficos)
-│   ├── funil-vendas.html      ✅ PRONTO (Kanban drag-drop)
-│   ├── clientes.html          🚧 TODO
-│   ├── eventos.html           🚧 TODO
-│   └── equipamentos.html      🚧 TODO
-├── assets/
-│   └── logos/SVG/             ← Logos STAGETEK
+│   ├── PROTOCOL-NOTECRAFT.md        ← LER SEMPRE
+│   ├── BRANDING-STANDARDS.md        ← LER SEMPRE
+│   ├── ARCHITECTURE.md              ← Arquitetura completa
+│   ├── FEATURES-PRIORITIZED.md      ← Features P0/P1/P2/P3
+│   ├── TECH-STACK.md                ← Stack detalhada
+│   ├── ROADMAP-PHASES.md            ← Roadmap 6 fases
+│   ├── ARCHITECTURE-MOBILE.md       ← Estratégia PWA
+│   ├── COSTS-ESTIMATE.md            ← Custos projetados
+│   └── COMPLEXITY-ASSESSMENT.md     ← Análise de riscos
+├── src/
+│   ├── components/
+│   │   ├── atoms/                   ← ≤20 linhas
+│   │   ├── molecules/               ← ≤35 linhas
+│   │   ├── organisms/               ← ≤50 linhas
+│   │   └── templates/               ← ≤30 linhas
+│   ├── pages/
+│   │   ├── Dashboard.tsx            🚧 TODO
+│   │   ├── Clientes.tsx             🚧 TODO
+│   │   ├── Oportunidades.tsx        🚧 TODO
+│   │   ├── Produtos.tsx             🚧 TODO
+│   │   └── Relatorios.tsx           🚧 TODO
+│   ├── hooks/
+│   │   ├── useSupabase.ts
+│   │   └── useAuth.ts
+│   ├── lib/
+│   │   ├── supabase.ts              ← Cliente Supabase
+│   │   └── utils.ts
+│   └── types/
+│       └── index.ts                 ← TypeScript types
+├── supabase/
+│   ├── migrations/                  ← SQL migrations
+│   └── seed.sql                     ← Dados iniciais
 ├── public/
-└── index.html                 ✅ PRONTO
+│   └── assets/
+└── README.md
 ```
 
 ---
 
-## 🚀 Páginas Implementadas
+## 🎯 MODELO DE NEGÓCIO STAGETEK
 
-### ✅ **index.html** (Landing Page)
-- Hero section com logo 120px
-- 6 features com ícones SVG + gradientes
-- 4 stats cards
-- CTA section
-- Footer Protocol Notecraft™
+### **3 Operações:**
 
-### ✅ **pages/dashboard.html** (Dashboard)
-- Sidebar de navegação fixa
-- Top bar com busca + dark mode + avatar
-- 4 Stat Cards com métricas
-- 3 Metric Cards com progress bars
-- Data Table com 5 eventos
-- **4 Gráficos Chart.js**:
-  - Vendas ao Longo do Tempo (Linha)
-  - Eventos por Mês (Barras)
-  - Receita por Categoria (Pizza)
-  - Pipeline de Vendas (Doughnut)
+1. **🏭 FABRICAÇÃO** (Principal)
+   - Peças de aço (treliças, estruturas metálicas)
+   - Talhas e equipamentos de suspensão
+   - Customização sob medida
+   - **Venda por peça** (não aluguel!)
 
-### ✅ **pages/funil-vendas.html** (Funil de Vendas)
-- Kanban Board com 5 colunas
-- Drag-and-drop entre estágios
-- 7 oportunidades mockadas
-- Totalizadores por coluna
-- Modal de criar/editar oportunidades
-- Atualização automática de totais
+2. **🛒 REVENDA**
+   - Equipamentos de som (mesas, caixas)
+   - Equipamentos de luz (moving heads, pares LED)
+   - Produtos de fornecedores
+
+3. **🎪 LOCAÇÃO** (Secundário)
+   - Equipamentos próprios para eventos
+   - Gestão de disponibilidade
 
 ---
 
-## 🚧 Próximas Implementações
+## 📊 FEATURES PRIORITIZADAS
 
-### **Prioridade 1: Clientes**
-```
-pages/clientes.html
-- Listagem de clientes (DataTable)
-- Filtros (nome, status, data cadastro)
-- Modal de cadastro/edição
-- Avatar com iniciais
-- Badges de status
-- Actions (editar, excluir, ver detalhes)
-```
+### **P0 - CRÍTICO (MVP - Sem isso não funciona)**
 
-### **Prioridade 2: Eventos**
 ```
-pages/eventos.html
-- Calendário mensal (vanilla JS ou FullCalendar)
-- Cards de eventos por dia
-- Modal de criar evento
-- Integração com funil de vendas
-- Status: Confirmado, Pendente, Cancelado
-- Valor + Cliente + Equipamentos
+1. Autenticação (Login/Logout)
+2. CRUD Clientes B2B
+3. CRUD Oportunidades
+4. Funil de Vendas (Kanban)
+5. Dashboard Básico
 ```
 
-### **Prioridade 3: Equipamentos**
-```
-pages/equipamentos.html
-- Grid de cards de equipamentos
-- Categorias: Som, Luz, Estrutura
-- Status: Disponível, Em Uso, Manutenção
-- Modal de detalhes
-- Histórico de uso
-- Agendamento
-```
+**Tempo estimado P0**: 4-6 semanas
 
 ---
 
-## 🎨 Componentes Disponíveis
+### **P1 - ALTA PRIORIDADE (CRM Funcional)**
 
-### **Atoms** (design-system/components.css)
-- `.badge` (success, warning, error, info, stagetek)
-- `.avatar` (sm, md, lg)
-- `.status-dot` (success, warning, error, info)
-- `.progress-bar` (com variantes de cor)
+```
+6. CRUD Produtos (catálogo 50+)
+7. Importação Excel (produtos + clientes)
+8. Sistema de Cotações (produtos + frete + PDF)
+9. Sistema de Pedidos (tracking)
+10. Integrações (Gmail, Slack, Calendar)
+```
 
-### **Molecules**
-- `.stat-card` (ícone + valor + label + change)
-- `.metric-card` (título + valor + subtitle + progress)
-- `.search-input` (ícone + input)
-
-### **Organisms**
-- `.data-table` (header + table + actions)
-- `.chart-card` (header + canvas Chart.js)
-- `.dashboard-grid` (grid responsivo 2, 3 ou 4 colunas)
-- `.kanban-board` (colunas + cards drag-drop)
-
-### **Utilities**
-- `.btn` (primary, outline)
-- `.modal` (overlay + content + header + actions)
-- `.sidebar` (navegação lateral fixa)
+**Tempo estimado P1**: +8 semanas (total: 12-14 semanas / 3 meses)
 
 ---
 
-## 💾 Dados Mockados
+### **P2 - MÉDIA PRIORIDADE (Gestão Avançada)**
 
-### Clientes (usar esses dados)
-```javascript
-const mockClients = [
-  { id: 1, name: 'João Carlos', email: 'joao@empresa.com', phone: '(11) 98765-4321', events: 3, revenue: 37500, status: 'active' },
-  { id: 2, name: 'Maria Silva', email: 'maria@eventos.com', phone: '(11) 91234-5678', events: 5, revenue: 72400, status: 'active' },
-  { id: 3, name: 'Pedro Rodrigues', email: 'pedro@producao.com', phone: '(11) 99887-6543', events: 2, revenue: 16400, status: 'active' },
-  { id: 4, name: 'Ana Costa', email: 'ana@live.com', phone: '(11) 96543-2109', events: 1, revenue: 15700, status: 'pending' },
-  { id: 5, name: 'Ricardo Santos', email: 'ricardo@shows.com', phone: '(11) 94321-8765', events: 4, revenue: 64800, status: 'active' }
-];
+```
+11. Relatórios Gerenciais (conversão, DRE)
+12. Gestão de Equipamentos (estoque)
+13. Calendário de Eventos
+14. Lead Scoring (AI)
 ```
 
-### Equipamentos (usar esses dados)
-```javascript
-const mockEquipments = [
-  { id: 1, name: 'Mesa de Som Yamaha 32 Canais', category: 'som', status: 'available', price: 450 },
-  { id: 2, name: 'Caixa Acústica JBL Line Array', category: 'som', status: 'in_use', price: 320 },
-  { id: 3, name: 'Moving Head LED 200W', category: 'luz', status: 'available', price: 180 },
-  { id: 4, name: 'Par LED RGBW 54x3W', category: 'luz', status: 'available', price: 80 },
-  { id: 5, name: 'Treliça Q30 3 metros', category: 'estrutura', status: 'maintenance', price: 120 }
-];
+**Tempo estimado P2**: +4 semanas (total: 16-18 semanas / 4 meses)
+
+---
+
+### **P3 - BAIXA PRIORIDADE (Nice to Have)**
+
+```
+15. AI SDR (bot WhatsApp 24/7) ⚠️ Complexo!
+16. Call Recording + AI Analysis ⚠️ LGPD!
+17. Multi-idioma (EN, ES)
+18. Mobile App Nativo
+```
+
+**Tempo estimado P3**: +8-12 semanas (total: 24-30 semanas / 6-7 meses)
+
+**Recomendação**: PULAR P3 no primeiro ano.
+
+---
+
+## 🚨 DECISÕES IMPORTANTES
+
+### **✅ O QUE VAMOS FAZER:**
+
+1. **Mobile-First PWA** (não React Native)
+   - Instalável no home screen
+   - Funciona offline (Service Worker)
+   - Push notifications
+   - Único codebase
+
+2. **Supabase como Backend** (não API própria)
+   - Row Level Security (RLS)
+   - Postgres (não MongoDB)
+   - Edge Functions (não Express)
+
+3. **Integrações Diretas** (sem Rube MCP)
+   - APIs diretas (Resend, Slack Webhook, Google Calendar API)
+   - Mais controle, menos dependências
+
+4. **Lead Scoring com AI** (Phase 2)
+   - Claude API para análise
+   - Score 0-100 automático
+   - Temperatura: 🔥 Hot / 🌡️ Warm / 🧊 Cold
+
+---
+
+### **❌ O QUE NÃO VAMOS FAZER:**
+
+1. **Rube MCP** - Não está estável/disponível
+2. **AI SDR Bot WhatsApp** - Muito complexo, ROI incerto
+3. **Call Recording + AI** - Riscos LGPD, custos altos
+4. **n8n** - Overhead desnecessário (Supabase Edge Functions suficiente)
+5. **Telefonia VoIP** - Não essencial para 5 usuários
+
+---
+
+## 📱 MOBILE-FIRST OBRIGATÓRIO
+
+### **Checklist Mobile:**
+
+- ✅ Tailwind responsive (sm/md/lg/xl breakpoints)
+- ✅ Bottom nav bar (não sidebar lateral)
+- ✅ Touch gestures (dnd-kit para drag-drop)
+- ✅ Forms multi-step (não forms longos)
+- ✅ Modals full-screen mobile
+- ✅ Data tables → cards em mobile
+- ✅ Lighthouse Score >85
+- ✅ PWA manifest + service worker
+- ✅ Offline support (cache crítico)
+
+---
+
+## 🔐 SEGURANÇA
+
+### **Variáveis de Ambiente:**
+
+```bash
+# .env
+VITE_SUPABASE_URL=https://xxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJxxx...
+RESEND_API_KEY=re_xxx
+SLACK_WEBHOOK_URL=https://hooks.slack.com/xxx
+GOOGLE_CALENDAR_API_KEY=AIzaxxx
+CLAUDE_API_KEY=sk-ant-xxx
+```
+
+**NUNCA** commitar `.env` (adicionar no `.gitignore`)!
+
+---
+
+## 🧑‍💻 MCPs DISPONÍVEIS (Claude Desktop)
+
+### **✅ Usaremos:**
+
+1. **shadcn-ui** - Gerar componentes React
+2. **@magicuidesign/mcp** - UI animada
+3. **brasil-api-mcp** - Validar CNPJ, buscar CEP
+4. **github** - Commits, PRs
+5. **filesystem** - Ler/escrever arquivos
+6. **memory** - Lembrar decisões entre sessões
+
+### **📋 Opcionais:**
+
+7. **playwright-mcp** - Testes E2E (Fase 6)
+8. **whimsical-mcp** - Diagramas
+9. **notion** - Docs (se usar Notion)
+
+### **❌ Não Usar:**
+
+- desktop-commander (desnecessário)
+- actors/firecrawl (scraping, não precisa)
+- gemini-thinking (já temos Claude)
+- sequential-thinking (overhead)
+
+---
+
+## ⚠️ REGRAS ABSOLUTAS - PROTOCOL NOTECRAFT™
+
+### 1. **Limites de Linhas (RÍGIDO)**
+- ✅ **Atoms**: máximo 20 linhas
+- ✅ **Molecules**: máximo 35 linhas
+- ✅ **Organisms**: máximo 50 linhas
+- ✅ **Templates**: máximo 30 linhas
+- ❌ **NUNCA** exceda esses limites
+
+### 2. **TypeScript Strict**
+```typescript
+// ✅ SEMPRE tipar:
+interface Client {
+  id: string
+  name: string
+  cnpj: string
+  email: string
+}
+
+// ❌ NUNCA usar any:
+const data: any = fetchData() // ❌ PROIBIDO
+```
+
+### 3. **Tailwind CSS (não CSS custom)**
+```tsx
+// ✅ CORRETO:
+<div className="px-4 py-2 bg-red-50 rounded-lg">
+
+// ❌ ERRADO:
+<div style={{ padding: '8px 16px', background: '#ffeded' }}>
+```
+
+### 4. **Design Tokens STAGETEK**
+```typescript
+// tailwind.config.js
+colors: {
+  stagetek: {
+    red: '#e90101',
+    'red-medium': '#862128',
+    'red-dark': '#63141a',
+  }
+}
+
+// Uso:
+<div className="bg-stagetek-red text-white">
+```
+
+### 5. **Componentes Controlados**
+```tsx
+// ✅ SEMPRE usar state:
+const [value, setValue] = useState('')
+<input value={value} onChange={e => setValue(e.target.value)} />
+
+// ❌ NUNCA uncontrolled:
+<input defaultValue="..." /> // ❌
 ```
 
 ---
@@ -220,127 +353,189 @@ const mockEquipments = [
 ## 🔧 Comandos Úteis
 
 ```bash
-# Iniciar servidor de desenvolvimento
-npm run serve
+# Setup inicial
+npm create vite@latest stagetek-crm-frontend -- --template react-ts
+cd stagetek-crm-frontend
+npm install
 
-# Ver estrutura de arquivos
-tree -L 2
+# Instalar dependências
+npm install @supabase/supabase-js tailwindcss
+npm install react-hook-form zod
+npm install recharts date-fns
+npm install zustand
 
-# Abrir no navegador
-start index.html
+# shadcn/ui (usar MCP)
+# Pedir no chat: "Usar shadcn-ui para criar Button component"
 
-# Servidor na porta 3000
-npx http-server . -p 3000 -o
+# Dev server
+npm run dev
+
+# Build produção
+npm run build
+
+# Preview build
+npm run preview
+
+# Deploy Vercel
+vercel --prod
 ```
 
 ---
 
-## ✅ Checklist ANTES de Criar Código
-
-Antes de criar qualquer componente, página ou feature, verifique:
+## ✅ Checklist ANTES de Codar
 
 - [ ] Li `/protocol/PROTOCOL-NOTECRAFT.md`
 - [ ] Li `/protocol/BRANDING-STANDARDS.md`
-- [ ] Entendi os limites de linhas (Atoms: 20, Molecules: 35, Organisms: 50)
-- [ ] Vou usar apenas CSS Custom Properties
-- [ ] Vou usar ícones SVG (não emojis)
-- [ ] Vou usar gradientes sutis (não cores chapadas)
-- [ ] Vou incluir dark mode toggle padronizado
-- [ ] Vou incluir footer com Protocol Notecraft™
-- [ ] Logo terá altura correta (32px navbar)
+- [ ] Entendo os limites de linhas
+- [ ] Vou usar TypeScript strict
+- [ ] Vou usar Tailwind (não CSS inline)
+- [ ] Vou usar shadcn/ui como base
+- [ ] Mobile-first (testar no celular)
 - [ ] Componente tem Single Responsibility
+- [ ] Vou tipar tudo (interfaces/types)
 
 ---
 
 ## 🚫 O Que NUNCA Fazer
 
-1. ❌ Componentes com mais linhas que o limite
-2. ❌ Emojis como ícones (🚀, 🎨, 📱, etc.)
-3. ❌ Cores hardcoded (`color: #e90101`)
-4. ❌ Valores hardcoded (`padding: 16px`)
-5. ❌ Backgrounds sólidos (`background: red`)
-6. ❌ Logos com tamanhos aleatórios
-7. ❌ Dark mode toggle sem ícone dinâmico
-8. ❌ Footer sem Protocol Notecraft™
-9. ❌ Múltiplas responsabilidades em um componente
-10. ❌ Criar arquivos README ou .md sem ser solicitado
+1. ❌ Componentes acima do limite de linhas
+2. ❌ `any` no TypeScript
+3. ❌ CSS inline (`style={{ ... }}`)
+4. ❌ Cores hardcoded (`#e90101` direto)
+5. ❌ Emojis como ícones (usar Lucide React)
+6. ❌ Forms não controlados
+7. ❌ Fetch direto (usar Supabase client)
+8. ❌ localStorage sem validação
+9. ❌ Commits sem mensagem clara
+10. ❌ Deploy sem testar mobile
+
+---
+
+## 💡 Padrões de Código
+
+### **Nomenclatura:**
+
+```typescript
+// Files: PascalCase
+ClientCard.tsx
+useAuth.ts
+
+// Components: PascalCase
+export const ClientCard: React.FC<ClientCardProps> = ({ ... }) => {}
+
+// Functions: camelCase
+const calculateTotal = (items: Item[]) => {}
+
+// Constants: UPPER_SNAKE_CASE
+const MAX_UPLOAD_SIZE = 5 * 1024 * 1024 // 5MB
+
+// Types/Interfaces: PascalCase
+interface ClientCardProps { ... }
+type Status = 'active' | 'inactive'
+```
+
+### **Imports:**
+
+```typescript
+// Ordem:
+import React from 'react'                    // 1. React
+import { useQuery } from '@tanstack/react-query' // 2. External libs
+import { supabase } from '@/lib/supabase'   // 3. Internal libs
+import { Button } from '@/components/atoms' // 4. Components
+import type { Client } from '@/types'       // 5. Types
+import './ClientCard.css'                   // 6. Styles (se houver)
+```
 
 ---
 
 ## 📚 Referências Rápidas
 
-### Cores STAGETEK
-```css
---stagetek-red-primary: #e90101
---stagetek-red-medium: #862128
---stagetek-red-dark: #63141a
---stagetek-white: #fbfafb
---stagetek-black: #000000
---stagetek-gray: #727272
+### **Cores STAGETEK (Tailwind)**
+```
+bg-stagetek-red       → #e90101
+bg-stagetek-red-medium → #862128
+bg-stagetek-red-dark   → #63141a
+text-stagetek-red
+border-stagetek-red
 ```
 
-### Spacing Scale
-```css
---space-1: 4px
---space-2: 8px
---space-3: 12px
---space-4: 16px
---space-6: 24px
---space-8: 32px
---space-16: 64px
+### **Spacing (Tailwind)**
+```
+p-1  → 4px
+p-2  → 8px
+p-3  → 12px
+p-4  → 16px (padrão)
+p-6  → 24px
+p-8  → 32px
+p-16 → 64px
 ```
 
-### Border Radius
-```css
---radius-sm: 4px
---radius-md: 8px
---radius-lg: 12px
---radius-full: 9999px
+### **Supabase Queries**
+```typescript
+// Select
+const { data, error } = await supabase
+  .from('clients')
+  .select('*')
+  .eq('status', 'active')
+
+// Insert
+const { data, error } = await supabase
+  .from('clients')
+  .insert({ name: 'João', cnpj: '...' })
+
+// Update
+const { data, error } = await supabase
+  .from('clients')
+  .update({ status: 'inactive' })
+  .eq('id', clientId)
+
+// Delete
+const { data, error } = await supabase
+  .from('clients')
+  .delete()
+  .eq('id', clientId)
 ```
-
----
-
-## 🎯 Exemplo de Conversa Ideal
-
-**Usuário**: "Preciso criar a página de clientes com CRUD completo"
-
-**Claude**: "Vou criar a página de clientes seguindo Protocol Notecraft™:
-
-1. **DataTable Organism** (≤50 linhas):
-   - Listagem de clientes
-   - Filtros e ordenação
-   - Actions (editar, excluir)
-
-2. **ClientCard Molecule** (≤35 linhas):
-   - Avatar + Nome + Email
-   - Stats (eventos, receita)
-   - Badge de status
-
-3. **Modal de CRUD** (Organism ≤50 linhas):
-   - Formulário de cadastro/edição
-   - Validações
-
-Todos usando:
-- ✅ CSS Custom Properties
-- ✅ Ícones SVG profissionais
-- ✅ Gradientes sutis STAGETEK
-- ✅ Dark mode suportado
-- ✅ Dados mockados fornecidos"
 
 ---
 
 ## 🏆 Meta de Qualidade
 
 - **100%** Protocol Notecraft™ compliance
-- **100%** CSS Custom Properties
-- **0** emojis como ícones
-- **0** cores/valores hardcoded
-- **≥95%** responsividade mobile
+- **100%** TypeScript (zero `any`)
+- **>85** Lighthouse Score (mobile)
+- **<500KB** bundle size (gzipped)
+- **>95%** responsividade mobile
 - **100%** dark mode support
+
+---
+
+## 🎯 Exemplo de Conversa Ideal
+
+**Usuário**: "Criar componente de card de cliente"
+
+**Claude**:
+```
+Vou criar ClientCard seguindo Protocol Notecraft™:
+
+📁 src/components/molecules/ClientCard.tsx (≤35 linhas)
+
+- Avatar com iniciais
+- Nome + CNPJ
+- Stats (eventos, receita)
+- Badge de status
+- Actions (editar, excluir)
+
+Usando:
+✅ TypeScript strict
+✅ Tailwind CSS
+✅ shadcn/ui Button
+✅ Lucide React icons
+✅ Mobile-first
+```
 
 ---
 
 **Built with ❤️ following Protocol Notecraft™**
 **STAGETEK Engineering Team**
 
-**Última atualização**: 30 de Setembro de 2025
+**Última atualização**: 1 de Outubro de 2025

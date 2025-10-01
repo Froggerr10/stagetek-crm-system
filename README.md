@@ -1,389 +1,530 @@
 # STAGETEK CRM System
 
-**Sistema de CRM profissional para gestão de vendas, eventos e equipamentos**
+**CRM B2B para Fabricante de Equipamentos de Entretenimento**
 
 [![Protocol Notecraft™](https://img.shields.io/badge/Protocol-Notecraft™-e90101)](./protocol/PROTOCOL-NOTECRAFT.md)
-[![Status](https://img.shields.io/badge/Status-In%20Development-yellow)]()
-[![Version](https://img.shields.io/badge/Version-1.0.0-blue)]()
+[![React](https://img.shields.io/badge/React-18-61dafb)]()
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6)]()
+[![Supabase](https://img.shields.io/badge/Supabase-Backend-3ecf8e)]()
+[![Status](https://img.shields.io/badge/Status-Planning-yellow)]()
+[![Version](https://img.shields.io/badge/Version-2.0.0-blue)]()
 
-## 📋 Sobre o Projeto
+---
 
-Sistema completo de **Customer Relationship Management (CRM)** inspirado no RD Station CRM, desenvolvido seguindo **Protocol Notecraft™** da STAGETEK. Especializado em empresas de eventos, com funcionalidades de:
+## 🎯 Sobre o Projeto
 
-- 🎯 **Funil de Vendas** (Kanban drag-and-drop)
-- 👥 **Gestão de Clientes** (CRUD completo)
-- 📅 **Gestão de Eventos** (calendário + status)
-- 🎛️ **Gestão de Equipamentos** (som, luz, estrutura)
-- 📊 **Relatórios e Dashboards** (CRM Live, conversões, metas)
-- ⚙️ **Automações** (gatilhos e ações customizáveis)
-- 📧 **Comunicação** (e-mail tracking, templates, WhatsApp)
+**STAGETEK** é fabricante B2B de equipamentos para o segmento de entretenimento:
+- 🏭 **Fabricação**: Peças de aço, talhas, estruturas metálicas (produto principal)
+- 🛒 **Revenda**: Equipamentos de som e luz
+- 🌍 **Mercado**: Nacional (Brasil) + Internacional (exportação USD/EUR)
 
-## 🏗️ Estrutura do Projeto
+**Este CRM** gerencia todo o ciclo de vendas B2B:
+- Pipeline de oportunidades (Kanban)
+- Catálogo de produtos (~50 itens)
+- Cotações com cálculo de frete
+- Pedidos com tracking
+- Relatórios gerenciais (DRE, conversão, lead scoring)
+
+**Budget**: ZERO (uso interno, 5 usuários)
+
+---
+
+## 🚀 Stack Tecnológica
+
+### **Frontend**
+```
+✅ React 18 + TypeScript
+✅ Vite (build ultra-rápido)
+✅ Tailwind CSS 3.4 (estável)
+✅ shadcn/ui (componentes base)
+✅ Recharts (gráficos)
+✅ React Hook Form + Zod (forms + validação)
+✅ dnd-kit (drag-and-drop mobile-friendly)
+✅ date-fns (datas PT-BR)
+✅ Zustand (state management leve)
+```
+
+### **Backend (BaaS)**
+```
+✅ Supabase (Free Tier):
+   - PostgreSQL (500MB database)
+   - Auth (autenticação pronta)
+   - Storage (2GB para PDFs/imagens)
+   - Realtime (WebSockets)
+   - Edge Functions (serverless)
+```
+
+### **Integrações** (APIs diretas)
+```
+✅ E-mail: Resend API (100 envios/dia grátis)
+✅ Slack: Webhook (notificações)
+✅ Google Calendar: API oficial
+✅ WhatsApp: WhatsApp Business API (fase 4)
+✅ CNPJ/CEP: brasil-api-mcp
+```
+
+### **Deploy**
+```
+✅ Vercel (Free Tier):
+   - Deploy automático via GitHub
+   - Edge Functions
+   - SSL grátis
+   - Preview deploys
+```
+
+### **AI** (Opcional - Fases 5-6)
+```
+✅ Claude API: Lead Scoring, análises
+✅ Whisper API: Transcrição de calls (opcional)
+```
+
+---
+
+## 📁 Estrutura do Projeto
 
 ```
 stagetek-crm-system/
-├── .claude/                      # Claude Code Configuration
-│   ├── CLAUDE.md                 # Instruções principais
-│   ├── MCP-SETUP.md             # Setup de MCP servers
-│   ├── mcp-config.json          # Configuração MCPs
-│   └── agents/                  # Agents especializados
-│       ├── README.md
-│       ├── frontend-specialist.md
-│       ├── backend-specialist.md
-│       ├── qa-specialist.md
-│       └── product-manager.md
-├── protocol/                    # Protocol Notecraft™
-│   ├── PROTOCOL-NOTECRAFT.md   # Regras de desenvolvimento
-│   ├── BRANDING-STANDARDS.md   # Padrões de marca
-│   └── ARCHITECTURE.md         # Arquitetura completa
-├── design-system/              # Sistema de design
-│   ├── base.css               # Estilos base (25KB)
-│   └── components.css         # Componentes dashboard (11KB)
-├── components/                # Componentes futuros (React/Vanilla)
-│   ├── atoms/                # ≤20 linhas
-│   ├── molecules/            # ≤35 linhas
-│   ├── organisms/            # ≤50 linhas
-│   └── templates/            # ≤30 linhas
-├── pages/                    # Páginas da aplicação
-│   ├── dashboard.html        # ✅ Dashboard com 4 gráficos
-│   ├── funil-vendas.html    # ✅ Kanban drag-and-drop
-│   ├── clientes.html        # 🚧 TODO
-│   ├── eventos.html         # 🚧 TODO
-│   ├── equipamentos.html    # 🚧 TODO
-│   ├── crm-live.html        # 🚧 TODO
-│   ├── oportunidade.html    # 🚧 TODO
-│   └── automacoes.html      # 🚧 TODO
-├── services/               # 🚧 Service layer (Supabase)
-│   ├── supabaseClient.js
-│   ├── opportunitiesService.js
-│   ├── clientsService.js
-│   └── eventsService.js
-├── migrations/            # 🚧 SQL migrations
-│   └── 001_initial_schema.sql
-├── assets/               # Assets estáticos
-│   └── logos/SVG/       # Logos STAGETEK
-├── public/              # Screenshots e arquivos públicos
-└── index.html          # ✅ Landing page
+├── .claude/
+│   └── CLAUDE.md                    # ⭐ Instruções para Claude Code
+├── protocol/
+│   ├── PROTOCOL-NOTECRAFT.md        # Regras de desenvolvimento
+│   ├── BRANDING-STANDARDS.md        # Padrões de marca STAGETEK
+│   ├── ARCHITECTURE.md              # Arquitetura completa
+│   ├── FEATURES-PRIORITIZED.md      # Features P0/P1/P2/P3
+│   ├── TECH-STACK.md                # Stack detalhada
+│   ├── ROADMAP-PHASES.md            # Roadmap 6 fases
+│   ├── ARCHITECTURE-MOBILE.md       # Estratégia PWA
+│   ├── COSTS-ESTIMATE.md            # Custos projetados
+│   ├── COMPLEXITY-ASSESSMENT.md     # Análise de riscos
+│   └── PRD.md                       # Product Requirements Document
+├── src/
+│   ├── components/
+│   │   ├── atoms/                   # Componentes ≤20 linhas
+│   │   ├── molecules/               # Componentes ≤35 linhas
+│   │   ├── organisms/               # Componentes ≤50 linhas
+│   │   └── templates/               # Layouts ≤30 linhas
+│   ├── pages/
+│   │   ├── Dashboard.tsx            # Dashboard principal
+│   │   ├── Clientes.tsx             # CRUD clientes B2B
+│   │   ├── Oportunidades.tsx        # Funil de vendas (Kanban)
+│   │   ├── Produtos.tsx             # Catálogo de produtos
+│   │   └── Relatorios.tsx           # Relatórios gerenciais
+│   ├── hooks/
+│   │   ├── useSupabase.ts
+│   │   ├── useAuth.ts
+│   │   └── useLeadScoring.ts        # AI Lead Scoring
+│   ├── lib/
+│   │   ├── supabase.ts              # Cliente Supabase
+│   │   ├── utils.ts
+│   │   └── validators.ts            # Validações (CNPJ, etc)
+│   └── types/
+│       └── index.ts                 # TypeScript types
+├── supabase/
+│   ├── migrations/                  # SQL migrations
+│   │   ├── 001_initial_schema.sql
+│   │   ├── 002_rls_policies.sql
+│   │   └── 003_seed_data.sql
+│   └── functions/                   # Edge Functions
+│       ├── send-quote-email/        # Envio de cotações
+│       └── calculate-lead-score/    # AI Lead Scoring
+├── public/
+│   ├── assets/
+│   │   └── logos/                   # Logos STAGETEK
+│   └── manifest.json                # PWA manifest
+├── .env.example                     # Variáveis de ambiente (template)
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── tailwind.config.ts               # Config Tailwind + cores STAGETEK
+└── vite.config.ts
 ```
 
-## 🎨 Design System
+---
 
-- **Cores primárias**: STAGETEK Red (#e90101), Dark Red (#862128), Darker Red (#63141a)
-- **Tipografia**: Artpast (brand), Microgramma Extended Bold (UI), Proxima Nova (content)
-- **Componentes**: 30+ componentes seguindo atomic design
-- **Dark Mode**: Suporte completo com persistência localStorage
+## ⚡ Quick Start
 
-## 🚀 Quick Start
+### **1. Pré-requisitos**
 
-### 1. Clone o Repositório
+```bash
+# Node.js 18+
+node --version
+
+# npm ou pnpm
+npm --version
+```
+
+### **2. Clone o Repositório**
+
 ```bash
 git clone https://github.com/stagetek/stagetek-crm-system.git
 cd stagetek-crm-system
 ```
 
-### 2. Abra no Navegador
-```bash
-# Método 1: Servidor HTTP local
-npx http-server . -p 3000 -o
+### **3. Instalar Dependências**
 
-# Método 2: Abrir index.html diretamente
-start index.html
+```bash
+npm install
 ```
 
-### 3. Acesse as Páginas
-- **Landing Page**: http://localhost:3000/index.html
-- **Dashboard**: http://localhost:3000/pages/dashboard.html
-- **Funil de Vendas**: http://localhost:3000/pages/funil-vendas.html
+### **4. Configurar Variáveis de Ambiente**
 
----
-
-## 🤖 Usando Claude Code + Agents
-
-Este projeto está configurado com **agents especializados** para acelerar o desenvolvimento:
-
-### Agents Disponíveis
-- **@frontend-specialist** - UI/UX, componentes, Protocol Notecraft™
-- **@backend-specialist** - Supabase, database, API, RLS
-- **@qa-specialist** - Testing, quality, performance, accessibility
-- **@product-manager** - Roadmap, user stories, priorização
-
-### Comandos Rápidos
 ```bash
-# Criar componente
-@frontend-specialist "Create OpportunityCard organism (≤50 lines) with Protocol Notecraft™ compliance"
+# Copiar template
+cp .env.example .env
 
-# Criar tabela no banco
-@backend-specialist "Create opportunities table with RLS using Supabase"
-
-# Testar página
-@qa-specialist "Review pages/funil-vendas.html for Protocol compliance and accessibility"
-
-# Planejar sprint
-@product-manager "Plan Sprint 2 with RICE prioritization"
-```
-
-**Documentação completa**: [`.claude/agents/README.md`](./.claude/agents/README.md)
-
----
-
-## 🗄️ Setup de Backend (Supabase)
-
-### 1. Criar Projeto Supabase
-1. Ir em https://supabase.com
-2. Criar novo projeto
-3. Copiar `Project URL` e `Anon Key`
-
-### 2. Configurar Environment Variables
-```bash
-# Criar arquivo .env
+# Editar com suas credenciais
+# .env
 VITE_SUPABASE_URL=https://[project-ref].supabase.co
 VITE_SUPABASE_ANON_KEY=[your-anon-key]
+RESEND_API_KEY=re_[your-key]
+SLACK_WEBHOOK_URL=https://hooks.slack.com/[your-webhook]
 ```
 
-### 3. Executar Migrations
+### **5. Setup Supabase**
+
 ```bash
-# Instalar Supabase CLI
-npx supabase init
-npx supabase login
+# Criar projeto em https://supabase.com
 
-# Aplicar schema
+# Executar migrations
 npx supabase db push
+
+# Aplicar RLS policies
+npx supabase db push --schema auth
 ```
 
-**Database Schema**: [`protocol/ARCHITECTURE.md`](./protocol/ARCHITECTURE.md)
+### **6. Rodar Desenvolvimento**
+
+```bash
+npm run dev
+
+# Abrir: http://localhost:5173
+```
+
+### **7. Build Produção**
+
+```bash
+npm run build
+npm run preview
+```
 
 ---
 
-## 📖 Documentação
+## 🎯 Features (Priorização)
 
-### Protocol Notecraft™
-- [`PROTOCOL-NOTECRAFT.md`](./protocol/PROTOCOL-NOTECRAFT.md) - Regras de desenvolvimento
-- [`BRANDING-STANDARDS.md`](./protocol/BRANDING-STANDARDS.md) - Padrões de marca
-- [`ARCHITECTURE.md`](./protocol/ARCHITECTURE.md) - Arquitetura completa do CRM
+### **P0 - CRÍTICO (MVP - 4-6 semanas)**
 
-### Claude Code
-- [`.claude/CLAUDE.md`](./.claude/CLAUDE.md) - Instruções principais
-- [`.claude/MCP-SETUP.md`](./.claude/MCP-SETUP.md) - Setup de MCP servers
-- [`.claude/agents/`](./.claude/agents/) - Agents especializados
+Sem isso o CRM não funciona:
 
-### Desenvolvimento
-- Edite páginas em `/pages`
-- Adicione estilos em `/design-system`
-- Crie services em `/services`
-- Adicione migrations em `/migrations`
+| # | Feature | Tempo Est. |
+|---|---------|------------|
+| 1 | Autenticação (Login/Logout) | 3-5 dias |
+| 2 | CRUD Clientes B2B | 5-7 dias |
+| 3 | CRUD Oportunidades | 5-7 dias |
+| 4 | Funil de Vendas (Kanban) | 5-7 dias |
+| 5 | Dashboard Básico | 3-4 dias |
 
-## 📦 Componentes Disponíveis
+**Total P0**: 21-30 dias (4-6 semanas)
 
-### Atoms (Componentes Básicos)
-- **Badge**: Status pills com cores semânticas
-- **Avatar**: Avatares de usuário com iniciais
-- **StatusDot**: Indicadores de status
-- **ProgressBar**: Barras de progresso
+---
 
-### Molecules (Componentes Compostos)
-- **StatCard**: Cards de métricas com ícones
-- **MetricCard**: Cards com valores e progresso
-- **SearchInput**: Input de busca com ícone
+### **P1 - ALTA (CRM Funcional - +8 semanas)**
 
-### Organisms (Componentes Complexos)
-- **DataTable**: Tabela de dados com ordenação
-- **Dashboard**: Layout completo de dashboard
-- **DashboardHeader**: Cabeçalho com navegação
+| # | Feature | Tempo Est. |
+|---|---------|------------|
+| 6 | CRUD Produtos (catálogo 50+) | 5 dias |
+| 7 | Importação Excel (produtos + clientes) | 5 dias |
+| 8 | Sistema de Cotações (produtos + frete + PDF) | 10 dias |
+| 9 | Sistema de Pedidos (tracking) | 7 dias |
+| 10 | Integrações (Gmail, Slack, Calendar) | 10 dias |
 
-## 🎯 Funcionalidades
+**Total P1**: +37 dias (+8 semanas)
 
-### Dashboard Principal
-- ✅ Métricas em tempo real (clientes, vendas, eventos)
-- ✅ Gráficos de performance
-- ✅ Pipeline de vendas
-- ✅ Últimos eventos
+**MVP Funcional**: 12-14 semanas (~3 meses)
 
-### Gestão de Clientes
-- ✅ Cadastro completo
-- ✅ Histórico de eventos
-- ✅ Contatos e comunicação
-- ✅ Satisfação e avaliações
+---
 
-### Gestão de Eventos
-- ✅ Calendário de eventos
-- ✅ Status e confirmações
-- ✅ Equipamentos alocados
-- ✅ Valores e pagamentos
+### **P2 - MÉDIA (Gestão Avançada - +4 semanas)**
 
-### Gestão de Equipamentos
-- ✅ Inventário completo
-- ✅ Status de disponibilidade
-- ✅ Manutenções programadas
-- ✅ Histórico de uso
+| # | Feature | Tempo Est. |
+|---|---------|------------|
+| 11 | Relatórios Gerenciais (conversão, DRE) | 10 dias |
+| 12 | Gestão de Equipamentos (estoque) | 5 dias |
+| 13 | Calendário de Eventos | 5 dias |
+| 14 | Lead Scoring (AI) | 5 dias |
 
-## 📊 Métricas e KPIs
+**Total P2**: +25 dias (+4 semanas)
 
-- Total de clientes
-- Vendas mensais (R$)
-- Eventos realizados
-- Taxa de conversão
-- Satisfação do cliente (NPS)
-- Equipamentos em operação
+**CRM Completo**: 16-18 semanas (~4 meses)
 
-## 🌓 Dark Mode
+---
 
-Suporte nativo para modo escuro com:
-- Persistência em localStorage
-- Transições suaves
-- Adaptação de logos e ícones
-- Toggle padronizado em todas as páginas
+### **P3 - BAIXA (Nice to Have - ⚠️ Pular no primeiro ano)**
 
-## 📱 Responsividade
+| # | Feature | Complexidade | Recomendação |
+|---|---------|--------------|--------------|
+| 15 | AI SDR (bot WhatsApp 24/7) | 🔴 EXTREMA | ❌ NÃO FAZER |
+| 16 | Call Recording + AI Analysis | 🔴 EXTREMA | ❌ NÃO FAZER |
+| 17 | Multi-idioma (EN, ES) | 🟡 MÉDIA | ⏸️ Fase 2.0 |
+| 18 | Mobile App Nativo | 🟡 MÉDIA | ⏸️ PWA suficiente |
 
-- **Mobile-first design**
-- Breakpoints: 640px, 768px, 1024px, 1280px
-- Grid adaptativo
-- Sidebar colapsável
+**Motivo**: Complexidade EXTREMA, custos altos, ROI incerto, riscos LGPD.
 
-## 🔐 Segurança (Futuro)
+---
 
-- Autenticação de usuários
-- Controle de permissões
-- Logs de auditoria
-- Backup automático
+## 📱 Mobile-First (PWA)
 
-## 🛠️ Tecnologias
+### **Estratégia: Progressive Web App**
 
-- **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
-- **Design System**: CSS Custom Properties
-- **Ícones**: Feather Icons (SVG)
-- **Storage**: localStorage
-- **Responsividade**: CSS Grid + Flexbox
+✅ **Vantagens PWA**:
+- 1 único codebase (React)
+- Deploy instantâneo (sem App Store review)
+- Custo ZERO (sem fees de Apple/Google)
+- Atualizações automáticas
+- Instalável no home screen
+- Push notifications
+- Funciona offline (Service Worker)
 
-## 📝 Protocol Notecraft™
+### **Checklist Mobile:**
 
-Este projeto segue rigorosamente o **Protocol Notecraft™**:
+- ✅ Tailwind responsive (sm/md/lg/xl)
+- ✅ Bottom nav bar (não sidebar lateral)
+- ✅ Touch gestures (dnd-kit para drag-drop)
+- ✅ Forms multi-step (não forms longos)
+- ✅ Modals full-screen em mobile
+- ✅ Data tables → cards em mobile
+- ✅ Lighthouse Score >85
+- ✅ Bundle size <500KB (gzipped)
 
-- Atoms: ≤20 linhas
-- Molecules: ≤35 linhas
-- Organisms: ≤50 linhas
-- Templates: ≤30 linhas
-- Single Responsibility Principle
-- 100% CSS Custom Properties
+---
 
-## 🎨 Branding
+## 💰 Custos Projetados
 
-Todas as páginas seguem **BRANDING-STANDARDS.md**:
-- Logo padronizado (32px navbar, 120px hero, 24px footer)
-- Dark mode toggle consistente
-- Footer com Protocol Notecraft™
-- Cores STAGETEK (#e90101)
+### **MVP (Meses 1-3)**
+```
+Supabase Free:    R$ 0,00
+Vercel Free:      R$ 0,00
+Domínio:          R$ 3,33/mês
+────────────────────────
+TOTAL:            R$ 3,33/mês
+```
+
+### **Produção (Meses 4-6)**
+```
+Supabase Free:    R$ 0,00
+Vercel Free:      R$ 0,00
+Claude API:       R$ 25/mês (testes)
+Resend:           R$ 0,00 (100/dia grátis)
+Domínio:          R$ 3,33/mês
+────────────────────────
+TOTAL:            R$ 28,33/mês
+```
+
+### **AI Features (Meses 7+)**
+```
+Supabase Pro:     R$ 125/mês (se >500MB)
+Claude API:       R$ 50-95/mês (Lead Scoring)
+Whisper:          R$ 15/mês (transcrições)
+Domínio:          R$ 3,33/mês
+────────────────────────
+TOTAL:            R$ 193-238/mês
+```
+
+**Comparação**: Pipedrive custa R$ 395/mês (5 users) → **Economia de 50-75%**
+
+---
+
+## 🏆 Protocol Notecraft™
+
+Este projeto segue **rigorosamente** o Protocol Notecraft™:
+
+### **Limites de Código (RÍGIDO)**
+- ✅ **Atoms**: máximo 20 linhas
+- ✅ **Molecules**: máximo 35 linhas
+- ✅ **Organisms**: máximo 50 linhas
+- ✅ **Templates**: máximo 30 linhas
+
+### **Princípios**
+- ✅ Single Responsibility (componente faz 1 coisa)
+- ✅ TypeScript Strict (zero `any`)
+- ✅ Tailwind CSS (não CSS inline)
+- ✅ Mobile-first (PWA obrigatório)
+- ✅ 100% CSS Custom Properties (cores STAGETEK)
+
+**Documentação completa**: [`protocol/PROTOCOL-NOTECRAFT.md`](./protocol/PROTOCOL-NOTECRAFT.md)
+
+---
+
+## 🎨 Design System
+
+### **Cores STAGETEK** (Tailwind)
+
+```typescript
+// tailwind.config.ts
+colors: {
+  stagetek: {
+    red: '#e90101',         // Primary
+    'red-medium': '#862128', // Medium
+    'red-dark': '#63141a',   // Dark
+  }
+}
+
+// Uso:
+<div className="bg-stagetek-red text-white">
+```
+
+### **Componentes Disponíveis** (shadcn/ui)
+
+```bash
+# Gerar componentes via MCP:
+# No chat: "Usar shadcn-ui para criar Button component"
+
+# Componentes base:
+- Button, Input, Select, Checkbox
+- Card, Dialog, Popover, Tooltip
+- Table, Tabs, Badge, Avatar
+- DatePicker, Calendar, Form
+```
+
+---
+
+## 🧑‍💻 Desenvolvimento
+
+### **Comandos Úteis**
+
+```bash
+# Dev server
+npm run dev
+
+# Build
+npm run build
+
+# Preview build
+npm run preview
+
+# Lint
+npm run lint
+
+# Format
+npm run format
+
+# Supabase (local)
+npx supabase start
+npx supabase db push
+
+# Deploy Vercel
+vercel --prod
+```
+
+### **Estrutura de Commits**
+
+```bash
+# Formato:
+<type>: <description>
+
+# Exemplos:
+feat: add Client CRUD
+fix: correct lead scoring calculation
+docs: update README with new stack
+style: format code with prettier
+refactor: extract useAuth hook
+test: add unit tests for ClientCard
+chore: update dependencies
+```
+
+---
+
+## 🔐 Segurança
+
+### **Variáveis de Ambiente**
+
+```bash
+# .env (NUNCA commitar!)
+VITE_SUPABASE_URL=https://xxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJxxx...
+RESEND_API_KEY=re_xxx
+SLACK_WEBHOOK_URL=https://hooks.slack.com/xxx
+CLAUDE_API_KEY=sk-ant-xxx
+```
+
+### **Row Level Security (RLS)**
+
+```sql
+-- Supabase RLS Policy (exemplo)
+CREATE POLICY "Users can only see their own opportunities"
+ON opportunities FOR SELECT
+USING (auth.uid() = assigned_to);
+```
+
+---
 
 ## 📚 Documentação
 
-Consulte a pasta `/docs` para:
-- Guia de arquitetura
-- Catálogo de componentes
-- Guia de contribuição
-- Roadmap de features
+### **Protocol & Architecture**
+- [`PROTOCOL-NOTECRAFT.md`](./protocol/PROTOCOL-NOTECRAFT.md) - Regras de código
+- [`BRANDING-STANDARDS.md`](./protocol/BRANDING-STANDARDS.md) - Marca STAGETEK
+- [`ARCHITECTURE.md`](./protocol/ARCHITECTURE.md) - Arquitetura completa
 
-## 🚧 Roadmap
+### **Planning & Roadmap**
+- [`FEATURES-PRIORITIZED.md`](./protocol/FEATURES-PRIORITIZED.md) - Priorização P0-P3
+- [`ROADMAP-PHASES.md`](./protocol/ROADMAP-PHASES.md) - Roadmap 6 fases
+- [`COMPLEXITY-ASSESSMENT.md`](./protocol/COMPLEXITY-ASSESSMENT.md) - Riscos
 
-### **v1.0 - MVP** (8 semanas) 🚀
+### **Technical**
+- [`TECH-STACK.md`](./protocol/TECH-STACK.md) - Stack detalhada
+- [`ARCHITECTURE-MOBILE.md`](./protocol/ARCHITECTURE-MOBILE.md) - PWA mobile
+- [`COSTS-ESTIMATE.md`](./protocol/COSTS-ESTIMATE.md) - Custos detalhados
 
-#### Fase 1: Foundation (Semana 1)
-- [x] Dashboard com métricas
-- [x] Funil de Vendas Kanban básico
-- [ ] Autenticação Supabase
-- [ ] Database schema completo
-- [ ] Claude Code + Agents setup
+### **Product**
+- [`PRD.md`](./protocol/PRD.md) - Product Requirements Document
+- [`.claude/CLAUDE.md`](./.claude/CLAUDE.md) - Instruções Claude Code
 
-#### Fase 2: Core Features (Semanas 2-3)
+---
+
+## 🚧 Roadmap (6 Fases)
+
+### **Fase 1: Setup + MVP (2 semanas)**
+- [ ] Projeto Vite + React + TypeScript
+- [ ] Supabase (database + auth)
+- [ ] Design system (Tailwind + shadcn/ui)
+- [ ] Deploy Vercel
+- [ ] Autenticação funcional
+
+### **Fase 2: Core CRM (6 semanas)**
 - [ ] CRUD Clientes
-- [ ] CRUD Eventos (calendário)
-- [ ] CRUD Equipamentos
-- [ ] Detalhes da Oportunidade completo
-- [ ] Sistema de Tarefas
-- [ ] Sistema de Anotações (imutáveis)
+- [ ] CRUD Oportunidades
+- [ ] Funil de Vendas (Kanban)
+- [ ] Dashboard básico
+- [ ] CRUD Produtos
 
-#### Fase 3: Communication (Semana 4)
-- [ ] Envio de E-mails
-- [ ] Templates de E-mail
-- [ ] Tracking de E-mails (aberto/respondido)
-- [ ] Histórico automático
+### **Fase 3: Advanced Features (4 semanas)**
+- [ ] Sistema de Cotações (produtos + frete + PDF)
+- [ ] Sistema de Pedidos (tracking)
+- [ ] Importação Excel
 
-#### Fase 4: Reports (Semana 5)
-- [ ] CRM Live (Dashboard TV)
-- [ ] Painel Geral
-- [ ] Conversões (funil analysis)
-- [ ] Ciclo de Venda
-- [ ] Motivos de Perda
+### **Fase 4: Integrações (3 semanas)**
+- [ ] Gmail (envio de propostas)
+- [ ] Slack (notificações)
+- [ ] Google Calendar (eventos)
+- [ ] WhatsApp Business (opcional)
 
-#### Fase 5: Automation (Semana 6)
-- [ ] Builder de Automações
-- [ ] Gatilhos básicos (criar oportunidade, mudar etapa, tempo)
-- [ ] Ações básicas (criar tarefa, enviar e-mail)
+### **Fase 5: Relatórios (4 semanas)**
+- [ ] Dashboard executivo
+- [ ] Conversão de leads
+- [ ] Motivos de perda
+- [ ] Faturamento (DRE básico)
+- [ ] Lead Scoring (AI)
 
-#### Fase 6: Configuration (Semana 7)
-- [ ] Gestão de Funis
-- [ ] Usuários e Permissões (admin, manager, salesperson)
-- [ ] Campos Personalizados
-- [ ] Produtos/Serviços
-
-#### Fase 7: Testing & Launch (Semana 8)
-- [ ] QA completo (Protocol compliance, accessibility, performance)
+### **Fase 6: Polish + Launch (2 semanas)**
+- [ ] PWA (manifest + service worker)
+- [ ] Testes E2E
 - [ ] Performance optimization
-- [ ] Bug fixes
-- [ ] User documentation
-- [ ] Deploy to production
+- [ ] Treinamento equipe
+
+**Total: 21 semanas (~5 meses) para CRM completo**
+
+**Roadmap completo**: [`protocol/ROADMAP-PHASES.md`](./protocol/ROADMAP-PHASES.md)
 
 ---
-
-### **v1.1 - Enhancements** (4 semanas)
-
-#### Communication++
-- [ ] WhatsApp Business API integration
-- [ ] SMS notifications
-- [ ] Push notifications
-- [ ] In-app notifications
-
-#### Advanced Reports
-- [ ] Atividade e Vendas
-- [ ] Metas com tracking
-- [ ] Fontes e Campanhas
-- [ ] Produtos e Serviços analysis
-
-#### Integrations
-- [ ] Google Calendar sync
-- [ ] Outlook Calendar sync
-- [ ] Zapier webhooks
-- [ ] Export data (CSV, Excel)
-
----
-
-### **v2.0 - Scale** (8 semanas)
-
-#### Mobile App
-- [ ] React Native app
-- [ ] iOS + Android
-- [ ] Offline-first
-- [ ] Push notifications
-
-#### Advanced Automation
-- [ ] Conditional logic (if-then-else)
-- [ ] Time-based triggers (cron)
-- [ ] Multi-step workflows
-- [ ] A/B testing de automações
-
-#### AI-Powered Features
-- [ ] Lead scoring automático
-- [ ] Previsão de fechamento (ML)
-- [ ] Recomendações de ações
-- [ ] Análise de sentimento (e-mails)
-
-#### Enterprise Features
-- [ ] Multi-company support
-- [ ] Custom branding (white-label)
-- [ ] Advanced permissions (RBAC)
-- [ ] Audit log
-- [ ] SLA management
-
-**Full Roadmap**: [`protocol/ARCHITECTURE.md`](./protocol/ARCHITECTURE.md)
 
 ## 👥 Equipe
 
@@ -391,11 +532,23 @@ Consulte a pasta `/docs` para:
 
 Built with ❤️ following **Protocol Notecraft™**
 
+---
+
 ## 📄 Licença
 
 Copyright © 2025 STAGETEK. Todos os direitos reservados.
 
 ---
 
-**Versão**: 1.0.0
-**Última atualização**: 30 de Setembro de 2025
+## 🔗 Links Úteis
+
+- [Supabase Docs](https://supabase.com/docs)
+- [React Docs](https://react.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com)
+- [Vite](https://vitejs.dev)
+
+---
+
+**Versão**: 2.0.0 (Reboot completo)
+**Última atualização**: 1 de Outubro de 2025
