@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGETEK - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="dashboard_theme.css">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top left, #1a0404, var(--background));
+            color: var(--foreground);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(233,1,1,0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(233,1,1,0.1), transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                radial-gradient(rgba(233,1,1,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--card);
+            backdrop-filter: var(--blur-md) saturate(150%);
+            border-right: 1px solid var(--card-border);
+            z-index: var(--z-sidebar);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 0 12px rgba(233,1,1,0.3);
+        }
+
+        .sidebar-nav {
+            padding: var(--spacing-4) var(--spacing-3);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            height: 44px;
+            padding: 0 var(--spacing-4);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+            margin-bottom: var(--spacing-1);
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--card-hover);
+            color: var(--foreground);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            color: white;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .sidebar-user {
+            padding: var(--spacing-4);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            color: var(--muted-foreground);
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-dropdown {
+            color: var(--muted-foreground);
+            cursor: pointer;
+            padding: var(--spacing-1);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-colors);
+        }
+
+        .user-dropdown:hover {
+            color: var(--foreground);
+            background: var(--card-hover);
+        }
+
+        /* Top Bar */
+        .topbar {
+            position: fixed;
+            left: var(--sidebar-width);
+            top: 0;
+            width: calc(100% - var(--sidebar-width));
+            height: var(--topbar-height);
+            background: var(--card);
+            backdrop-filter: var(--blur-md);
+            border-bottom: 1px solid var(--card-border);
+            z-index: var(--z-topbar);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-6);
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 0 var(--spacing-4) 0 40px;
+            color: var(--foreground);
+            font-size: 14px;
+            transition: var(--transition-all);
+        }
+
+        .search-input::placeholder {
+            color: var(--muted-foreground);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(233,1,1,0.5);
+            box-shadow: 0 0 0 3px rgba(233,1,1,0.1);
+            background: var(--card-hover);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-3);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            pointer-events: none;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
+
+        .action-button {
+            width: 40px;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+            position: relative;
+        }
+
+        .action-button:hover {
+            background: var(--card-hover);
+            color: var(--foreground);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 2px solid var(--background);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--topbar-height);
+            padding: var(--spacing-8) var(--spacing-6);
+            min-height: calc(100vh - var(--topbar-height));
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive */
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .topbar {
+                left: 0;
+                width: 100%;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .search-container {
+                width: 100%;
+                max-width: 400px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .topbar-actions {
+                display: none;
+            }
+
+            .search-container {
+                max-width: none;
+            }
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        @media (max-width: 1023px) {
+            .mobile-menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: var(--spacing-4);
+            }
+        }
+
+        /* Bottom Navigation (Mobile) */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--bottomnav-height);
+            background: var(--card);
+            backdrop-filter: var(--blur-md);
+            border-top: 1px solid var(--card-border);
+            z-index: var(--z-bottomnav);
+            padding: 0 var(--spacing-4);
+        }
+
+        .bottom-nav-items {
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-2);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-1);
+            color: var(--muted);
+            text-decoration: none;
+            transition: var(--transition-all);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-2);
+        }
+
+        .bottom-nav-item i {
+            width: 22px;
+            height: 22px;
+        }
+
+        .bottom-nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .bottom-nav-item.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        @media (max-width: 767px) {
+            .bottom-nav {
+                display: block;
+            }
+
+            .main-content {
+                padding-bottom: calc(var(--bottomnav-height) + var(--spacing-8));
+            }
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            color: var(--muted-foreground);
+            font-size: 14px;
+            margin-bottom: var(--spacing-6);
+        }
+
+        /* Stat Cards Grid */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .stat-card {
+            background: var(--card);
+            backdrop-filter: var(--blur-lg) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            transition: var(--transition-all);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(233,1,1,0.15);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, rgba(233,1,1,0.2), rgba(233,1,1,0.05));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .stat-icon i {
+            width: 24px;
+            height: 24px;
+            color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: var(--spacing-3);
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-1);
+            font-size: 13px;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        .stat-change i {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-6);
+        }
+
+        .chart-card {
+            background: var(--card);
+            backdrop-filter: var(--blur-lg) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .chart-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .period-selector {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            padding: var(--spacing-2) var(--spacing-3);
+            background: var(--card-hover);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .period-selector:hover {
+            color: white;
+            border-color: var(--card-border-hover);
+        }
+
+        .chart-area {
+            height: 280px;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.02);
+            border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted-foreground);
+            font-size: 14px;
+        }
+
+        /* Table Card */
+        .table-card {
+            background: var(--card);
+            backdrop-filter: var(--blur-lg) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+        }
+
+        .table-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-4);
+        }
+
+        .table-header h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .view-all {
+            color: var(--primary);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition-colors);
+        }
+
+        .view-all:hover {
+            color: var(--primary-hover);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .opportunities-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .opportunities-table thead {
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .opportunities-table th {
+            text-align: left;
+            padding: var(--spacing-3) var(--spacing-4);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .opportunities-table td {
+            padding: var(--spacing-4);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            color: var(--foreground);
+            font-size: 14px;
+        }
+
+        .opportunities-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .opportunities-table tbody tr:hover {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .client-cell {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .client-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #c10101);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .stage-badge {
+            display: inline-flex;
+            padding: 4px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .stage-badge.lead {
+            background: var(--stage-lead);
+            color: #9ca3af;
+        }
+
+        .stage-badge.contact {
+            background: var(--stage-contact);
+            color: #3b82f6;
+        }
+
+        .stage-badge.proposal {
+            background: var(--stage-proposal);
+            color: #a855f7;
+        }
+
+        .stage-badge.negotiation {
+            background: var(--stage-negotiation);
+            color: #fb923c;
+        }
+
+        .stage-badge.closing {
+            background: var(--stage-closing);
+            color: #22c55e;
+        }
+
+        @media (max-width: 1279px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1 class="logo-text">STAGETEK</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active">
+                <i data-lucide="home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="target"></i>
+                <span>Funil de Vendas</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="package"></i>
+                <span>Produtos</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>Relatórios</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar">MB</div>
+            <div class="user-info">
+                <div class="user-name">Mario Becker</div>
+                <div class="user-role">Conta DEMO PRO</div>
+            </div>
+            <button class="user-dropdown">
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="topbar">
+        <button class="mobile-menu">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Buscar clientes, oportunidades...">
+            <i data-lucide="search" class="search-icon w-5 h-5"></i>
+        </div>
+        <div class="topbar-actions">
+            <button class="action-button">
+                <i data-lucide="sun" class="w-5 h-5"></i>
+            </button>
+            <button class="action-button">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <span class="notification-badge">3</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <i data-lucide="home" class="w-4 h-4"></i>
+            <span>Dashboard</span>
+        </div>
+
+        <!-- Stat Cards Grid -->
+        <div class="stat-grid">
+            <!-- Total Vendas -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i data-lucide="dollar-sign"></i>
+                </div>
+                <div class="stat-value">R$ 245.000</div>
+                <div class="stat-label">Total Vendas</div>
+                <div class="stat-change positive">
+                    <i data-lucide="trending-up"></i>
+                    <span>+15%</span>
+                </div>
+            </div>
+
+            <!-- Oportunidades Abertas -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i data-lucide="target"></i>
+                </div>
+                <div class="stat-value">27</div>
+                <div class="stat-label">Oportunidades Abertas</div>
+                <div class="stat-change positive">
+                    <i data-lucide="trending-up"></i>
+                    <span>+3</span>
+                </div>
+            </div>
+
+            <!-- Taxa de Conversão -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i data-lucide="percent"></i>
+                </div>
+                <div class="stat-value">32%</div>
+                <div class="stat-label">Taxa de Conversão</div>
+                <div class="stat-change positive">
+                    <i data-lucide="trending-up"></i>
+                    <span>+5%</span>
+                </div>
+            </div>
+
+            <!-- Ticket Médio -->
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i data-lucide="credit-card"></i>
+                </div>
+                <div class="stat-value">R$ 12.500</div>
+                <div class="stat-label">Ticket Médio</div>
+                <div class="stat-change negative">
+                    <i data-lucide="trending-down"></i>
+                    <span>-2%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Vendas ao Longo do Tempo -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Vendas ao Longo do Tempo</h3>
+                    <button class="period-selector">
+                        <span>30 dias</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-placeholder">Chart: Vendas Mensal</div>
+                </div>
+            </div>
+
+            <!-- Oportunidades por Estágio -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Oportunidades por Estágio</h3>
+                    <button class="period-selector">
+                        <span>30 dias</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="chart-area">
+                    <div class="chart-placeholder">Chart: Funil Conversão</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Opportunities Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h3>Oportunidades Recentes</h3>
+                <a href="#" class="view-all">Ver todas →</a>
+            </div>
+            <div class="table-responsive">
+                <table class="opportunities-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Valor</th>
+                            <th>Estágio</th>
+                            <th>Data</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-avatar">JS</div>
+                                    <span>João Silva</span>
+                                </div>
+                            </td>
+                            <td>R$ 45.000</td>
+                            <td>
+                                <span class="stage-badge negotiation">Negociação</span>
+                            </td>
+                            <td>Hoje</td>
+                            <td>
+                                <button class="action-button">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-avatar">MC</div>
+                                    <span>Maria Costa</span>
+                                </div>
+                            </td>
+                            <td>R$ 12.500</td>
+                            <td>
+                                <span class="stage-badge proposal">Proposta</span>
+                            </td>
+                            <td>Ontem</td>
+                            <td>
+                                <button class="action-button">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-avatar">PS</div>
+                                    <span>Pedro Santos</span>
+                                </div>
+                            </td>
+                            <td>R$ 8.200</td>
+                            <td>
+                                <span class="stage-badge contact">Contato</span>
+                            </td>
+                            <td>2 dias atrás</td>
+                            <td>
+                                <button class="action-button">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-avatar">AO</div>
+                                    <span>Ana Oliveira</span>
+                                </div>
+                            </td>
+                            <td>R$ 28.700</td>
+                            <td>
+                                <span class="stage-badge closing">Fechamento</span>
+                            </td>
+                            <td>3 dias atrás</td>
+                            <td>
+                                <button class="action-button">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="client-cell">
+                                    <div class="client-avatar">CL</div>
+                                    <span>Carlos Lima</span>
+                                </div>
+                            </td>
+                            <td>R$ 15.900</td>
+                            <td>
+                                <span class="stage-badge lead">Lead</span>
+                            </td>
+                            <td>1 semana atrás</td>
+                            <td>
+                                <button class="action-button">
+                                    <i data-lucide="more-vertical" class="w-4 h-4"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-items">
+            <a href="#" class="bottom-nav-item active">
+                <i data-lucide="home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="target"></i>
+                <span>Funil</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="package"></i>
+                <span>Produtos</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="user"></i>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

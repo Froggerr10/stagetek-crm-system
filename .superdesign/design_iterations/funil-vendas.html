@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGETEK - Funil de Vendas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="dashboard_theme.css">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top left, #1a0404, var(--background));
+            color: var(--foreground);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(233,1,1,0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(233,1,1,0.1), transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(rgba(233,1,1,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Sidebar (reuse from dashboard) */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--card);
+            backdrop-filter: var(--blur-md) saturate(150%);
+            border-right: 1px solid var(--card-border);
+            z-index: var(--z-sidebar);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 0 12px rgba(233,1,1,0.3);
+        }
+
+        .sidebar-nav {
+            padding: var(--spacing-4) var(--spacing-3);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            height: 44px;
+            padding: 0 var(--spacing-4);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+            margin-bottom: var(--spacing-1);
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--card-hover);
+            color: var(--foreground);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            color: white;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .sidebar-user {
+            padding: var(--spacing-4);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Top Bar */
+        .topbar {
+            position: fixed;
+            left: var(--sidebar-width);
+            top: 0;
+            width: calc(100% - var(--sidebar-width));
+            height: var(--topbar-height);
+            background: var(--card);
+            backdrop-filter: var(--blur-md);
+            border-bottom: 1px solid var(--card-border);
+            z-index: var(--z-topbar);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-6);
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 0 var(--spacing-4) 0 40px;
+            color: var(--foreground);
+            font-size: 14px;
+            transition: var(--transition-all);
+        }
+
+        .search-input::placeholder {
+            color: var(--muted-foreground);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(233,1,1,0.5);
+            box-shadow: 0 0 0 3px rgba(233,1,1,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-3);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+            pointer-events: none;
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
+
+        .action-button {
+            width: 40px;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+            position: relative;
+        }
+
+        .action-button:hover {
+            background: var(--card-hover);
+            color: var(--foreground);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--topbar-height);
+            min-height: calc(100vh - var(--topbar-height));
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Header Section */
+        .page-header {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .header-left p {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .filter-button {
+            height: 40px;
+            padding: 0 var(--spacing-4);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            color: var(--muted);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .filter-button:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .add-button {
+            height: 40px;
+            padding: 0 var(--spacing-4);
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            cursor: pointer;
+            transition: var(--transition-all);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .add-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--primary-glow-strong);
+        }
+
+        /* Kanban Board */
+        .kanban-board {
+            display: flex;
+            gap: var(--spacing-4);
+            padding: var(--spacing-6);
+            overflow-x: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        .kanban-board::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .kanban-board::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+        }
+
+        .kanban-board::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        .kanban-board::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Kanban Column */
+        .kanban-column {
+            width: 340px;
+            min-width: 340px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-4);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+            transition: var(--transition-all);
+        }
+
+        .kanban-column.drag-over {
+            background: rgba(233,1,1,0.05);
+            border-color: rgba(233,1,1,0.3);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: var(--spacing-3);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .column-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .column-title h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .column-count {
+            display: inline-flex;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Stage Colors */
+        .column-lead .column-count {
+            background: rgba(107,114,128,0.2);
+            color: #9ca3af;
+        }
+
+        .column-contact .column-count {
+            background: rgba(59,130,246,0.2);
+            color: #3b82f6;
+        }
+
+        .column-proposal .column-count {
+            background: rgba(168,85,247,0.2);
+            color: #a855f7;
+        }
+
+        .column-negotiation .column-count {
+            background: rgba(251,146,60,0.2);
+            color: #fb923c;
+        }
+
+        .column-closing .column-count {
+            background: rgba(34,197,94,0.2);
+            color: #22c55e;
+        }
+
+        .column-total {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .column-lead .column-total { color: #9ca3af; }
+        .column-contact .column-total { color: #3b82f6; }
+        .column-proposal .column-total { color: #a855f7; }
+        .column-negotiation .column-total { color: #fb923c; }
+        .column-closing .column-total { color: #22c55e; }
+
+        .column-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-3);
+            min-height: 100px;
+        }
+
+        /* Opportunity Card */
+        .opportunity-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+            cursor: grab;
+            transition: var(--transition-all);
+            animation: cardSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .opportunity-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(233,1,1,0.2);
+        }
+
+        .opportunity-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+            cursor: grabbing;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .card-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #c10101);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-client {
+            font-size: 15px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: rgba(255,255,255,0.6);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            padding: var(--spacing-3) 0;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .card-value {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+        }
+
+        .card-value i {
+            width: 16px;
+            height: 16px;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .card-value span {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--spacing-3);
+        }
+
+        .card-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .card-stars i {
+            width: 14px;
+            height: 14px;
+        }
+
+        .card-stars .star-filled {
+            color: var(--warning);
+            fill: var(--warning);
+        }
+
+        .card-stars .star-empty {
+            color: rgba(255,255,255,0.2);
+        }
+
+        .card-actions {
+            display: flex;
+            gap: var(--spacing-1);
+        }
+
+        .card-action {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: rgba(255,255,255,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .card-action:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .card-action i {
+            width: 14px;
+            height: 14px;
+        }
+
+        .card-origin {
+            display: inline-flex;
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.5);
+            margin-top: var(--spacing-2);
+        }
+
+        /* Empty State */
+        .empty-state {
+            height: 120px;
+            background: rgba(255,255,255,0.02);
+            border: 2px dashed rgba(255,255,255,0.06);
+            border-radius: var(--radius-md);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-2);
+            color: rgba(255,255,255,0.3);
+        }
+
+        .empty-state i {
+            width: 24px;
+            height: 24px;
+        }
+
+        .empty-state span {
+            font-size: 13px;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: var(--spacing-6);
+            right: var(--spacing-6);
+            background: var(--card);
+            backdrop-filter: var(--blur-lg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            z-index: 1000;
+            animation: toastSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--success);
+        }
+
+        .toast-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--success);
+        }
+
+        .toast-message {
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Bottom Navigation (Mobile) */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--bottomnav-height);
+            background: var(--card);
+            backdrop-filter: var(--blur-md);
+            border-top: 1px solid var(--card-border);
+            z-index: var(--z-bottomnav);
+            padding: 0 var(--spacing-4);
+        }
+
+        .bottom-nav-items {
+            height: 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: var(--spacing-2);
+        }
+
+        .bottom-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-1);
+            color: var(--muted);
+            text-decoration: none;
+            transition: var(--transition-all);
+        }
+
+        .bottom-nav-item i {
+            width: 22px;
+            height: 22px;
+        }
+
+        .bottom-nav-item span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .bottom-nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu {
+            display: none;
+            width: 40px;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            color: var(--muted);
+            cursor: pointer;
+        }
+
+        /* Responsive */
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .topbar {
+                left: 0;
+                width: 100%;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: var(--spacing-4);
+            }
+
+            .search-container {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-4);
+            }
+
+            .header-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .filter-button span {
+                display: none;
+            }
+
+            .kanban-board {
+                padding: var(--spacing-4);
+            }
+
+            .kanban-column {
+                width: 90vw;
+                min-width: 90vw;
+            }
+
+            .bottom-nav {
+                display: block;
+            }
+
+            .main-content {
+                padding-bottom: var(--bottomnav-height);
+            }
+
+            .topbar-actions {
+                display: none;
+            }
+
+            .search-container {
+                max-width: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <h1 class="logo-text">STAGETEK</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item">
+                <i data-lucide="home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i data-lucide="target"></i>
+                <span>Funil de Vendas</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="package"></i>
+                <span>Produtos</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>Relatórios</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="settings"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar">MB</div>
+            <div class="user-info">
+                <div class="user-name">Mario Becker</div>
+                <div class="user-role">Conta DEMO PRO</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="topbar">
+        <button class="mobile-menu" id="hamburger">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Buscar oportunidades...">
+            <i data-lucide="search" class="search-icon w-5 h-5"></i>
+        </div>
+        <div class="topbar-actions">
+            <button class="action-button">
+                <i data-lucide="sun" class="w-5 h-5"></i>
+            </button>
+            <button class="action-button">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-left">
+                <h1>Funil de Vendas</h1>
+                <p>Arraste para mover entre estágios</p>
+            </div>
+            <div class="header-right">
+                <button class="filter-button">
+                    <i data-lucide="filter" class="w-4 h-4"></i>
+                    <span>Filtrar</span>
+                </button>
+                <button class="filter-button">
+                    <i data-lucide="arrow-up-down" class="w-4 h-4"></i>
+                    <span>Ordenar</span>
+                </button>
+                <button class="add-button">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Nova Oportunidade</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="kanban-board">
+            <!-- Column 1: Lead -->
+            <div class="kanban-column column-lead" data-stage="lead">
+                <div class="column-header">
+                    <div class="column-title">
+                        <h3>Lead</h3>
+                        <span class="column-count">3</span>
+                    </div>
+                    <div class="column-total">R$ 100K</div>
+                </div>
+                <div class="column-cards">
+                    <div class="opportunity-card" draggable="true" data-id="1" data-value="0">
+                        <div class="card-header">
+                            <div class="card-avatar">JS</div>
+                            <div class="card-info">
+                                <div class="card-client">João Silva</div>
+                                <div class="card-title">Teste 123</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-value">
+                                <i data-lucide="dollar-sign"></i>
+                                <span>R$ 0</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-stars">
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-action">
+                                    <i data-lucide="phone"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="clock"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="more-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-origin">RD Station</div>
+                    </div>
+
+                    <div class="opportunity-card" draggable="true" data-id="2" data-value="15000">
+                        <div class="card-header">
+                            <div class="card-avatar">MC</div>
+                            <div class="card-info">
+                                <div class="card-client">Maria Costa</div>
+                                <div class="card-title">Evento Corporativo Q1</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-value">
+                                <i data-lucide="dollar-sign"></i>
+                                <span>R$ 15.000</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-stars">
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-action">
+                                    <i data-lucide="phone"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="clock"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="more-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-origin">Indicação</div>
+                    </div>
+
+                    <div class="opportunity-card" draggable="true" data-id="3" data-value="85000">
+                        <div class="card-header">
+                            <div class="card-avatar">PS</div>
+                            <div class="card-info">
+                                <div class="card-client">Pedro Santos</div>
+                                <div class="card-title">Festival de Música</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-value">
+                                <i data-lucide="dollar-sign"></i>
+                                <span>R$ 85.000</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-stars">
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-action">
+                                    <i data-lucide="phone"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="clock"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="more-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-origin">Site</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Contato -->
+            <div class="kanban-column column-contact" data-stage="contact">
+                <div class="column-header">
+                    <div class="column-title">
+                        <h3>Contato</h3>
+                        <span class="column-count">1</span>
+                    </div>
+                    <div class="column-total">R$ 28,7K</div>
+                </div>
+                <div class="column-cards">
+                    <div class="opportunity-card" draggable="true" data-id="4" data-value="28700">
+                        <div class="card-header">
+                            <div class="card-avatar">AO</div>
+                            <div class="card-info">
+                                <div class="card-client">Ana Oliveira</div>
+                                <div class="card-title">Equipamentos para Teatro</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-value">
+                                <i data-lucide="dollar-sign"></i>
+                                <span>R$ 28.700</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-stars">
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-action">
+                                    <i data-lucide="phone"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="clock"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="more-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-origin">LinkedIn</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: Proposta -->
+            <div class="kanban-column column-proposal" data-stage="proposal">
+                <div class="column-header">
+                    <div class="column-title">
+                        <h3>Proposta</h3>
+                        <span class="column-count">1</span>
+                    </div>
+                    <div class="column-total">R$ 72,4K</div>
+                </div>
+                <div class="column-cards">
+                    <div class="opportunity-card" draggable="true" data-id="5" data-value="72400">
+                        <div class="card-header">
+                            <div class="card-avatar">CL</div>
+                            <div class="card-info">
+                                <div class="card-client">Carlos Lima</div>
+                                <div class="card-title">Show Sertanejo - Arena</div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-value">
+                                <i data-lucide="dollar-sign"></i>
+                                <span>R$ 72.400</span>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <div class="card-stars">
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-filled"></i>
+                                <i data-lucide="star" class="star-empty"></i>
+                            </div>
+                            <div class="card-actions">
+                                <button class="card-action">
+                                    <i data-lucide="phone"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="clock"></i>
+                                </button>
+                                <button class="card-action">
+                                    <i data-lucide="more-vertical"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-origin">WhatsApp</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 4: Negociação -->
+            <div class="kanban-column column-negotiation" data-stage="negotiation">
+                <div class="column-header">
+                    <div class="column-title">
+                        <h3>Negociação</h3>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-total">R$ 0</div>
+                </div>
+                <div class="column-cards">
+                    <div class="empty-state">
+                        <i data-lucide="move"></i>
+                        <span>Arraste oportunidades aqui</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 5: Fechamento -->
+            <div class="kanban-column column-closing" data-stage="closing">
+                <div class="column-header">
+                    <div class="column-title">
+                        <h3>Fechamento</h3>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-total">R$ 0</div>
+                </div>
+                <div class="column-cards">
+                    <div class="empty-state">
+                        <i data-lucide="move"></i>
+                        <span>Arraste oportunidades aqui</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation (Mobile) -->
+    <nav class="bottom-nav">
+        <div class="bottom-nav-items">
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="#" class="bottom-nav-item active">
+                <i data-lucide="target"></i>
+                <span>Funil</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="package"></i>
+                <span>Produtos</span>
+            </a>
+            <a href="#" class="bottom-nav-item">
+                <i data-lucide="user"></i>
+                <span>Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                sidebar.classList.toggle('visible');
+            });
+        }
+
+        // Drag and Drop functionality
+        let draggedCard = null;
+        let sourceColumn = null;
+
+        const cards = document.querySelectorAll('.opportunity-card');
+        const columns = document.querySelectorAll('.kanban-column');
+
+        // Card drag events
+        cards.forEach(card => {
+            card.addEventListener('dragstart', handleDragStart);
+            card.addEventListener('dragend', handleDragEnd);
+        });
+
+        // Column drop events
+        columns.forEach(column => {
+            column.addEventListener('dragover', handleDragOver);
+            column.addEventListener('drop', handleDrop);
+            column.addEventListener('dragleave', handleDragLeave);
+        });
+
+        function handleDragStart(e) {
+            draggedCard = this;
+            sourceColumn = this.closest('.kanban-column');
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+            columns.forEach(col => col.classList.remove('drag-over'));
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+
+            const column = e.currentTarget;
+            if (column !== sourceColumn) {
+                column.classList.add('drag-over');
+            }
+
+            return false;
+        }
+
+        function handleDragLeave(e) {
+            const column = e.currentTarget;
+            column.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            const targetColumn = e.currentTarget;
+            targetColumn.classList.remove('drag-over');
+
+            if (draggedCard && targetColumn !== sourceColumn) {
+                // Move card to new column
+                const cardsContainer = targetColumn.querySelector('.column-cards');
+                const emptyState = cardsContainer.querySelector('.empty-state');
+
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
+                cardsContainer.appendChild(draggedCard);
+
+                // Update source column
+                updateColumn(sourceColumn);
+
+                // Update target column
+                updateColumn(targetColumn);
+
+                // Show success toast
+                const stageName = targetColumn.querySelector('.column-title h3').textContent;
+                showToast(`Oportunidade movida para ${stageName}`);
+            }
+
+            return false;
+        }
+
+        function updateColumn(column) {
+            const cardsContainer = column.querySelector('.column-cards');
+            const cards = cardsContainer.querySelectorAll('.opportunity-card');
+            const count = cards.length;
+
+            // Update count
+            const countBadge = column.querySelector('.column-count');
+            countBadge.textContent = count;
+
+            // Calculate total
+            let total = 0;
+            cards.forEach(card => {
+                const value = parseFloat(card.dataset.value) || 0;
+                total += value;
+            });
+
+            // Update total display
+            const totalDisplay = column.querySelector('.column-total');
+            if (total >= 1000) {
+                totalDisplay.textContent = `R$ ${(total / 1000).toFixed(1)}K`;
+            } else {
+                totalDisplay.textContent = `R$ ${total.toFixed(0)}`;
+            }
+
+            // Add empty state if no cards
+            if (count === 0) {
+                const emptyState = document.createElement('div');
+                emptyState.className = 'empty-state';
+                emptyState.innerHTML = `
+                    <i data-lucide="move"></i>
+                    <span>Arraste oportunidades aqui</span>
+                `;
+                cardsContainer.appendChild(emptyState);
+                lucide.createIcons();
+            }
+        }
+
+        function showToast(message) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = 'toast success';
+            toast.innerHTML = `
+                <i data-lucide="check-circle" class="toast-icon"></i>
+                <span class="toast-message">${message}</span>
+            `;
+            document.body.appendChild(toast);
+            lucide.createIcons();
+
+            // Auto dismiss after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'toastSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

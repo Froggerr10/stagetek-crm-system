@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STAGETEK - Configuração de Funis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="dashboard_theme.css">
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: radial-gradient(circle at top left, #1a0404, var(--background));
+            color: var(--foreground);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background Effects */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(233,1,1,0.15), transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(233,1,1,0.1), transparent 30%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                radial-gradient(rgba(233,1,1,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Sidebar (reuse) */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--card);
+            backdrop-filter: var(--blur-md) saturate(150%);
+            border-right: 1px solid var(--card-border);
+            z-index: var(--z-sidebar);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-logo {
+            padding: var(--spacing-6);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 0 12px rgba(233,1,1,0.3);
+        }
+
+        .sidebar-nav {
+            padding: var(--spacing-4) var(--spacing-3);
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+            height: 44px;
+            padding: 0 var(--spacing-4);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+            margin-bottom: var(--spacing-1);
+            text-decoration: none;
+        }
+
+        .nav-item i {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: var(--card-hover);
+            color: var(--foreground);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            color: white;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .sidebar-user {
+            padding: var(--spacing-4);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, #c10101 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .user-role {
+            color: var(--muted-foreground);
+            font-size: 12px;
+        }
+
+        /* Top Bar */
+        .topbar {
+            position: fixed;
+            left: var(--sidebar-width);
+            top: 0;
+            width: calc(100% - var(--sidebar-width));
+            height: var(--topbar-height);
+            background: var(--card);
+            backdrop-filter: var(--blur-md);
+            border-bottom: 1px solid var(--card-border);
+            z-index: var(--z-topbar);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--spacing-6);
+        }
+
+        .search-container {
+            position: relative;
+            width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 0 var(--spacing-4) 0 40px;
+            color: var(--foreground);
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-3);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted-foreground);
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-4);
+        }
+
+        .action-button {
+            width: 40px;
+            height: 40px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .action-button:hover {
+            background: var(--card-hover);
+            color: var(--foreground);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--topbar-height);
+            padding: var(--spacing-8) var(--spacing-6);
+            min-height: calc(100vh - var(--topbar-height));
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-bottom: var(--spacing-6);
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .breadcrumb a {
+            color: var(--muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: white;
+        }
+
+        .breadcrumb .current {
+            color: white;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: var(--spacing-8);
+        }
+
+        .page-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: var(--spacing-2);
+        }
+
+        .page-header p {
+            font-size: 15px;
+            color: var(--muted);
+            max-width: 700px;
+        }
+
+        /* Funnel List */
+        .funnel-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-6);
+        }
+
+        /* Funnel Card */
+        .funnel-card {
+            background: var(--card);
+            backdrop-filter: var(--blur-lg) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-6);
+            transition: var(--transition-all);
+        }
+
+        .funnel-card:hover {
+            border-color: rgba(255,255,255,0.15);
+        }
+
+        .funnel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-6);
+        }
+
+        .funnel-title-area {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-3);
+        }
+
+        .collapse-button {
+            width: 32px;
+            height: 32px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+        }
+
+        .collapse-button:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .collapse-button.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .funnel-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .default-badge {
+            padding: 4px 10px;
+            background: rgba(251,188,5,0.15);
+            color: var(--warning);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .funnel-actions {
+            display: flex;
+            gap: var(--spacing-2);
+        }
+
+        .funnel-action-btn {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+        }
+
+        .funnel-action-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .funnel-action-btn.danger:hover {
+            background: rgba(239,68,68,0.15);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Funnel Pipeline */
+        .funnel-pipeline {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow-x: auto;
+            padding: var(--spacing-4) 0;
+        }
+
+        .funnel-pipeline.collapsed {
+            display: none;
+        }
+
+        /* Stage */
+        .stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-2);
+            position: relative;
+            min-width: 140px;
+        }
+
+        .stage-dot {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--primary);
+            border: 3px solid rgba(233,1,1,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            transition: var(--transition-all);
+            cursor: pointer;
+        }
+
+        .stage-dot:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .stage-dot.gray {
+            background: #6b7280;
+            border-color: rgba(107,114,128,0.2);
+        }
+
+        .stage-dot.blue {
+            background: #3b82f6;
+            border-color: rgba(59,130,246,0.2);
+        }
+
+        .stage-dot.purple {
+            background: #a855f7;
+            border-color: rgba(168,85,247,0.2);
+        }
+
+        .stage-dot.orange {
+            background: #fb923c;
+            border-color: rgba(251,146,60,0.2);
+        }
+
+        .stage-dot.green {
+            background: #22c55e;
+            border-color: rgba(34,197,94,0.2);
+        }
+
+        .stage-icon {
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .stage-connector {
+            position: absolute;
+            left: 50%;
+            top: 22px;
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            z-index: 1;
+        }
+
+        .stage:last-child .stage-connector {
+            display: none;
+        }
+
+        .stage-info {
+            text-align: center;
+        }
+
+        .stage-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .stage-sigla {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: monospace;
+        }
+
+        /* Add Stage Button */
+        .add-stage-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.2);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+            margin-left: var(--spacing-4);
+        }
+
+        .add-stage-btn:hover {
+            background: rgba(233,1,1,0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        /* Automation Link */
+        .automation-link {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            margin-top: var(--spacing-4);
+            padding: var(--spacing-2) var(--spacing-3);
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: var(--radius-sm);
+            color: #3b82f6;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition-all);
+        }
+
+        .automation-link:hover {
+            background: rgba(59,130,246,0.15);
+            border-color: rgba(59,130,246,0.3);
+        }
+
+        /* New Funnel Button */
+        .new-funnel-btn {
+            position: fixed;
+            bottom: var(--spacing-6);
+            right: var(--spacing-6);
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), #c10101);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px var(--primary-glow-strong);
+            transition: var(--transition-all);
+            z-index: 100;
+        }
+
+        .new-funnel-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px var(--primary-glow-strong);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 1023px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.visible {
+                transform: translateX(0);
+            }
+
+            .topbar {
+                left: 0;
+                width: 100%;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 40px;
+                height: 40px;
+                background: var(--card);
+                border: 1px solid var(--card-border);
+                border-radius: var(--radius-md);
+                color: var(--muted);
+                cursor: pointer;
+                margin-right: var(--spacing-4);
+            }
+
+            .search-container {
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .main-content {
+                padding: var(--spacing-4);
+            }
+
+            .funnel-pipeline {
+                overflow-x: scroll;
+            }
+
+            .stage {
+                min-width: 100px;
+            }
+
+            .topbar-actions {
+                display: none;
+            }
+
+            .search-container {
+                max-width: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <h1 class="logo-text">STAGETEK</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item">
+                <i data-lucide="home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="users"></i>
+                <span>Clientes</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="target"></i>
+                <span>Funil de Vendas</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="package"></i>
+                <span>Produtos</span>
+            </a>
+            <a href="#" class="nav-item">
+                <i data-lucide="bar-chart-2"></i>
+                <span>Relatórios</span>
+            </a>
+            <a href="#" class="nav-item active">
+                <i data-lucide="settings"></i>
+                <span>Configurações</span>
+            </a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar">MB</div>
+            <div class="user-info">
+                <div class="user-name">Mario Becker</div>
+                <div class="user-role">Conta DEMO PRO</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="topbar">
+        <button class="mobile-menu" id="hamburger">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Buscar configurações...">
+            <i data-lucide="search" class="search-icon w-5 h-5"></i>
+        </div>
+        <div class="topbar-actions">
+            <button class="action-button">
+                <i data-lucide="sun" class="w-5 h-5"></i>
+            </button>
+            <button class="action-button">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="#">Configurações</a>
+            <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+            <span class="current">Funis de Vendas</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Configure seus funis de vendas</h1>
+            <p>Organize seu processo comercial criando funis personalizados com fases customizadas para cada tipo de venda</p>
+        </div>
+
+        <!-- Funnel List -->
+        <div class="funnel-list">
+            <!-- Funnel 1: PADRÃO -->
+            <div class="funnel-card">
+                <div class="funnel-header">
+                    <div class="funnel-title-area">
+                        <button class="collapse-button">
+                            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                        </button>
+                        <h2 class="funnel-name">Funil PADRÃO</h2>
+                        <span class="default-badge">Não Alterar</span>
+                    </div>
+                    <div class="funnel-actions">
+                        <button class="funnel-action-btn" title="Editar">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </button>
+                        <button class="funnel-action-btn" title="Duplicar">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                        <button class="funnel-action-btn danger" title="Excluir">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="funnel-pipeline">
+                    <div class="stage">
+                        <div class="stage-dot gray">
+                            <span class="stage-icon">SL</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Sem contato / Lead</div>
+                            <div class="stage-sigla">Sigla: SL</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot blue">
+                            <span class="stage-icon">CF</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Contato Feito</div>
+                            <div class="stage-sigla">Sigla: CF</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot purple">
+                            <span class="stage-icon">VA</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Visita / Apresentação</div>
+                            <div class="stage-sigla">Sigla: VA</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot orange">
+                            <span class="stage-icon">PE</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Proposta Enviada</div>
+                            <div class="stage-sigla">Sigla: PE</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot green">
+                            <span class="stage-icon">F</span>
+                        </div>
+                        <div class="stage-info">
+                            <div class="stage-name">Fechamento</div>
+                            <div class="stage-sigla">Sigla: F</div>
+                        </div>
+                    </div>
+
+                    <button class="add-stage-btn" title="Adicionar fase">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <a href="#" class="automation-link">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    Editar automação entre funis
+                </a>
+            </div>
+
+            <!-- Funnel 2: Prospecção -->
+            <div class="funnel-card">
+                <div class="funnel-header">
+                    <div class="funnel-title-area">
+                        <button class="collapse-button collapsed">
+                            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                        </button>
+                        <h2 class="funnel-name">Funil Prospecção</h2>
+                    </div>
+                    <div class="funnel-actions">
+                        <button class="funnel-action-btn" title="Editar">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </button>
+                        <button class="funnel-action-btn" title="Duplicar">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                        <button class="funnel-action-btn danger" title="Excluir">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="funnel-pipeline collapsed">
+                    <div class="stage">
+                        <div class="stage-dot gray">
+                            <span class="stage-icon">SC</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Sem contato</div>
+                            <div class="stage-sigla">Sigla: SC</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot blue">
+                            <span class="stage-icon">P</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Prospecção</div>
+                            <div class="stage-sigla">Sigla: P</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot blue">
+                            <span class="stage-icon">CF</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Contato feito</div>
+                            <div class="stage-sigla">Sigla: CF</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot purple">
+                            <span class="stage-icon">ID</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Identificação de interesse</div>
+                            <div class="stage-sigla">Sigla: ID</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot orange">
+                            <span class="stage-icon">PR</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Proposta</div>
+                            <div class="stage-sigla">Sigla: PR</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot orange">
+                            <span class="stage-icon">M</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Matriculado</div>
+                            <div class="stage-sigla">Sigla: M</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot green">
+                            <span class="stage-icon">BP</span>
+                        </div>
+                        <div class="stage-info">
+                            <div class="stage-name">Boleto pago</div>
+                            <div class="stage-sigla">Sigla: BP</div>
+                        </div>
+                    </div>
+
+                    <button class="add-stage-btn" title="Adicionar fase">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <a href="#" class="automation-link">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    Editar automação entre funis
+                </a>
+            </div>
+
+            <!-- Funnel 3: Carteira -->
+            <div class="funnel-card">
+                <div class="funnel-header">
+                    <div class="funnel-title-area">
+                        <button class="collapse-button collapsed">
+                            <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                        </button>
+                        <h2 class="funnel-name">Funil de Carteira</h2>
+                    </div>
+                    <div class="funnel-actions">
+                        <button class="funnel-action-btn" title="Editar">
+                            <i data-lucide="pencil" class="w-4 h-4"></i>
+                        </button>
+                        <button class="funnel-action-btn" title="Duplicar">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                        <button class="funnel-action-btn danger" title="Excluir">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="funnel-pipeline collapsed">
+                    <div class="stage">
+                        <div class="stage-dot blue">
+                            <span class="stage-icon">RN</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Relacionamento</div>
+                            <div class="stage-sigla">Sigla: RN</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot purple">
+                            <span class="stage-icon">UP</span>
+                        </div>
+                        <div class="stage-connector"></div>
+                        <div class="stage-info">
+                            <div class="stage-name">Upsell</div>
+                            <div class="stage-sigla">Sigla: UP</div>
+                        </div>
+                    </div>
+
+                    <div class="stage">
+                        <div class="stage-dot green">
+                            <span class="stage-icon">CS</span>
+                        </div>
+                        <div class="stage-info">
+                            <div class="stage-name">Cross-sell</div>
+                            <div class="stage-sigla">Sigla: CS</div>
+                        </div>
+                    </div>
+
+                    <button class="add-stage-btn" title="Adicionar fase">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <a href="#" class="automation-link">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                    Editar automação entre funis
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="new-funnel-btn" id="newFunnelBtn" title="Criar novo funil">
+        <i data-lucide="plus" class="w-6 h-6"></i>
+    </button>
+
+    <!-- Modal: Criar Novo Funil -->
+    <div class="modal-overlay" id="createFunnelModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>Criar Novo Funil</h2>
+                <button class="modal-close" id="closeCreateModal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="createFunnelForm">
+                    <div class="form-group">
+                        <label for="funnelName">Nome do Funil</label>
+                        <input
+                            type="text"
+                            id="funnelName"
+                            class="form-input"
+                            placeholder="Ex: Funil de Vendas B2B"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-section">
+                        <div class="section-header">
+                            <h3>Fases do Funil</h3>
+                            <p>Adicione pelo menos 2 fases</p>
+                        </div>
+
+                        <div id="stagesList" class="stages-list">
+                            <!-- Stage 1 (default) -->
+                            <div class="stage-item" data-stage="1">
+                                <div class="stage-number">1</div>
+                                <div class="stage-fields">
+                                    <div class="form-row">
+                                        <div class="form-col">
+                                            <label>Nome da Fase</label>
+                                            <input
+                                                type="text"
+                                                class="form-input stage-name-input"
+                                                placeholder="Ex: Sem contato"
+                                                required
+                                            >
+                                        </div>
+                                        <div class="form-col-small">
+                                            <label>Sigla</label>
+                                            <input
+                                                type="text"
+                                                class="form-input stage-sigla-input"
+                                                placeholder="SC"
+                                                maxlength="3"
+                                                required
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Cor da Fase</label>
+                                        <div class="color-picker">
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-1-color" value="gray" checked>
+                                                <span class="color-dot gray"></span>
+                                                <span>Cinza</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-1-color" value="blue">
+                                                <span class="color-dot blue"></span>
+                                                <span>Azul</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-1-color" value="purple">
+                                                <span class="color-dot purple"></span>
+                                                <span>Roxo</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-1-color" value="orange">
+                                                <span class="color-dot orange"></span>
+                                                <span>Laranja</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-1-color" value="green">
+                                                <span class="color-dot green"></span>
+                                                <span>Verde</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="stage-remove" disabled>
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+
+                            <!-- Stage 2 (default) -->
+                            <div class="stage-item" data-stage="2">
+                                <div class="stage-number">2</div>
+                                <div class="stage-fields">
+                                    <div class="form-row">
+                                        <div class="form-col">
+                                            <label>Nome da Fase</label>
+                                            <input
+                                                type="text"
+                                                class="form-input stage-name-input"
+                                                placeholder="Ex: Contato Feito"
+                                                required
+                                            >
+                                        </div>
+                                        <div class="form-col-small">
+                                            <label>Sigla</label>
+                                            <input
+                                                type="text"
+                                                class="form-input stage-sigla-input"
+                                                placeholder="CF"
+                                                maxlength="3"
+                                                required
+                                            >
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <label>Cor da Fase</label>
+                                        <div class="color-picker">
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-2-color" value="gray">
+                                                <span class="color-dot gray"></span>
+                                                <span>Cinza</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-2-color" value="blue" checked>
+                                                <span class="color-dot blue"></span>
+                                                <span>Azul</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-2-color" value="purple">
+                                                <span class="color-dot purple"></span>
+                                                <span>Roxo</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-2-color" value="orange">
+                                                <span class="color-dot orange"></span>
+                                                <span>Laranja</span>
+                                            </label>
+                                            <label class="color-option">
+                                                <input type="radio" name="stage-2-color" value="green">
+                                                <span class="color-dot green"></span>
+                                                <span>Verde</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="stage-remove" disabled>
+                                    <i data-lucide="trash-2"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="button" id="addStageBtn" class="btn-add-stage">
+                            <i data-lucide="plus"></i>
+                            Adicionar Fase
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="cancelCreate">Cancelar</button>
+                <button type="submit" form="createFunnelForm" class="btn-primary" id="submitCreate">
+                    Criar Funil
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modal Container */
+        .modal-container {
+            width: 700px;
+            max-width: 95vw;
+            max-height: 90vh;
+            background: var(--background);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal Header */
+        .modal-header {
+            padding: var(--spacing-6);
+            background: var(--card);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            border-radius: var(--radius-sm);
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+        }
+
+        .modal-close:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        /* Modal Body */
+        .modal-body {
+            padding: var(--spacing-6);
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: var(--spacing-6);
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: var(--spacing-2);
+        }
+
+        .form-input {
+            width: 100%;
+            height: 44px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: var(--radius-md);
+            padding: 0 var(--spacing-4);
+            color: white;
+            font-size: 14px;
+            transition: var(--transition-all);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        /* Form Section */
+        .form-section {
+            margin-top: var(--spacing-8);
+        }
+
+        .section-header {
+            margin-bottom: var(--spacing-4);
+        }
+
+        .section-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: var(--spacing-1);
+        }
+
+        .section-header p {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        /* Stages List */
+        .stages-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-4);
+            margin-bottom: var(--spacing-4);
+        }
+
+        .stage-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-4);
+            display: flex;
+            gap: var(--spacing-4);
+            align-items: flex-start;
+        }
+
+        .stage-number {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .stage-fields {
+            flex: 1;
+        }
+
+        .form-row {
+            display: flex;
+            gap: var(--spacing-3);
+            margin-bottom: var(--spacing-3);
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .form-col-small {
+            width: 120px;
+        }
+
+        .form-row > label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: var(--spacing-2);
+        }
+
+        /* Color Picker */
+        .color-picker {
+            display: flex;
+            gap: var(--spacing-3);
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-2);
+            cursor: pointer;
+            padding: var(--spacing-2);
+            border-radius: var(--radius-sm);
+            transition: var(--transition-all);
+        }
+
+        .color-option:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .color-option input {
+            display: none;
+        }
+
+        .color-option input:checked + .color-dot {
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+            transform: scale(1.2);
+        }
+
+        .color-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            transition: var(--transition-all);
+        }
+
+        .color-dot.gray { background: #6b7280; }
+        .color-dot.blue { background: #3b82f6; }
+        .color-dot.purple { background: #a855f7; }
+        .color-dot.orange { background: #fb923c; }
+        .color-dot.green { background: #22c55e; }
+
+        .color-option span:last-child {
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* Stage Remove */
+        .stage-remove {
+            width: 36px;
+            height: 36px;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            border-radius: var(--radius-sm);
+            color: var(--danger);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-all);
+            flex-shrink: 0;
+        }
+
+        .stage-remove:hover:not(:disabled) {
+            background: rgba(239,68,68,0.2);
+            border-color: var(--danger);
+        }
+
+        .stage-remove:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Add Stage Button */
+        .btn-add-stage {
+            width: 100%;
+            height: 44px;
+            background: rgba(255,255,255,0.05);
+            border: 2px dashed rgba(255,255,255,0.2);
+            border-radius: var(--radius-md);
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-2);
+            transition: var(--transition-all);
+        }
+
+        .btn-add-stage:hover {
+            background: rgba(233,1,1,0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Modal Footer */
+        .modal-footer {
+            padding: var(--spacing-6);
+            background: var(--card);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-3);
+        }
+
+        .btn-cancel {
+            height: 44px;
+            padding: 0 var(--spacing-6);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition-all);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .btn-primary {
+            height: 44px;
+            padding: 0 var(--spacing-6);
+            background: linear-gradient(135deg, var(--primary), #c10101);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-all);
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--primary-glow-strong);
+        }
+
+        /* Responsive */
+        @media (max-width: 767px) {
+            .modal-container {
+                width: 100vw;
+                height: 100vh;
+                max-height: 100vh;
+                border-radius: 0;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .form-col-small {
+                width: 100%;
+            }
+
+            .color-picker {
+                gap: var(--spacing-2);
+            }
+
+            .color-option span:last-child {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('sidebar');
+
+        if (hamburger) {
+            hamburger.addEventListener('click', function() {
+                sidebar.classList.toggle('visible');
+            });
+        }
+
+        // Collapse/Expand functionality
+        const collapseButtons = document.querySelectorAll('.collapse-button');
+
+        collapseButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const pipeline = this.closest('.funnel-card').querySelector('.funnel-pipeline');
+                const automationLink = this.closest('.funnel-card').querySelector('.automation-link');
+
+                this.classList.toggle('collapsed');
+                pipeline.classList.toggle('collapsed');
+
+                // Update icon rotation is handled by CSS
+                lucide.createIcons();
+            });
+        });
+
+        // Modal functionality
+        const createModal = document.getElementById('createFunnelModal');
+        const newFunnelBtn = document.getElementById('newFunnelBtn');
+        const closeModalBtn = document.getElementById('closeCreateModal');
+        const cancelBtn = document.getElementById('cancelCreate');
+        const createForm = document.getElementById('createFunnelForm');
+        const addStageBtn = document.getElementById('addStageBtn');
+        const stagesList = document.getElementById('stagesList');
+
+        let stageCounter = 2; // Já temos 2 fases iniciais
+
+        // Open modal
+        newFunnelBtn.addEventListener('click', function() {
+            createModal.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        });
+
+        // Close modal
+        function closeModal() {
+            createModal.classList.remove('visible');
+            document.body.style.overflow = 'auto';
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Close on overlay click
+        createModal.addEventListener('click', function(e) {
+            if (e.target === createModal) {
+                closeModal();
+            }
+        });
+
+        // Close on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && createModal.classList.contains('visible')) {
+                closeModal();
+            }
+        });
+
+        // Add new stage
+        addStageBtn.addEventListener('click', function() {
+            stageCounter++;
+
+            const stageItem = document.createElement('div');
+            stageItem.className = 'stage-item';
+            stageItem.dataset.stage = stageCounter;
+
+            stageItem.innerHTML = `
+                <div class="stage-number">${stageCounter}</div>
+                <div class="stage-fields">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label>Nome da Fase</label>
+                            <input
+                                type="text"
+                                class="form-input stage-name-input"
+                                placeholder="Ex: Negociação"
+                                required
+                            >
+                        </div>
+                        <div class="form-col-small">
+                            <label>Sigla</label>
+                            <input
+                                type="text"
+                                class="form-input stage-sigla-input"
+                                placeholder="NG"
+                                maxlength="3"
+                                required
+                            >
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>Cor da Fase</label>
+                        <div class="color-picker">
+                            <label class="color-option">
+                                <input type="radio" name="stage-${stageCounter}-color" value="gray">
+                                <span class="color-dot gray"></span>
+                                <span>Cinza</span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="stage-${stageCounter}-color" value="blue">
+                                <span class="color-dot blue"></span>
+                                <span>Azul</span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="stage-${stageCounter}-color" value="purple" checked>
+                                <span class="color-dot purple"></span>
+                                <span>Roxo</span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="stage-${stageCounter}-color" value="orange">
+                                <span class="color-dot orange"></span>
+                                <span>Laranja</span>
+                            </label>
+                            <label class="color-option">
+                                <input type="radio" name="stage-${stageCounter}-color" value="green">
+                                <span class="color-dot green"></span>
+                                <span>Verde</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="stage-remove">
+                    <i data-lucide="trash-2"></i>
+                </button>
+            `;
+
+            stagesList.appendChild(stageItem);
+            lucide.createIcons();
+            updateRemoveButtons();
+        });
+
+        // Remove stage (event delegation)
+        stagesList.addEventListener('click', function(e) {
+            const removeBtn = e.target.closest('.stage-remove');
+            if (removeBtn && !removeBtn.disabled) {
+                const stageItem = removeBtn.closest('.stage-item');
+                stageItem.remove();
+                updateStageNumbers();
+                updateRemoveButtons();
+            }
+        });
+
+        // Update stage numbers
+        function updateStageNumbers() {
+            const stages = stagesList.querySelectorAll('.stage-item');
+            stages.forEach((stage, index) => {
+                const numberDiv = stage.querySelector('.stage-number');
+                numberDiv.textContent = index + 1;
+            });
+        }
+
+        // Update remove buttons (disable if only 2 stages)
+        function updateRemoveButtons() {
+            const stages = stagesList.querySelectorAll('.stage-item');
+            const removeButtons = stagesList.querySelectorAll('.stage-remove');
+
+            if (stages.length <= 2) {
+                removeButtons.forEach(btn => btn.disabled = true);
+            } else {
+                removeButtons.forEach(btn => btn.disabled = false);
+            }
+        }
+
+        // Form submission
+        createForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Collect data
+            const funnelName = document.getElementById('funnelName').value;
+            const stages = [];
+
+            const stageItems = stagesList.querySelectorAll('.stage-item');
+            stageItems.forEach((item, index) => {
+                const name = item.querySelector('.stage-name-input').value;
+                const sigla = item.querySelector('.stage-sigla-input').value;
+                const color = item.querySelector('input[type="radio"]:checked').value;
+
+                stages.push({
+                    order: index + 1,
+                    name,
+                    sigla,
+                    color
+                });
+            });
+
+            const funnelData = {
+                name: funnelName,
+                stages
+            };
+
+            console.log('Criar funil:', funnelData);
+
+            // TODO: Enviar para API
+            // createFunnel(funnelData);
+
+            // Sucesso - toast
+            alert(`Funil "${funnelName}" criado com ${stages.length} fases!`);
+
+            // Fechar modal e resetar form
+            closeModal();
+            createForm.reset();
+
+            // Resetar stages para 2 iniciais
+            const allStages = stagesList.querySelectorAll('.stage-item');
+            allStages.forEach((stage, index) => {
+                if (index > 1) stage.remove();
+            });
+            stageCounter = 2;
+            updateRemoveButtons();
+        });
+
+        // Add stage buttons
+        const addStageBtns = document.querySelectorAll('.add-stage-btn');
+        addStageBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                alert('Modal de adicionar nova fase será implementado');
+            });
+        });
+
+        // Stage dots (edit stage)
+        const stageDots = document.querySelectorAll('.stage-dot');
+        stageDots.forEach(dot => {
+            dot.addEventListener('click', function() {
+                alert('Modal de editar fase será implementado');
+            });
+        });
+    </script>
+</body>
+</html>
