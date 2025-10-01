@@ -1,0 +1,1108 @@
+/*!
+ * STAGETEK Design System v2.0.0
+ * Production-Ready CSS Component Library
+ * Copyright 2025 STAGETEK
+ * Licensed under MIT
+ */
+
+/* ============================================
+   1. DESIGN TOKENS
+   ============================================ */
+
+:root {
+  /* Brand Colors */
+  --stagetek-red-primary: #e90101;
+  --stagetek-red-medium: #862128;
+  --stagetek-red-dark: #63141a;
+  --stagetek-white: #fbfafb;
+  --stagetek-black: #000000;
+  --stagetek-gray: #727272;
+  --stagetek-gray-light: #323132;
+
+  /* Functional Colors */
+  --stagetek-success: #28a745;
+  --stagetek-warning: #ffc107;
+  --stagetek-error: var(--stagetek-red-primary);
+  --stagetek-info: #17a2b8;
+
+  /* Typography Scale */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  --font-size-5xl: 3rem;      /* 48px */
+  --font-size-6xl: 3.75rem;   /* 60px */
+
+  /* Font Weights */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Line Heights */
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Spacing Scale (8px base) */
+  --space-0: 0;
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+  --space-20: 5rem;    /* 80px */
+  --space-24: 6rem;    /* 96px */
+  --space-32: 8rem;    /* 128px */
+
+  /* Border Radius */
+  --radius-none: 0;
+  --radius-sm: 0.125rem;
+  --radius-base: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+
+  /* Z-Index Scale */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+
+  /* Theme Variables (Light Mode) */
+  --background-color: var(--stagetek-white);
+  --text-color: var(--stagetek-black);
+  --background-secondary: #f8f9fa;
+  --border-color: #e5e5e5;
+  --hover-color: rgba(233, 1, 1, 0.05);
+}
+
+/* Dark Mode Theme */
+[data-theme="dark"] {
+  --background-color: #1a1a1a;
+  --text-color: #ffffff;
+  --background-secondary: #2a2a2a;
+  --border-color: #404040;
+  --hover-color: rgba(233, 1, 1, 0.15);
+}
+
+/* ============================================
+   2. BASE STYLES
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: var(--line-height-normal);
+  color: var(--text-color);
+  background: var(--background-color);
+  transition: background-color var(--transition-base), color var(--transition-base);
+}
+
+/* ============================================
+   3. TYPOGRAPHY
+   ============================================ */
+
+/* Heading Styles */
+.heading-1 {
+  font-size: var(--font-size-6xl);
+  font-weight: var(--font-weight-black);
+  line-height: var(--line-height-tight);
+  color: var(--stagetek-red-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.heading-2 {
+  font-size: var(--font-size-5xl);
+  font-weight: var(--font-weight-extrabold);
+  line-height: var(--line-height-tight);
+  color: var(--stagetek-red-dark);
+  text-transform: uppercase;
+}
+
+.heading-3 {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  color: var(--stagetek-red-medium);
+  text-transform: uppercase;
+}
+
+.heading-4 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-normal);
+  color: var(--stagetek-black);
+}
+
+[data-theme="dark"] .heading-4 {
+  color: var(--stagetek-white);
+}
+
+.heading-5 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  color: var(--text-color);
+}
+
+.heading-6 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  color: var(--text-color);
+}
+
+/* Body Text */
+.body-large {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-relaxed);
+}
+
+.body-base {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.body-small {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+}
+
+.caption {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-normal);
+  color: var(--stagetek-gray);
+}
+
+/* Font Families */
+.font-artpast {
+  font-family: 'Artpast', 'Arial Black', sans-serif;
+  font-weight: var(--font-weight-black);
+}
+
+.font-microgramma {
+  font-family: 'Microgramma Extended Bold', 'Arial Black', sans-serif;
+  font-weight: var(--font-weight-extrabold);
+}
+
+.font-proxima {
+  font-family: 'Proxima Nova', 'Arial', sans-serif;
+}
+
+/* ============================================
+   4. BUTTONS
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-6);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  outline: none;
+  font-family: inherit;
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 2px var(--stagetek-red-primary);
+}
+
+.btn-primary {
+  background: var(--stagetek-red-primary);
+  color: var(--stagetek-white);
+  border-color: var(--stagetek-red-primary);
+}
+
+.btn-primary:hover {
+  background: var(--stagetek-red-dark);
+  border-color: var(--stagetek-red-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--stagetek-red-primary);
+  border-color: var(--stagetek-red-primary);
+}
+
+.btn-outline:hover {
+  background: var(--stagetek-red-primary);
+  color: var(--stagetek-white);
+}
+
+.btn-secondary {
+  background: #d1d5db;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.btn-secondary:hover {
+  background: #9ca3af;
+  border-color: #9ca3af;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================
+   5. FORM INPUTS
+   ============================================ */
+
+.input {
+  width: 100%;
+  padding: var(--space-3);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  background: var(--background-color);
+  color: var(--text-color);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--stagetek-red-primary);
+  box-shadow: 0 0 0 1px var(--stagetek-red-primary);
+}
+
+.input:disabled {
+  background: #f3f4f6;
+  color: var(--stagetek-gray);
+  cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: var(--stagetek-gray);
+  opacity: 0.6;
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Input States */
+.input-success {
+  border-color: var(--stagetek-success);
+}
+
+.input-error {
+  border-color: var(--stagetek-error);
+}
+
+/* Form Labels */
+.form-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+}
+
+.form-group {
+  margin-bottom: var(--space-4);
+}
+
+/* ============================================
+   6. CARDS
+   ============================================ */
+
+.card {
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.card:hover {
+  border-color: var(--stagetek-red-primary);
+  box-shadow: 0 4px 12px rgba(233, 1, 1, 0.08);
+}
+
+.card-metric {
+  background: var(--stagetek-red-dark);
+  color: var(--stagetek-white);
+  text-align: center;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-metric:hover {
+  background: var(--stagetek-red-primary);
+  box-shadow: 0 4px 12px rgba(233, 1, 1, 0.2);
+  transform: translateY(-2px);
+}
+
+/* ============================================
+   7. LAYOUT SYSTEM
+   ============================================ */
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  width: 100%;
+}
+
+/* Grid Systems */
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+}
+
+/* ============================================
+   8. NAVIGATION
+   ============================================ */
+
+.navbar {
+  background: var(--background-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-4) 0;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--stagetek-red-primary);
+  text-decoration: none;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-base);
+  transition: color var(--transition-base);
+  position: relative;
+}
+
+.navbar-nav a:hover,
+.navbar-nav a.active {
+  color: var(--stagetek-red-primary);
+}
+
+.navbar-nav a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--stagetek-red-primary);
+  border-radius: 1px;
+}
+
+/* ============================================
+   9. DATA TABLE
+   ============================================ */
+
+.table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--background-color);
+}
+
+.data-table thead {
+  background: var(--background-secondary);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.data-table th {
+  padding: var(--space-4);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+}
+
+.data-table td {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.data-table tbody tr:hover {
+  background: var(--hover-color);
+}
+
+/* ============================================
+   10. BADGES
+   ============================================ */
+
+.badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-success {
+  background: var(--stagetek-success);
+  color: white;
+}
+
+.badge-warning {
+  background: var(--stagetek-warning);
+  color: #111827;
+}
+
+.badge-error {
+  background: var(--stagetek-error);
+  color: white;
+}
+
+.badge-info {
+  background: var(--stagetek-info);
+  color: white;
+}
+
+/* ============================================
+   11. UTILITY CLASSES
+   ============================================ */
+
+/* Text Alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Text Colors */
+.text-red-primary { color: var(--stagetek-red-primary); }
+.text-red-medium { color: var(--stagetek-red-medium); }
+.text-red-dark { color: var(--stagetek-red-dark); }
+.text-white { color: var(--stagetek-white); }
+.text-black { color: var(--stagetek-black); }
+.text-gray { color: var(--stagetek-gray); }
+
+/* Background Colors */
+.bg-red-primary { background-color: var(--stagetek-red-primary); }
+.bg-red-medium { background-color: var(--stagetek-red-medium); }
+.bg-red-dark { background-color: var(--stagetek-red-dark); }
+.bg-white { background-color: var(--stagetek-white); }
+.bg-black { background-color: var(--stagetek-black); }
+.bg-gray { background-color: var(--stagetek-gray); }
+
+/* Background Gradients */
+.bg-gradient-red {
+  background: linear-gradient(135deg, var(--stagetek-red-dark) 0%, var(--stagetek-red-primary) 100%);
+}
+
+/* Spacing Utilities */
+.m-0 { margin: var(--space-0); }
+.m-4 { margin: var(--space-4); }
+.m-8 { margin: var(--space-8); }
+.m-12 { margin: var(--space-12); }
+
+.mt-4 { margin-top: var(--space-4); }
+.mt-8 { margin-top: var(--space-8); }
+.mt-12 { margin-top: var(--space-12); }
+.mt-16 { margin-top: var(--space-16); }
+
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-8 { margin-bottom: var(--space-8); }
+.mb-12 { margin-bottom: var(--space-12); }
+.mb-16 { margin-bottom: var(--space-16); }
+
+.p-0 { padding: var(--space-0); }
+.p-4 { padding: var(--space-4); }
+.p-8 { padding: var(--space-8); }
+.p-12 { padding: var(--space-12); }
+
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.py-8 { padding-top: var(--space-8); padding-bottom: var(--space-8); }
+.py-16 { padding-top: var(--space-16); padding-bottom: var(--space-16); }
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(233, 1, 1, 0.3);
+  transition: box-shadow var(--transition-base);
+}
+
+/* ============================================
+   12. ANIMATIONS
+   ============================================ */
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.slide-in-left {
+  transform: translateX(-100px);
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+
+.slide-in-left.visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* ============================================
+   13. RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Typography */
+  .heading-1 { font-size: var(--font-size-4xl); }
+  .heading-2 { font-size: var(--font-size-3xl); }
+  .heading-3 { font-size: var(--font-size-2xl); }
+
+  /* Grids collapse to single column */
+  .grid-2,
+  .grid-3,
+  .grid-4,
+  .grid-auto {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+
+  /* Navigation stacks */
+  .navbar-content {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .navbar-nav {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  /* Container padding reduction */
+  .container {
+    padding: 0 var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .heading-1 { font-size: var(--font-size-3xl); }
+  .heading-2 { font-size: var(--font-size-2xl); }
+}
+
+/* ============================================
+   14. RESPONSIVE IMAGE SYSTEM
+   ============================================ */
+
+/* Image Container - Aspect Ratio Control */
+.stagetek-image-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--background-secondary);
+  border-radius: var(--radius-lg);
+}
+
+/* Aspect Ratio Variants */
+.stagetek-image-container--16-9 {
+  aspect-ratio: 16 / 9;
+}
+
+.stagetek-image-container--4-3 {
+  aspect-ratio: 4 / 3;
+}
+
+.stagetek-image-container--1-1 {
+  aspect-ratio: 1 / 1;
+}
+
+.stagetek-image-container--21-9 {
+  aspect-ratio: 21 / 9;
+}
+
+.stagetek-image-container--original {
+  aspect-ratio: auto;
+}
+
+/* Image Element Styling */
+.stagetek-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.stagetek-image--contain {
+  object-fit: contain;
+}
+
+.stagetek-image--fill {
+  object-fit: fill;
+}
+
+/* Hover Effects */
+.stagetek-image-container--zoom:hover .stagetek-image {
+  transform: scale(1.05);
+}
+
+.stagetek-image-container--fade:hover .stagetek-image {
+  opacity: 0.85;
+}
+
+/* Lazy Loading States */
+.stagetek-image[data-lazy="true"] {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.stagetek-image[data-lazy="true"].loaded {
+  opacity: 1;
+}
+
+.stagetek-image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-secondary);
+  color: var(--stagetek-gray);
+  font-size: var(--font-size-sm);
+}
+
+/* Loading Spinner for Images */
+.stagetek-image-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--background-secondary);
+  border-top-color: var(--stagetek-red-primary);
+  border-radius: 50%;
+  animation: stagetek-spin 1s linear infinite;
+}
+
+/* Image Caption */
+.stagetek-image-caption {
+  padding: var(--space-3) var(--space-4);
+  background: var(--background-color);
+  font-size: var(--font-size-sm);
+  color: var(--stagetek-gray);
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+}
+
+.stagetek-image-caption--overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  color: var(--stagetek-white);
+  border-top: none;
+  padding: var(--space-4);
+}
+
+/* Image Grid Layouts */
+.stagetek-image-grid {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+}
+
+.stagetek-image-grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.stagetek-image-grid--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.stagetek-image-grid--4col {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Masonry Layout */
+.stagetek-image-grid--masonry {
+  columns: 3;
+  column-gap: var(--space-4);
+}
+
+.stagetek-image-grid--masonry .stagetek-image-container {
+  break-inside: avoid;
+  margin-bottom: var(--space-4);
+}
+
+/* Featured Image Layout */
+.stagetek-image-grid--featured {
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 250px);
+}
+
+.stagetek-image-grid--featured .stagetek-image-container:first-child {
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+}
+
+/* Image Lightbox */
+.stagetek-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  background: rgba(0, 0, 0, 0.95);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+}
+
+.stagetek-lightbox.active {
+  display: flex;
+}
+
+.stagetek-lightbox__content {
+  max-width: 90vw;
+  max-height: 90vh;
+  position: relative;
+}
+
+.stagetek-lightbox__image {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--radius-lg);
+}
+
+.stagetek-lightbox__close {
+  position: absolute;
+  top: -50px;
+  right: 0;
+  background: transparent;
+  border: 2px solid var(--stagetek-white);
+  color: var(--stagetek-white);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--font-size-xl);
+  line-height: 1;
+}
+
+.stagetek-lightbox__close:hover {
+  background: var(--stagetek-red-primary);
+  border-color: var(--stagetek-red-primary);
+  transform: scale(1.1);
+}
+
+/* Navigation Arrows */
+.stagetek-lightbox__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--stagetek-white);
+  color: var(--stagetek-white);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: var(--font-size-2xl);
+  line-height: 1;
+}
+
+.stagetek-lightbox__nav:hover {
+  background: var(--stagetek-red-primary);
+  border-color: var(--stagetek-red-primary);
+}
+
+.stagetek-lightbox__nav--prev {
+  left: var(--space-8);
+}
+
+.stagetek-lightbox__nav--next {
+  right: var(--space-8);
+}
+
+/* Image Badge/Tag */
+.stagetek-image-badge {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  background: var(--stagetek-red-primary);
+  color: var(--stagetek-white);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.stagetek-image-badge--new {
+  background: var(--stagetek-success);
+}
+
+.stagetek-image-badge--featured {
+  background: var(--stagetek-warning);
+  color: #111827;
+}
+
+/* Image Overlay Info */
+.stagetek-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.8) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-4);
+  cursor: pointer;
+}
+
+.stagetek-image-container:hover .stagetek-image-overlay {
+  opacity: 1;
+}
+
+.stagetek-image-overlay__title {
+  color: var(--stagetek-white);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-2);
+}
+
+.stagetek-image-overlay__description {
+  color: var(--stagetek-white);
+  font-size: var(--font-size-sm);
+  opacity: 0.9;
+}
+
+/* Responsive Image Breakpoints */
+@media (max-width: 1024px) {
+  .stagetek-image-grid--3col,
+  .stagetek-image-grid--4col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stagetek-image-grid--masonry {
+    columns: 2;
+  }
+
+  .stagetek-image-grid--featured {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 200px);
+  }
+
+  .stagetek-image-grid--featured .stagetek-image-container:first-child {
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .stagetek-image-grid--2col,
+  .stagetek-image-grid--3col,
+  .stagetek-image-grid--4col,
+  .stagetek-image-grid--featured {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .stagetek-image-grid--featured .stagetek-image-container:first-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .stagetek-image-grid--masonry {
+    columns: 1;
+  }
+
+  .stagetek-lightbox {
+    padding: var(--space-4);
+  }
+
+  .stagetek-lightbox__nav {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-lg);
+  }
+
+  .stagetek-lightbox__nav--prev {
+    left: var(--space-4);
+  }
+
+  .stagetek-lightbox__nav--next {
+    right: var(--space-4);
+  }
+
+  .stagetek-lightbox__close {
+    top: -40px;
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Dark Mode Adjustments */
+[data-theme="dark"] .stagetek-image-placeholder {
+  background: var(--background-secondary);
+  color: var(--stagetek-gray);
+}
+
+[data-theme="dark"] .stagetek-image-caption {
+  background: var(--background-secondary);
+  border-top-color: var(--border-color);
+}
+
+/* ============================================
+   15. PRINT STYLES
+   ============================================ */
+
+@media print {
+  .bg-red-primary,
+  .bg-red-dark,
+  .bg-red-medium,
+  .card-metric {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ============================================
+   END OF STAGETEK DESIGN SYSTEM
+   ============================================ */

@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<your_github_token_here>"
+      },
+      "description": "GitHub integration for issues, PRs, and repository management"
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "C:\\Users\\David\\Stagetek\\stagetek-crm-system"],
+      "description": "Local filesystem access for reading/writing project files"
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "postgresql://postgres:[password]@db.[project-ref].supabase.co:5432/postgres"
+      },
+      "description": "Direct Supabase PostgreSQL access for schema management and queries"
+    },
+    "fetch": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-fetch"],
+      "description": "HTTP requests for Supabase REST API and external integrations"
+    }
+  }
+}

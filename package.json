@@ -1,0 +1,32 @@
+{
+  "name": "@stagetek/crm-system",
+  "version": "1.0.0",
+  "description": "STAGETEK CRM System - Sistema de gestão de clientes, eventos e equipamentos",
+  "type": "module",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "serve": "npx http-server . -p 3000 -o"
+  },
+  "keywords": [
+    "stagetek",
+    "crm",
+    "dashboard",
+    "eventos",
+    "equipamentos",
+    "design-system"
+  ],
+  "author": "STAGETEK Engineering Team",
+  "license": "UNLICENSED",
+  "private": true,
+  "devDependencies": {
+    "vite": "^5.0.0",
+    "http-server": "^14.1.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
