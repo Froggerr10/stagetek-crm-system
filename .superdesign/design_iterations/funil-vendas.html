@@ -1204,6 +1204,11 @@
             column.addEventListener('dragleave', handleDragLeave);
         });
 
+        // Initialize column totals on page load
+        columns.forEach(column => {
+            updateColumn(column);
+        });
+
         function handleDragStart(e) {
             draggedCard = this;
             sourceColumn = this.closest('.kanban-column');
