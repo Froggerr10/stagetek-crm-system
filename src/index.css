@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --stagetek-red: #e90101;
+    --stagetek-red-medium: #862128;
+    --stagetek-red-dark: #63141a;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+}

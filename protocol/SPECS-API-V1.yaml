@@ -1,0 +1,1480 @@
+openapi: 3.0.3
+info:
+  title: STAGETEK CRM API
+  description: |
+    REST API for STAGETEK CRM System
+
+    **Based on RD Station CRM v2 Architecture**
+
+    ## Authentication
+    - JWT Bearer Token (Supabase Auth)
+    - API Key (for external integrations)
+
+    ## Rate Limiting
+    - 1000 requests/hour per user
+    - 10,000 requests/hour per organization
+
+    ## Versioning
+    - Current version: v1
+    - Breaking changes will increment major version (v2, v3)
+
+  version: 1.0.0
+  contact:
+    name: STAGETEK Engineering
+    email: dev@stagetek.com.br
+
+servers:
+  - url: https://api.stagetek.com.br/v1
+    description: Production
+  - url: https://staging-api.stagetek.com.br/v1
+    description: Staging
+  - url: http://localhost:54321/functions/v1
+    description: Local (Supabase Edge Functions)
+
+tags:
+  - name: Contacts
+    description: Individual contacts (pessoas físicas)
+  - name: Organizations
+    description: Companies (pessoas jurídicas)
+  - name: Deals
+    description: Sales opportunities (oportunidades)
+  - name: Pipelines
+    description: Sales funnels
+  - name: Stages
+    description: Pipeline stages
+  - name: Tasks
+    description: Follow-up tasks
+  - name: Products
+    description: Product catalog
+  - name: Sources
+    description: Lead/deal sources
+  - name: Loss Reasons
+    description: Reasons for lost deals
+  - name: Teams
+    description: Sales teams
+  - name: Users
+    description: System users
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Supabase JWT token
+
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Long-lived API key for external integrations
+
+  parameters:
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: Page number
+
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 50
+        minimum: 1
+        maximum: 100
+      description: Items per page
+
+    SortParam:
+      name: sort
+      in: query
+      schema:
+        type: string
+        example: "-created_at"
+      description: |
+        Sort field (prefix with - for DESC)
+        Examples: `created_at`, `-value`, `name`
+
+  schemas:
+    # Common Schemas
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          example: "ValidationError"
+        message:
+          type: string
+          example: "Field 'email' is required"
+        details:
+          type: object
+          additionalProperties: true
+
+    PaginationMeta:
+      type: object
+      properties:
+        total:
+          type: integer
+          example: 1234
+        page:
+          type: integer
+          example: 1
+        limit:
+          type: integer
+          example: 50
+        pages:
+          type: integer
+          example: 25
+
+    PaginationLinks:
+      type: object
+      properties:
+        first:
+          type: string
+          example: "/v1/deals?page=1&limit=50"
+        prev:
+          type: string
+          nullable: true
+          example: null
+        next:
+          type: string
+          nullable: true
+          example: "/v1/deals?page=2&limit=50"
+        last:
+          type: string
+          example: "/v1/deals?page=25&limit=50"
+
+    # Contact
+    Contact:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        rd_id:
+          type: string
+          nullable: true
+          description: RD Station contact ID (for sync)
+        name:
+          type: string
+          example: "João Carlos Silva"
+        emails:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [work, personal, other]
+              value:
+                type: string
+                format: email
+              primary:
+                type: boolean
+          example:
+            - type: "work"
+              value: "joao@empresa.com"
+              primary: true
+        phones:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [mobile, work, home, other]
+              country:
+                type: string
+                example: "55"
+              area:
+                type: string
+                example: "11"
+              number:
+                type: string
+                example: "988887777"
+              primary:
+                type: boolean
+        organization_id:
+          type: string
+          format: uuid
+          nullable: true
+        job_title:
+          type: string
+          example: "Gerente de Eventos"
+          nullable: true
+        department:
+          type: string
+          example: "Comercial"
+          nullable: true
+        owner_id:
+          type: string
+          format: uuid
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["MQL", "Hot Lead"]
+        custom_fields:
+          type: object
+          additionalProperties: true
+        linkedin_url:
+          type: string
+          nullable: true
+        twitter_handle:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    ContactInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 2
+          example: "João Carlos Silva"
+        emails:
+          type: array
+          items:
+            type: object
+            required:
+              - value
+            properties:
+              type:
+                type: string
+                enum: [work, personal, other]
+                default: work
+              value:
+                type: string
+                format: email
+              primary:
+                type: boolean
+                default: false
+        phones:
+          type: array
+          items:
+            type: object
+            required:
+              - number
+            properties:
+              type:
+                type: string
+                enum: [mobile, work, home, other]
+                default: mobile
+              country:
+                type: string
+                default: "55"
+              area:
+                type: string
+              number:
+                type: string
+              primary:
+                type: boolean
+                default: false
+        organization_id:
+          type: string
+          format: uuid
+        job_title:
+          type: string
+        department:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        custom_fields:
+          type: object
+          additionalProperties: true
+
+    # Organization
+    Organization:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          example: "Buffet Jardim das Flores"
+        legal_name:
+          type: string
+          example: "Buffet Jardim das Flores Ltda."
+          nullable: true
+        cnpj:
+          type: string
+          example: "12.345.678/0001-90"
+          nullable: true
+        website:
+          type: string
+          format: uri
+          nullable: true
+        address:
+          type: object
+          properties:
+            street:
+              type: string
+            number:
+              type: string
+            complement:
+              type: string
+            neighborhood:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            zip:
+              type: string
+            country:
+              type: string
+              default: "BR"
+        owner_id:
+          type: string
+          format: uuid
+          nullable: true
+        segment:
+          type: string
+          example: "Eventos Corporativos"
+          nullable: true
+        industry:
+          type: string
+          example: "Entretenimento"
+          nullable: true
+        size:
+          type: string
+          enum: ["1-10", "11-50", "51-200", "201-500", "500+"]
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: true
+        total_revenue:
+          type: number
+          format: decimal
+          example: 125000.00
+        total_deals:
+          type: integer
+          example: 15
+        status:
+          type: string
+          enum: [active, inactive, pending]
+          default: active
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    OrganizationInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          minLength: 2
+        legal_name:
+          type: string
+        cnpj:
+          type: string
+          pattern: '^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$'
+        website:
+          type: string
+          format: uri
+        address:
+          type: object
+        segment:
+          type: string
+        industry:
+          type: string
+        size:
+          type: string
+          enum: ["1-10", "11-50", "51-200", "201-500", "500+"]
+        custom_fields:
+          type: object
+
+    # Deal
+    Deal:
+      type: object
+      required:
+        - id
+        - title
+        - pipeline_id
+        - stage_id
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          example: "Casamento João & Maria - Dez/2025"
+        description:
+          type: string
+          nullable: true
+        organization_id:
+          type: string
+          format: uuid
+          nullable: true
+        contact_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          example: ["uuid1", "uuid2"]
+        pipeline_id:
+          type: string
+          format: uuid
+        stage_id:
+          type: string
+          format: uuid
+        owner_id:
+          type: string
+          format: uuid
+          nullable: true
+        value:
+          type: number
+          format: decimal
+          example: 25000.00
+        currency:
+          type: string
+          enum: [BRL, USD, EUR]
+          default: BRL
+        probability:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 75
+        expected_close_date:
+          type: string
+          format: date
+          nullable: true
+        status:
+          type: string
+          enum: [open, won, lost]
+          default: open
+        won_at:
+          type: string
+          format: date-time
+          nullable: true
+        lost_at:
+          type: string
+          format: date-time
+          nullable: true
+        loss_reason_id:
+          type: string
+          format: uuid
+          nullable: true
+        source_id:
+          type: string
+          format: uuid
+          nullable: true
+        campaign:
+          type: string
+          example: "Google Ads - Casamento"
+          nullable: true
+        event_name:
+          type: string
+          example: "Casamento João & Maria"
+          nullable: true
+        event_date:
+          type: string
+          format: date
+          nullable: true
+        event_venue:
+          type: string
+          nullable: true
+        qualification:
+          type: integer
+          minimum: 1
+          maximum: 5
+          example: 4
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    DealInput:
+      type: object
+      required:
+        - title
+        - pipeline_id
+        - stage_id
+      properties:
+        title:
+          type: string
+          minLength: 3
+        description:
+          type: string
+        organization_id:
+          type: string
+          format: uuid
+        contact_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+        pipeline_id:
+          type: string
+          format: uuid
+        stage_id:
+          type: string
+          format: uuid
+        value:
+          type: number
+          format: decimal
+          minimum: 0
+        currency:
+          type: string
+          enum: [BRL, USD, EUR]
+        probability:
+          type: integer
+          minimum: 0
+          maximum: 100
+        expected_close_date:
+          type: string
+          format: date
+        source_id:
+          type: string
+          format: uuid
+        campaign:
+          type: string
+        event_name:
+          type: string
+        event_date:
+          type: string
+          format: date
+        event_venue:
+          type: string
+        qualification:
+          type: integer
+          minimum: 1
+          maximum: 5
+        custom_fields:
+          type: object
+
+    # Pipeline
+    Pipeline:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          example: "Funil de Vendas"
+        description:
+          type: string
+          nullable: true
+        is_default:
+          type: boolean
+          default: false
+        is_active:
+          type: boolean
+          default: true
+        display_order:
+          type: integer
+          default: 0
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Stage
+    Stage:
+      type: object
+      required:
+        - id
+        - pipeline_id
+        - name
+        - display_order
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        pipeline_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Qualificação"
+        sigla:
+          type: string
+          example: "QL"
+          nullable: true
+        color:
+          type: string
+          enum: [gray, blue, purple, orange, green, red, yellow, teal]
+          default: gray
+        display_order:
+          type: integer
+        probability:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 0
+        rotten_days:
+          type: integer
+          default: 30
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Task
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        title:
+          type: string
+          example: "Ligar para cliente"
+        description:
+          type: string
+          nullable: true
+        type:
+          type: string
+          enum: [call, email, meeting, whatsapp, other]
+          default: call
+        status:
+          type: string
+          enum: [open, completed, cancelled]
+          default: open
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        deal_id:
+          type: string
+          format: uuid
+          nullable: true
+        contact_id:
+          type: string
+          format: uuid
+          nullable: true
+        owner_id:
+          type: string
+          format: uuid
+          nullable: true
+        assigned_to:
+          type: string
+          format: uuid
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Product
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - unit_price
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          example: "Mesa de Som Yamaha 32 Canais"
+        sku:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        category:
+          type: string
+          enum: [fabricacao, revenda_som, revenda_luz, locacao, servico]
+        subcategory:
+          type: string
+          nullable: true
+        unit_price:
+          type: number
+          format: decimal
+          example: 450.00
+        cost_price:
+          type: number
+          format: decimal
+          nullable: true
+        currency:
+          type: string
+          default: BRL
+        stock_quantity:
+          type: integer
+          default: 0
+        min_stock:
+          type: integer
+          default: 0
+        unit:
+          type: string
+          default: "unidade"
+        specifications:
+          type: object
+          additionalProperties: true
+        is_active:
+          type: boolean
+          default: true
+        image_url:
+          type: string
+          nullable: true
+        custom_fields:
+          type: object
+          additionalProperties: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # Source
+    Source:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          example: "Google Ads"
+        channel:
+          type: string
+          enum: [organic, paid, referral, direct, email, other]
+          nullable: true
+        is_active:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    # LossReason
+    LossReason:
+      type: object
+      required:
+        - id
+        - name
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        rd_id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          example: "Preço Alto"
+        description:
+          type: string
+          nullable: true
+        display_order:
+          type: integer
+          default: 0
+        is_active:
+          type: boolean
+          default: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+security:
+  - BearerAuth: []
+
+paths:
+  # ============================================================================
+  # CONTACTS
+  # ============================================================================
+  /contacts:
+    get:
+      tags:
+        - Contacts
+      summary: List contacts
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SortParam'
+        - name: organization_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: owner_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search in name, email
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Contact'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+
+    post:
+      tags:
+        - Contacts
+      summary: Create contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Contact'
+
+  /contacts/{id}:
+    get:
+      tags:
+        - Contacts
+      summary: Get contact by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Contact'
+
+    put:
+      tags:
+        - Contacts
+      summary: Update contact
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactInput'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Contact'
+
+    delete:
+      tags:
+        - Contacts
+      summary: Delete contact
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Deleted
+
+  # ============================================================================
+  # ORGANIZATIONS
+  # ============================================================================
+  /organizations:
+    get:
+      tags:
+        - Organizations
+      summary: List organizations
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SortParam'
+        - name: owner_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, pending]
+        - name: segment
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Organization'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+
+    post:
+      tags:
+        - Organizations
+      summary: Create organization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Organization'
+
+  /organizations/{id}:
+    get:
+      tags:
+        - Organizations
+      summary: Get organization by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Organization'
+
+  # ============================================================================
+  # DEALS
+  # ============================================================================
+  /deals:
+    get:
+      tags:
+        - Deals
+      summary: List deals
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - $ref: '#/components/parameters/SortParam'
+        - name: pipeline_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: stage_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: owner_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, won, lost]
+        - name: organization_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: value_min
+          in: query
+          schema:
+            type: number
+        - name: value_max
+          in: query
+          schema:
+            type: number
+        - name: expected_close_date_after
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: expected_close_date_before
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Deal'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+                  links:
+                    $ref: '#/components/schemas/PaginationLinks'
+
+    post:
+      tags:
+        - Deals
+      summary: Create deal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Deal'
+
+  /deals/{id}:
+    get:
+      tags:
+        - Deals
+      summary: Get deal by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Deal'
+
+    put:
+      tags:
+        - Deals
+      summary: Update deal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DealInput'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Deal'
+
+  /deals/{id}/products:
+    post:
+      tags:
+        - Deals
+      summary: Add product to deal
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+                - quantity
+                - unit_price
+              properties:
+                product_id:
+                  type: string
+                  format: uuid
+                quantity:
+                  type: number
+                  minimum: 0
+                unit_price:
+                  type: number
+                  minimum: 0
+                discount:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+      responses:
+        '201':
+          description: Product added
+
+  # ============================================================================
+  # PIPELINES
+  # ============================================================================
+  /pipelines:
+    get:
+      tags:
+        - Pipelines
+      summary: List pipelines
+      parameters:
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Pipeline'
+
+  # ============================================================================
+  # STAGES
+  # ============================================================================
+  /stages:
+    get:
+      tags:
+        - Stages
+      summary: List stages
+      parameters:
+        - name: pipeline_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Stage'
+
+  # ============================================================================
+  # TASKS
+  # ============================================================================
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      summary: List tasks
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: deal_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: assigned_to
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [open, completed, cancelled]
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [call, email, meeting, whatsapp, other]
+        - name: due_date_before
+          in: query
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+  # ============================================================================
+  # PRODUCTS
+  # ============================================================================
+  /products:
+    get:
+      tags:
+        - Products
+      summary: List products
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [fabricacao, revenda_som, revenda_luz, locacao, servico]
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+
+  # ============================================================================
+  # SOURCES
+  # ============================================================================
+  /sources:
+    get:
+      tags:
+        - Sources
+      summary: List sources
+      parameters:
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Source'
+
+  # ============================================================================
+  # LOSS REASONS
+  # ============================================================================
+  /loss-reasons:
+    get:
+      tags:
+        - Loss Reasons
+      summary: List loss reasons
+      parameters:
+        - name: is_active
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LossReason'
