@@ -8,17 +8,13 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { user, loading } = useAuth()
 
-  // TODO: REMOVER BYPASS EM PRODUÇÃO
-  const DEV_BYPASS = true
-
-  if (DEV_BYPASS) {
-    return <>{children}</>
-  }
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stagetek-red"></div>
+      <div className="min-h-screen bg-gradient-to-br from-black via-[#1a0505] to-black flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#e90101]/20 border-t-[#e90101]"></div>
+          <p className="text-gray-400 text-sm">Carregando...</p>
+        </div>
       </div>
     )
   }
