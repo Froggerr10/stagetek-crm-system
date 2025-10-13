@@ -1,19 +1,21 @@
 import Input from '@/components/atoms/Input'
-import { InputHTMLAttributes } from 'react'
+import { ReactNode, InputHTMLAttributes } from 'react'
 
-interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+interface FormFieldProps extends Partial<InputHTMLAttributes<HTMLInputElement>> {
   label: string
+  required?: boolean
   error?: string
   helperText?: string
+  children?: ReactNode
 }
 
-export default function FormField({ label, error, helperText, ...inputProps }: FormFieldProps) {
+export default function FormField({ label, required, error, helperText, children, ...inputProps }: FormFieldProps) {
   return (
     <div className="space-y-2">
       <label className="block text-base font-medium text-gray-300">
-        {label} {inputProps.required && <span className="text-stagetek-red">*</span>}
+        {label} {required && <span className="text-stagetek-red">*</span>}
       </label>
-      <Input error={!!error} {...inputProps} />
+      {children ? children : <Input error={!!error} required={required} {...inputProps} />}
       {error && <p className="text-base text-red-500">{error}</p>}
       {helperText && !error && <p className="text-base text-gray-500">{helperText}</p>}
     </div>

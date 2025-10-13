@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Login from '@/pages/Login'
 import Dashboard from '@/pages/Dashboard'
+import DashboardApple from '@/pages/DashboardApple'
 import Clientes from '@/pages/Clientes'
 import Oportunidades from '@/pages/Oportunidades'
 import Configuracoes from '@/pages/Configuracoes'
@@ -42,6 +43,15 @@ function App() {
           <Route path="usuarios" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Usuários</h1><p className="text-gray-400 mt-2">Em desenvolvimento...</p></div>} />
           <Route path="integracoes" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Integrações</h1><p className="text-gray-400 mt-2">Em desenvolvimento...</p></div>} />
         </Route>
+
+        <Route
+          path="/dashboard-apple"
+          element={
+            <ProtectedRoute>
+              <DashboardApple />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>

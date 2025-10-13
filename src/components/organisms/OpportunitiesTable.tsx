@@ -9,9 +9,7 @@ const data = [
   { id: 5, name: 'Carlos Lima', value: 'R$ 15.900', stage: 'lead', label: 'Lead', date: '1 semana atras', avatar: 'CL' }
 ]
 
-const variants: Record<string, 'success' | 'warning' | 'info' | 'neutral'> = {
-  lead: 'neutral', contact: 'info', proposal: 'warning', negotiation: 'warning', closing: 'success'
-}
+const variants: Record<string, 'success' | 'warning' | 'info' | 'neutral'> = { lead: 'neutral', contact: 'info', proposal: 'warning', negotiation: 'warning', closing: 'success' }
 
 export default function OpportunitiesTable() {
   return (

@@ -1,19 +1,199 @@
-// Business domain types (mapped from Database types)
+// =====================================================
+// STAGETEK CRM - TypeScript Types
+// Matches Supabase Database Schema V1.0
+// Last updated: 13/Oct/2025
+// =====================================================
 
-export interface Organization {
+// =====================================================
+// 1. CLIENTS (Clientes B2B)
+// =====================================================
+export interface Client {
   id: string
   name: string
   cnpj: string | null
-  industry: string | null
+  email: string | null
+  phone: string | null
   website: string | null
-  phones: Phone[]
-  emails: Email[]
-  address: Address | null
-  organizationType: 'fabricacao' | 'revenda' | 'locacao' | 'cliente_final'
-  tags: string[]
-  customFields: Record<string, any>
-  createdAt: string
-  updatedAt: string
+  address: {
+    street?: string
+    number?: string
+    complement?: string
+    neighborhood?: string
+    city?: string
+    state?: string
+    zipCode?: string
+    country?: string
+  } | null
+  status: 'active' | 'inactive'
+  created_at: string
+  updated_at: string
+  created_by: string | null
+}
+
+// =====================================================
+// 2. FUNNELS (Funis de Vendas)
+// =====================================================
+export interface Funnel {
+  id: string
+  name: string
+  description: string | null
+  is_default: boolean
+  is_active: boolean
+  created_at: string
+  updated_at: string
+  created_by: string | null
+  // Relations
+  stages?: FunnelStage[]
+}
+
+// =====================================================
+// 3. FUNNEL STAGES (Etapas do Funil)
+// =====================================================
+export interface FunnelStage {
+  id: string
+  funnel_id: string
+  name: string
+  color: string
+  order_position: number
+  created_at: string
+  updated_at: string
+  // Relations
+  funnel?: Funnel
+}
+
+// =====================================================
+// 4. OPPORTUNITIES (Oportunidades de Venda)
+// =====================================================
+export interface Opportunity {
+  id: string
+  title: string
+  client_id: string | null
+  funnel_id: string | null
+  stage_id: string | null
+  value: number | null
+  expected_close_date: string | null
+  probability: number | null // 0-100
+  status: 'open' | 'won' | 'lost'
+  lost_reason: string | null
+  won_at: string | null
+  lost_at: string | null
+  created_at: string
+  updated_at: string
+  created_by: string | null
+  assigned_to: string | null
+  // Relations
+  client?: Client
+  funnel?: Funnel
+  stage?: FunnelStage
+}
+
+// =====================================================
+// 5. NOTES (Anotações - Imutáveis)
+// =====================================================
+export interface Note {
+  id: string
+  opportunity_id: string | null
+  client_id: string | null
+  content: string
+  created_at: string
+  created_by: string | null
+  // Relations
+  opportunity?: Opportunity
+  client?: Client
+}
+
+// =====================================================
+// 6. TASKS (Tarefas)
+// =====================================================
+export interface Task {
+  id: string
+  opportunity_id: string | null
+  client_id: string | null
+  title: string
+  description: string | null
+  type: 'call' | 'email' | 'meeting' | 'other' | null
+  due_date: string | null
+  completed_at: string | null
+  is_completed: boolean
+  created_at: string
+  updated_at: string
+  created_by: string | null
+  assigned_to: string | null
+  // Relations
+  opportunity?: Opportunity
+  client?: Client
+}
+
+// =====================================================
+// 7. PRODUCTS (From seed.sql)
+// =====================================================
+export interface Product {
+  id: string
+  name: string
+  sku: string | null
+  category: 'fabricacao' | 'revenda' | 'locacao'
+  subcategory: string | null
+  description: string | null
+  unit_price: number | null
+  cost_price: number | null
+  stock_quantity: number | null
+  unit: 'unidade' | 'metro' | 'kg' | 'conjunto' | null
+  is_active: boolean
+  image_url: string | null
+  created_at: string
+  updated_at: string
+}
+
+// =====================================================
+// 8. AUTH TYPES (Supabase Auth)
+// =====================================================
+export interface User {
+  id: string
+  email: string
+  name: string | null
+  avatar: string | null
+  role: 'admin' | 'user'
+  created_at: string
+}
+
+// =====================================================
+// 9. UTILITY TYPES
+// =====================================================
+
+// Form data types (for creating/updating records)
+export type ClientFormData = Omit<Client, 'id' | 'created_at' | 'updated_at' | 'created_by'>
+export type OpportunityFormData = Omit<Opportunity, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'won_at' | 'lost_at'>
+export type NoteFormData = Omit<Note, 'id' | 'created_at' | 'created_by'>
+export type TaskFormData = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'is_completed' | 'completed_at'>
+
+// Database response types (for Supabase queries with relations)
+export interface OpportunityWithRelations extends Opportunity {
+  client: Client | null
+  stage: FunnelStage | null
+  funnel: Funnel | null
+}
+
+export interface FunnelWithStages extends Funnel {
+  stages: FunnelStage[]
+}
+
+// =====================================================
+// 10. LEGACY TYPES (Future Features - Not in DB yet)
+// =====================================================
+
+// These types are for future features (Phase 2+)
+// Not implemented in current database schema
+
+export interface Contact {
+  id: string
+  client_id: string
+  name: string
+  email: string | null
+  phone: string | null
+  role: string | null
+  is_primary: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface Phone {
@@ -38,117 +218,18 @@ export interface Address {
   country: string
 }
 
-export interface Contact {
-  id: string
-  organizationId: string | null
-  name: string
-  email: string | null
-  phone: string | null
-  role: string | null
-  isPrimary: boolean
-  createdAt: string
-  updatedAt: string
+// =====================================================
+// 11. API RESPONSE TYPES
+// =====================================================
+
+export interface SupabaseError {
+  message: string
+  details: string
+  hint: string
+  code: string
 }
 
-export interface Deal {
-  id: string
-  organizationId: string
-  contactId: string | null
-  name: string
-  value: number
-  currency: string
-  stageId: string
-  probability: number
-  expectedCloseDate: string | null
-  actualCloseDate: string | null
-  status: 'open' | 'won' | 'lost'
-  lossReasonId: string | null
-  sourceId: string | null
-  assignedTo: string | null
-  tags: string[]
-  customFields: Record<string, any>
-  createdAt: string
-  updatedAt: string
-  // Relations
-  organization?: Organization
-  stage?: Stage
-}
-
-export interface Stage {
-  id: string
-  pipelineId: string
-  name: string
-  order: number
-  color: string | null
-  probability: number
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Pipeline {
-  id: string
-  name: string
-  description: string | null
-  isDefault: boolean
-  createdAt: string
-  updatedAt: string
-  stages?: Stage[]
-}
-
-export interface Product {
-  id: string
-  name: string
-  sku: string | null
-  category: 'som' | 'luz' | 'talha' | 'peca' | 'outro'
-  description: string | null
-  price: number | null
-  currency: string
-  unit: string | null
-  stockQuantity: number | null
-  images: string[]
-  customFields: Record<string, any>
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Task {
-  id: string
-  dealId: string | null
-  organizationId: string | null
-  contactId: string | null
-  title: string
-  description: string | null
-  dueDate: string | null
-  completedAt: string | null
-  assignedTo: string | null
-  taskType: 'call' | 'email' | 'meeting' | 'follow_up' | 'other'
-  createdAt: string
-  updatedAt: string
-}
-
-export interface LossReason {
-  id: string
-  name: string
-  description: string | null
-  order: number
-  createdAt: string
-  updatedAt: string
-}
-
-export interface Source {
-  id: string
-  name: string
-  description: string | null
-  createdAt: string
-  updatedAt: string
-}
-
-// Auth types
-export interface User {
-  id: string
-  email: string
-  name: string | null
-  avatar: string | null
-  role: 'admin' | 'user'
-  createdAt: string
+export interface ApiResponse<T> {
+  data: T | null
+  error: SupabaseError | null
 }

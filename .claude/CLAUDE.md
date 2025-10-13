@@ -4,6 +4,35 @@
 
 ---
 
+## 🚀 PRÓXIMOS PASSOS IMEDIATOS (11 Out 2025)
+
+### **PRIORIDADE 1: Database Setup** (15-30 min)
+1. **Criar migrations SQL no Supabase**
+   - Acessar: https://twcpqhhtoqcgzplrmohi.supabase.co
+   - SQL Editor → New Query
+   - Copiar de `protocol/DATABASE-SCHEMA-V2-ANALYSIS.md`
+   - Executar migrations (criar tabelas)
+
+2. **Testar conexão**
+   - Rodar `npm run dev`
+   - Abrir DevTools → Network
+   - Verificar chamadas Supabase
+
+### **PRIORIDADE 2: Conectar UI ao Backend** (1-2h)
+1. Substituir mock data em `src/pages/Clientes.tsx`
+2. Substituir mock data em `src/pages/Oportunidades.tsx`
+3. Testar CRUD completo (criar, ler, atualizar, deletar)
+
+### **PRIORIDADE 3: Commit & Deploy** (10 min)
+1. `git add .`
+2. `git commit -m "feat: complete Protocol Notecraft™ refactoring + Supabase setup"`
+3. `git push`
+4. Deploy Vercel (automático)
+
+**📄 Ver seção completa abaixo para detalhes.**
+
+---
+
 ## 🚨 LEIA PRIMEIRO: CONTEXTO CRÍTICO
 
 **VOCÊ ESTÁ TRABALHANDO EM UM PROJETO REAL COM REQUISITOS ESPECÍFICOS.**
@@ -19,74 +48,111 @@ Antes de fazer QUALQUER alteração, você DEVE:
 
 ---
 
-## 🎯 STATUS DE IMPLEMENTAÇÃO (Atualizado: 3 Out 2025)
+## 🎯 STATUS DE IMPLEMENTAÇÃO (Atualizado: 11 Out 2025)
 
-### ✅ O que JÁ ESTÁ implementado:
+### 🎉 MARCOS RECENTES (11 Out 2025)
 
-#### **Autenticação**
-- ✅ Login/Logout (Supabase Auth)
-- ✅ Proteção de rotas
-- ✅ Gestão de sessão
+#### **✅ Protocol Notecraft™ - 100% COMPLIANCE ALCANÇADA**
+- ✅ Refatoração completa de 10 componentes (-434 linhas, -48% média)
+- ✅ Automação criada: `scripts/validate-notecraft.js`
+- ✅ Pre-commit hook configurado (Husky) - **commits bloqueados** se violarem limites
+- ✅ npm script: `npm run validate:notecraft` disponível
+- ✅ Componentes extraídos para reuso:
+  - `useClienteForm.ts` (61 linhas) - Hook form clientes
+  - `useOportunidadeForm.ts` (67 linhas) - Hook form oportunidades
+  - `ModalHeader.tsx` (16 linhas) - Header reutilizável
+  - `ModalActions.tsx` (20 linhas) - Actions reutilizáveis
+  - `ClientTableHeader.tsx` (20 linhas) - Header tabela
+  - `ClientTableRow.tsx` (32 linhas) - Row tabela
+  - `TopBarActions.tsx` (17 linhas) - Actions TopBar
 
-#### **CRUD Clientes**
-- ✅ Página `src/pages/Clientes.tsx` existe
-- ✅ DataTable premium com filtros
-- ✅ CNPJ autocomplete (brasil-api-mcp)
-- ✅ Modal de criação/edição
-- ✅ Avatar com iniciais
-- ✅ Badge de status
+**Resultado**: Zero violações, zero manutenção manual necessária.
 
-#### **CRUD Oportunidades**
-- ✅ Página `src/pages/Oportunidades.tsx` existe
-- ✅ Formulário de criação
-- ✅ Campos: título, cliente, valor, estágio, data
-- ✅ Listagem básica
-
-#### **Funil de Vendas (Kanban)**
-- ✅ Página `pages/funil-vendas.html` (HTML standalone - NÃO React!)
-- ✅ 5 colunas (Lead, Contato, Proposta, Negociação, Fechamento)
-- ✅ Drag-and-drop funcional
-- ✅ Totalizadores por coluna (R$ total)
-- ✅ Contador de oportunidades
-- ✅ Modal de criar oportunidade
-- ✅ Dark mode
-
-#### **Dashboard**
-- ✅ Página `pages/dashboard.html` (HTML standalone - NÃO React!)
-- ✅ 4 StatCards (Oportunidades, Vendas, Ticket Médio, Conversão)
-- ✅ 3 MetricCards com progress bars
-- ✅ 4 Gráficos Chart.js (linha, barras, pizza, doughnut)
-- ✅ DataTable com últimos eventos
+#### **✅ Supabase - CONFIGURADO E PRONTO**
+- ✅ Projeto criado: `twcpqhhtoqcgzplrmohi.supabase.co`
+- ✅ Credenciais configuradas em `.env`
+- ✅ Cliente Supabase criado: `src/lib/supabase.ts`
+- ⏳ **PRÓXIMO**: Executar migrations + testar conexão
 
 ---
 
-### ❌ O que FALTA (CRÍTICO - P0)
+### ✅ O que JÁ ESTÁ implementado:
 
-#### **1. TopBar / Navegação Principal** (0% implementado)
+#### **Infraestrutura & Setup**
+- ✅ React 18 + TypeScript + Vite configurado
+- ✅ Tailwind CSS 3.4 (design tokens STAGETEK)
+- ✅ Atomic Design (atoms/molecules/organisms/templates)
+- ✅ Protocol Notecraft™ - **100% compliance automática**
+- ✅ Husky pre-commit hooks
+- ✅ Path aliases (`@/*`) configurados
+- ✅ Supabase client configurado
 
-**Baseado em**: `RD-STATION-ANALYSIS.md` linhas 9-35
+#### **Autenticação**
+- ✅ Login/Logout (Supabase Auth)
+- ✅ Proteção de rotas (`ProtectedRoute.tsx`)
+- ✅ Gestão de sessão
+- ✅ Hook `useAuth()` disponível
 
-**Elementos necessários**:
-- [ ] Logo STAGETEK (canto superior esquerdo)
-- [ ] **Navegação horizontal** (CRÍTICO!):
-  - [ ] Link: "Oportunidades" (menu ativo)
-  - [ ] Link: "Clientes"
-  - [ ] Link: "Contatos"
-  - [ ] Link: "Tarefas" + Badge vermelho "67" (contador)
-  - [ ] Link: "Analisar"
-- [ ] **Área de utilidades** (canto superior direito):
-  - [ ] Ícone: Busca (lupa)
-  - [ ] Ícone: Notificações (sino) + Badge vermelho
-  - [ ] Ícone: Ajuda (?)
-  - [ ] Ícone: Apps (grade 3x3)
-  - [ ] Avatar: "MB" (usuário) + Dropdown
-    - [ ] Texto: Nome do usuário
-    - [ ] Texto: "Conta DEMO PRO" (ou similar)
-    - [ ] Seta dropdown
+#### **CRUD Clientes**
+- ✅ Página `src/pages/Clientes.tsx` (React)
+- ✅ DataTable desktop + Cards mobile
+- ✅ Modal criação/edição (`ClienteModal.tsx` - 47 linhas)
+- ✅ Avatar com iniciais
+- ✅ Badge de status
+- ✅ Filtros por busca
+- ⏳ **PRÓXIMO**: Conectar ao Supabase (atualmente mock data)
 
-**Status**: Atualmente NÃO EXISTE em nenhuma página React/HTML.
+#### **CRUD Oportunidades**
+- ✅ Página `src/pages/Oportunidades.tsx` (React)
+- ✅ Modal criação/edição (`OportunidadeModal.tsx` - 50 linhas)
+- ✅ Formulário completo (cliente, valor, estágio, data)
+- ✅ Listagem básica
+- ⏳ **PRÓXIMO**: Conectar ao Supabase (atualmente mock data)
 
-**Ação**: Criar componente `TopBar.tsx` (Organism ≤50 linhas) e integrar em TODAS as páginas.
+#### **Funil de Vendas (Kanban)**
+- ✅ Página HTML: `pages/funil-vendas.html` (standalone)
+- ✅ 5 colunas drag-and-drop
+- ✅ Totalizadores R$ por coluna
+- ✅ Contador de oportunidades
+- ⏳ **PRÓXIMO**: Migrar para React (`src/pages/Funil.tsx`)
+
+#### **Dashboard**
+- ✅ Página HTML: `pages/dashboard.html` (standalone)
+- ✅ Página React: `src/pages/Dashboard.tsx` (básico)
+- ✅ 4 StatCards
+- ✅ Gráficos Chart.js (no HTML)
+- ⏳ **PRÓXIMO**: Conectar gráficos ao Supabase (dados reais)
+
+#### **Navegação & Layout**
+- ✅ TopBar (`src/components/organisms/TopBar.tsx` - 44 linhas)
+  - Logo STAGETEK
+  - Navegação horizontal (Dashboard, Oportunidades, Clientes, etc.)
+  - SearchBar
+  - Notificações + Ajuda + Apps
+  - UserMenu dropdown (31 linhas)
+- ✅ MainLayout com TopBar + conteúdo
+
+---
+
+### ⏳ O que FALTA (PRÓXIMOS PASSOS - P0)
+
+#### **1. Integração Supabase - Database Schema** (PRIORIDADE MÁXIMA)
+
+**Status**: Supabase configurado, mas tabelas não criadas.
+
+**Ações necessárias**:
+- [ ] Criar migrations SQL:
+  - [ ] Tabela `clients` (CNPJ, nome, email, phone, website, status, created_by)
+  - [ ] Tabela `stages` (nome, cor, ordem, pipeline_id)
+  - [ ] Tabela `deals` (título, cliente_id, estágio_id, valor, probabilidade, data_fechamento)
+  - [ ] Tabela `contacts` (nome, email, phone, client_id)
+  - [ ] Tabela `tasks` (título, descrição, tipo, data_vencimento, deal_id, responsável)
+  - [ ] RLS (Row Level Security) policies
+- [ ] Executar migrations no Supabase
+- [ ] Testar queries básicas (INSERT, SELECT, UPDATE, DELETE)
+- [ ] Seed data inicial (funis padrão, estágios padrão)
+
+**Arquivo de referência**: `protocol/DATABASE-SCHEMA-V2-ANALYSIS.md` (completo)
 
 ---
 

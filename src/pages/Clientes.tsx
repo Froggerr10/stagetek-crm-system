@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { Organization } from '@/types'
+import { useAuth } from '@/hooks/useAuth'
+import type { Client } from '@/types'
 import Button from '@/components/atoms/Button'
 import Spinner from '@/components/atoms/Spinner'
 import SearchBar from '@/components/molecules/SearchBar'
@@ -9,25 +10,59 @@ import ClientTable from '@/components/organisms/ClientTable'
 import ClienteModal from '@/components/organisms/ClienteModal'
 
 export default function Clientes() {
-  const [clientes, setClientes] = useState<Organization[]>([])
+  const { user } = useAuth()
+  const [clientes, setClientes] = useState<Client[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
-  const [selectedCliente, setSelectedCliente] = useState<Organization | null>(null)
+  const [selectedCliente, setSelectedCliente] = useState<Client | null>(null)
 
   useEffect(() => { fetchClientes() }, [])
 
   const fetchClientes = async () => {
     setLoading(true)
-    const { data, error } = await supabase.from('organizations').select('*').order('name', { ascending: true })
-    if (!error && data) setClientes(data as any)
+    const { data, error } = await supabase
+      .from('clients')
+      .select('*')
+      .order('name', { ascending: true })
+
+    if (error) {
+      console.error('Erro ao buscar clientes:', error)
+    } else if (data) {
+      setClientes(data)
+    }
     setLoading(false)
   }
 
-  const filteredClientes = clientes.filter((c) => c.name.toLowerCase().includes(search.toLowerCase()) || c.cnpj?.includes(search) || c.industry?.toLowerCase().includes(search.toLowerCase()))
-  const handleEdit = (cliente: Organization) => { setSelectedCliente(cliente); setShowModal(true) }
-  const handleDelete = async (id: string) => { if (!confirm('Tem certeza?')) return; await supabase.from('organizations').delete().eq('id', id); fetchClientes() }
-  const handleCloseModal = () => { setShowModal(false); setSelectedCliente(null); fetchClientes() }
+  const filteredClientes = clientes.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase()) ||
+    c.cnpj?.includes(search) ||
+    c.email?.toLowerCase().includes(search.toLowerCase())
+  )
+
+  const handleEdit = (cliente: Client) => {
+    setSelectedCliente(cliente)
+    setShowModal(true)
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este cliente?')) return
+
+    const { error } = await supabase.from('clients').delete().eq('id', id)
+
+    if (error) {
+      console.error('Erro ao deletar cliente:', error)
+      alert('Erro ao deletar cliente: ' + error.message)
+    } else {
+      fetchClientes()
+    }
+  }
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setSelectedCliente(null)
+    fetchClientes()
+  }
 
   if (loading) return <Spinner size="lg" />
 
