@@ -3,6 +3,7 @@ import { useClienteForm } from '@/hooks/useClienteForm'
 import ModalHeader from '@/components/molecules/ModalHeader'
 import ModalActions from '@/components/molecules/ModalActions'
 import FormField from '@/components/molecules/FormField'
+import AddressFields from '@/components/molecules/AddressFields'
 
 interface ClienteModalProps {
   cliente: Client | null
@@ -30,11 +31,13 @@ export default function ClienteModal({ cliente, onClose }: ClienteModalProps) {
             <FormField label="Website" type="url" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} placeholder="https://empresa.com.br" />
           </div>
 
+          <AddressFields address={formData.address} onChange={(address) => setFormData({ ...formData, address })} />
+
           <div>
             <label className="block text-base font-medium text-gray-300 mb-2">Status *</label>
             <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })} required className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-stagetek-red">
-              <option value="active">Ativo</option>
-              <option value="inactive">Inativo</option>
+              <option value="active" className="bg-gray-900 text-white">Ativo</option>
+              <option value="inactive" className="bg-gray-900 text-white">Inativo</option>
             </select>
           </div>
 

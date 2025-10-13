@@ -19,8 +19,8 @@ export default function OportunidadeModal({ opportunity, clients, stages, onClos
           </FormField>
           <FormField label="Cliente" required>
             <select value={formData.client_id || ''} onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} required className={inputClass}>
-              <option value="">Selecione um cliente</option>
-              {clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
+              <option value="" className="bg-gray-900 text-white">Selecione um cliente</option>
+              {clients.map((client) => <option key={client.id} value={client.id} className="bg-gray-900 text-white">{client.name}</option>)}
             </select>
           </FormField>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -34,7 +34,7 @@ export default function OportunidadeModal({ opportunity, clients, stages, onClos
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField label="Estágio" required>
               <select value={formData.stage_id || ''} onChange={(e) => setFormData({ ...formData, stage_id: e.target.value })} required className={inputClass}>
-                {stages.map((stage) => <option key={stage.id} value={stage.id}>{stage.name}</option>)}
+                {stages.map((stage) => <option key={stage.id} value={stage.id} className="bg-gray-900 text-white">{stage.name}</option>)}
               </select>
             </FormField>
             <FormField label="Data de Fechamento">

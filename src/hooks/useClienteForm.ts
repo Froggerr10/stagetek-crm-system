@@ -12,7 +12,13 @@ export function useClienteForm(cliente: Client | null, onSuccess: () => void) {
     email: '',
     phone: '',
     website: '',
-    status: 'active' as 'active' | 'inactive'
+    status: 'active' as 'active' | 'inactive',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      zipcode: ''
+    }
   })
 
   useEffect(() => {
@@ -23,7 +29,13 @@ export function useClienteForm(cliente: Client | null, onSuccess: () => void) {
         email: cliente.email || '',
         phone: cliente.phone || '',
         website: cliente.website || '',
-        status: cliente.status
+        status: cliente.status,
+        address: {
+          street: (cliente.address as any)?.street || '',
+          city: (cliente.address as any)?.city || '',
+          state: (cliente.address as any)?.state || '',
+          zipcode: (cliente.address as any)?.zipcode || ''
+        }
       })
     }
   }, [cliente])
@@ -40,6 +52,7 @@ export function useClienteForm(cliente: Client | null, onSuccess: () => void) {
         phone: formData.phone || null,
         website: formData.website || null,
         status: formData.status,
+        address: formData.address.city || formData.address.state ? formData.address : null,
         ...(cliente ? {} : { created_by: user?.id })
       }
 
