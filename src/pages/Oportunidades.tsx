@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import type { Opportunity, Client, FunnelStage } from '@/types'
 import OportunidadeModal from '@/components/organisms/OportunidadeModal'
 
 export default function Oportunidades() {
+  const navigate = useNavigate()
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])
   const [clients, setClients] = useState<Client[]>([])
   const [stages, setStages] = useState<FunnelStage[]>([])
@@ -173,6 +175,7 @@ export default function Oportunidades() {
                       {getStatusBadge(opp.status)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-base font-medium">
+                      <button onClick={() => navigate(`/oportunidades/${opp.id}/cotacao/nova`)} className="text-blue-400 hover:text-blue-300 mr-4">Nova Cotação</button>
                       <button onClick={() => handleEdit(opp)} className="text-stagetek-red hover:text-[#ff0101] mr-4">Editar</button>
                       <button onClick={() => handleDelete(opp.id)} className="text-danger hover:text-red-400">Excluir</button>
                     </td>
@@ -204,6 +207,7 @@ export default function Oportunidades() {
                   <span className="text-sm text-gray-300">{(opp.stage as any)?.name}</span>
                 </div>
                 <div className="flex justify-end space-x-3">
+                  <button onClick={() => navigate(`/oportunidades/${opp.id}/cotacao/nova`)} className="text-sm text-blue-400 hover:text-blue-300">Nova Cotação</button>
                   <button onClick={() => handleEdit(opp)} className="text-sm text-stagetek-red hover:text-[#ff0101]">Editar</button>
                   <button onClick={() => handleDelete(opp.id)} className="text-sm text-danger hover:text-red-400">Excluir</button>
                 </div>
