@@ -34,6 +34,7 @@ export default function OportunidadeModal({ opportunity, clients, stages, onClos
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField label="Estágio" required>
               <select value={formData.stage_id || ''} onChange={(e) => setFormData({ ...formData, stage_id: e.target.value })} required className={inputClass}>
+                <option value="" className="bg-gray-900 text-white">Selecione um estágio</option>
                 {stages.map((stage) => <option key={stage.id} value={stage.id} className="bg-gray-900 text-white">{stage.name}</option>)}
               </select>
             </FormField>
