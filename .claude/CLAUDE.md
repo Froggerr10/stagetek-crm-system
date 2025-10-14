@@ -4,17 +4,25 @@
 
 ---
 
-## 🚀 PRÓXIMOS PASSOS IMEDIATOS (13 Out 2025)
+## 🚀 PRÓXIMOS PASSOS IMEDIATOS (14 Out 2025)
 
-### **✅ COMPLETADO RECENTEMENTE**
+### **✅ COMPLETADO RECENTEMENTE (Sprint 1 Day 1)**
 - ✅ Supabase integrado e funcionando (database + auth)
 - ✅ CRUD Clientes funcionando (create, read, update, delete)
 - ✅ CRUD Oportunidades funcionando (create, read, update, delete)
 - ✅ Modais com campos completos (incluindo endereço em JSONB)
 - ✅ Protocol Notecraft™ 100% compliance (validação automática)
 - ✅ Projeto organizado (docs movidos para pastas adequadas)
+- ✅ **Sistema de Cotações MVP COMPLETO** (P0.5):
+  - ✅ Database: products + quotations (JSONB hybrid model)
+  - ✅ 15 produtos seedados (Som, Luz, Estrutura, Talha)
+  - ✅ Página NovaCotacao.tsx (catálogo + carrinho)
+  - ✅ Geração de PDF profissional (@react-pdf/renderer)
+  - ✅ Envio de email via Supabase Edge Function + Resend
+  - ✅ Auto-numeração de cotações (QT-YYYYMM-NNN)
+  - ✅ UX validações (R$ prefix, anti-negative, remove button)
 
-### **PRIORIDADE 1: Detalhes da Oportunidade** (P0)
+### **PRIORIDADE 1: Lista de Cotações + Itens Customizados** (P0.5 cont.)
 Criar página completa `src/pages/DetalheOportunidade.tsx`:
 - Layout 3 colunas (Sidebar Left | Tabs Center | Sidebar Right)
 - Tabs: Histórico, E-mail, Tarefas, Contatos, Produtos, Arquivos
@@ -116,14 +124,29 @@ Antes de fazer QUALQUER alteração, você DEVE:
 - ✅ Avatar com iniciais
 - ✅ Badge de status
 - ✅ Filtros por busca
-- ⏳ **PRÓXIMO**: Conectar ao Supabase (atualmente mock data)
+- ✅ Conectado ao Supabase (CRUD completo)
 
 #### **CRUD Oportunidades**
 - ✅ Página `src/pages/Oportunidades.tsx` (React)
 - ✅ Modal criação/edição (`OportunidadeModal.tsx` - 50 linhas)
 - ✅ Formulário completo (cliente, valor, estágio, data)
 - ✅ Listagem básica
-- ⏳ **PRÓXIMO**: Conectar ao Supabase (atualmente mock data)
+- ✅ Conectado ao Supabase (CRUD completo)
+- ✅ Botão "Nova Cotação" integrado
+
+#### **Sistema de Cotações** (✅ COMPLETO - Sprint 1 Day 1)
+- ✅ Database schema (products + quotations com JSONB)
+- ✅ 15 produtos seedados (4 categorias)
+- ✅ Página `src/pages/NovaCotacao.tsx` (30 linhas)
+- ✅ Organisms: ProductCatalog (45), QuotationCart (50)
+- ✅ Molecules: ProductCard (27), QuotationItem (22), QuotationTotals (35), EmailModal (20)
+- ✅ Template: QuotationPDF (28 linhas)
+- ✅ Hooks: useQuotationActions, usePDFGeneration, useEmailSending
+- ✅ Geração de PDF (@react-pdf/renderer)
+- ✅ Envio de email via Edge Function
+- ✅ Auto-numeração (QT-YYYYMM-NNN)
+- ✅ UX: R$ prefix, validações, remove button melhorado
+- ⏳ **PRÓXIMO**: Lista de cotações salvas + itens customizados
 
 #### **Funil de Vendas (Kanban)**
 - ✅ Página HTML: `pages/funil-vendas.html` (standalone)
@@ -424,19 +447,19 @@ So that: Eu envie proposta em <5 minutos (vs 2h em planilha)
 
 ### ⚠️ O que FALTA (P1 - ALTA PRIORIDADE)
 
-#### **6. CRUD Produtos** (planejado, não implementado)
-- [ ] Catálogo de 50+ produtos (Som, Luz, Estruturas, Talhas)
-- [ ] Categorias: som, luz, estrutura
-- [ ] Campos: nome, SKU, categoria, preço (BRL/USD/EUR), descrição, imagem
-- [ ] Busca + filtros
+#### **6. Listagem de Cotações Salvas** (planejado)
+- [ ] Página /cotacoes (lista todas as cotações)
+- [ ] Filtros: status, data, cliente, oportunidade
+- [ ] Visualizar PDF salvo
+- [ ] Reenviar email
+- [ ] Editar cotação (status draft)
 
-#### **7. Sistema de Cotações** (0% implementado)
-- [ ] Selecionar produtos
-- [ ] Calcular frete
-- [ ] Gerar PDF profissional
-- [ ] Enviar por email (Resend API)
+#### **7. Itens Customizados em Cotações** (planejado)
+- [ ] Botão "Adicionar Item Customizado" em NovaCotacao
+- [ ] Modal para item manual (nome, quantidade, preço)
+- [ ] Mixing catalog + custom items no mesmo carrinho
 
-#### **8. Importação Excel** (0% implementado)
+#### **8. Importação Excel** (planejado)
 - [ ] Upload .xlsx
 - [ ] Validação + preview
 - [ ] Import batch para Supabase
@@ -960,7 +983,7 @@ vercel --prod
 **Built with ❤️ following Protocol Notecraft™**
 **STAGETEK Engineering Team**
 
-**Última atualização**: 13 de Outubro de 2025
+**Última atualização**: 14 de Outubro de 2025 - Sprint 1 Day 1 Complete
 
 ---
 
