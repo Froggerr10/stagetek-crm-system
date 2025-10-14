@@ -4,6 +4,7 @@ import Dashboard from '@/pages/Dashboard'
 import DashboardApple from '@/pages/DashboardApple'
 import Clientes from '@/pages/Clientes'
 import Oportunidades from '@/pages/Oportunidades'
+import NovaCotacao from '@/pages/NovaCotacao'
 import Configuracoes from '@/pages/Configuracoes'
 import ConfigFunis from '@/pages/ConfigFunis'
 import MainLayout from '@/components/layouts/MainLayout'
@@ -28,6 +29,8 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="oportunidades" element={<Oportunidades />} />
+          <Route path="oportunidades/:opportunityId/cotacao/nova" element={<NovaCotacao />} />
+          <Route path="cotacao/nova" element={<NovaCotacao />} />
           <Route path="funil" element={<div className="p-8 text-2xl font-bold text-white">Funil em breve</div>} />
         </Route>
 

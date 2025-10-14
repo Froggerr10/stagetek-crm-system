@@ -125,27 +125,66 @@ export interface Task {
 }
 
 // =====================================================
-// 7. PRODUCTS (From seed.sql)
+// 7. PRODUCTS (Catalog - Hybrid Model)
 // =====================================================
 export interface Product {
   id: string
   name: string
   sku: string | null
-  category: 'fabricacao' | 'revenda' | 'locacao'
-  subcategory: string | null
+  category: 'som' | 'luz' | 'estrutura' | 'talha' | 'outro'
+  price_brl: number
+  price_usd: number | null
+  price_eur: number | null
   description: string | null
-  unit_price: number | null
-  cost_price: number | null
-  stock_quantity: number | null
-  unit: 'unidade' | 'metro' | 'kg' | 'conjunto' | null
-  is_active: boolean
+  technical_specs: Record<string, any> | null
   image_url: string | null
+  is_active: boolean
   created_at: string
   updated_at: string
+  created_by: string | null
 }
 
 // =====================================================
-// 8. AUTH TYPES (Supabase Auth)
+// 8. QUOTATIONS (Hybrid: catalog + custom items)
+// =====================================================
+export interface QuotationItem {
+  product_id?: string // Optional: only if from catalog
+  name: string
+  description?: string
+  quantity: number
+  unit_price: number
+  discount_percent?: number
+  subtotal: number
+}
+
+export interface Quotation {
+  id: string
+  quotation_number: string
+  opportunity_id: string | null
+  client_id: string | null
+  items: QuotationItem[]
+  subtotal: number
+  freight: number
+  discount_amount: number
+  total: number
+  currency: 'BRL' | 'USD' | 'EUR'
+  status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired'
+  pdf_url: string | null
+  sent_at: string | null
+  sent_to_email: string | null
+  valid_until: string | null
+  notes: string | null
+  internal_notes: string | null
+  created_at: string
+  updated_at: string
+  created_by: string | null
+  // Relations
+  opportunity?: Opportunity
+  client?: Client
+}
+
+// =====================================================
+// 9. AUTH TYPES (Supabase Auth)
 // =====================================================
 export interface User {
   id: string
@@ -157,7 +196,7 @@ export interface User {
 }
 
 // =====================================================
-// 9. UTILITY TYPES
+// 10. UTILITY TYPES
 // =====================================================
 
 // Form data types (for creating/updating records)
@@ -165,6 +204,7 @@ export type ClientFormData = Omit<Client, 'id' | 'created_at' | 'updated_at' | '
 export type OpportunityFormData = Omit<Opportunity, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'won_at' | 'lost_at'>
 export type NoteFormData = Omit<Note, 'id' | 'created_at' | 'created_by'>
 export type TaskFormData = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'is_completed' | 'completed_at'>
+export type QuotationFormData = Omit<Quotation, 'id' | 'quotation_number' | 'created_at' | 'updated_at' | 'created_by' | 'pdf_url' | 'sent_at'>
 
 // Database response types (for Supabase queries with relations)
 export interface OpportunityWithRelations extends Opportunity {
@@ -178,7 +218,7 @@ export interface FunnelWithStages extends Funnel {
 }
 
 // =====================================================
-// 10. LEGACY TYPES (Future Features - Not in DB yet)
+// 11. LEGACY TYPES (Future Features - Not in DB yet)
 // =====================================================
 
 // These types are for future features (Phase 2+)
@@ -219,7 +259,7 @@ export interface Address {
 }
 
 // =====================================================
-// 11. API RESPONSE TYPES
+// 12. API RESPONSE TYPES
 // =====================================================
 
 export interface SupabaseError {
