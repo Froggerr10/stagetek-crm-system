@@ -1,5 +1,6 @@
 import Badge from '@/components/atoms/Badge'
 import Button from '@/components/atoms/Button'
+import { maskEmail, maskPhone, maskCNPJ } from '@/lib/utils'
 import type { Client } from '@/types'
 
 interface ClientCardProps { cliente: Client; onEdit: () => void; onDelete: () => void }
@@ -10,15 +11,15 @@ export default function ClientCard({ cliente, onEdit, onDelete }: ClientCardProp
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="font-semibold text-white">{cliente.name}</h3>
-          <p className="text-sm text-gray-400">{cliente.cnpj || 'Sem CNPJ'}</p>
+          <p className="text-sm text-gray-400" title={cliente.cnpj || 'Sem CNPJ'}>{cliente.cnpj ? maskCNPJ(cliente.cnpj) : 'Sem CNPJ'}</p>
         </div>
         <Badge variant={cliente.status === 'active' ? 'success' : 'default'}>
           {cliente.status === 'active' ? 'Ativo' : 'Inativo'}
         </Badge>
       </div>
       <div className="space-y-1 mb-3">
-        {cliente.email && <p className="text-sm text-gray-300">📧 {cliente.email}</p>}
-        {cliente.phone && <p className="text-sm text-gray-300">📱 {cliente.phone}</p>}
+        {cliente.email && <p className="text-sm text-gray-300" title={cliente.email}>📧 {maskEmail(cliente.email)}</p>}
+        {cliente.phone && <p className="text-sm text-gray-300" title={cliente.phone}>📱 {maskPhone(cliente.phone)}</p>}
       </div>
       <div className="flex justify-end space-x-3">
         <Button variant="ghost" size="sm" onClick={onEdit}>Editar</Button>

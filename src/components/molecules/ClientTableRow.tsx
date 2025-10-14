@@ -1,5 +1,6 @@
 import Badge from '@/components/atoms/Badge'
 import Button from '@/components/atoms/Button'
+import { maskEmail, maskPhone, maskCNPJ } from '@/lib/utils'
 import type { Client } from '@/types'
 
 interface ClientTableRowProps {
@@ -14,9 +15,9 @@ export default function ClientTableRow({ cliente, onEdit, onDelete }: ClientTabl
   return (
     <tr className="hover:bg-white/5 transition-colors">
       <td className={`${td} font-medium text-white`}>{cliente.name}</td>
-      <td className={`${td} text-gray-300`}>{cliente.cnpj || '-'}</td>
-      <td className={`${td} text-gray-300`}>{cliente.email || '-'}</td>
-      <td className={`${td} text-gray-300`}>{cliente.phone || '-'}</td>
+      <td className={`${td} text-gray-300`} title={cliente.cnpj || '-'}>{cliente.cnpj ? maskCNPJ(cliente.cnpj) : '-'}</td>
+      <td className={`${td} text-gray-300`} title={cliente.email || '-'}>{cliente.email ? maskEmail(cliente.email) : '-'}</td>
+      <td className={`${td} text-gray-300`} title={cliente.phone || '-'}>{cliente.phone ? maskPhone(cliente.phone) : '-'}</td>
       <td className={td}>
         <Badge variant={cliente.status === 'active' ? 'success' : 'default'}>
           {cliente.status === 'active' ? 'Ativo' : 'Inativo'}
