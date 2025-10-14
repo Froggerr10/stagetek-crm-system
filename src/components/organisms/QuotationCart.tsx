@@ -1,6 +1,4 @@
-import { useNavigate } from 'react-router-dom'
-import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/hooks/useAuth'
+import { useQuotationActions } from '@/hooks/useQuotationActions'
 import type { QuotationItem as QuotationItemType } from '@/types'
 import QuotationItem from '@/components/molecules/QuotationItem'
 import QuotationTotals from '@/components/molecules/QuotationTotals'
@@ -15,8 +13,7 @@ interface QuotationCartProps {
 }
 
 export default function QuotationCart({ items, freight, onUpdateItems, onUpdateFreight, opportunityId }: QuotationCartProps) {
-  const { user } = useAuth()
-  const navigate = useNavigate()
+  const { saveDraft, saveAndGeneratePDF, generating } = useQuotationActions()
   const subtotal = items.reduce((sum, item) => sum + item.subtotal, 0)
   const total = subtotal + freight
 
@@ -25,14 +22,6 @@ export default function QuotationCart({ items, freight, onUpdateItems, onUpdateF
     newItems[index].quantity = quantity
     newItems[index].subtotal = quantity * newItems[index].unit_price
     onUpdateItems(newItems)
-  }
-
-  const saveDraft = async () => {
-    const { error } = await supabase.from('quotations').insert({ opportunity_id: opportunityId || null, items: JSON.stringify(items), subtotal, freight, total, status: 'draft', created_by: user?.id })
-    if (!error) {
-      alert('Cotação salva como rascunho!')
-      navigate(-1)
-    }
   }
 
   return (
@@ -44,7 +33,10 @@ export default function QuotationCart({ items, freight, onUpdateItems, onUpdateF
         ))}
       </div>
       <QuotationTotals subtotal={subtotal} freight={freight} total={total} onUpdateFreight={onUpdateFreight} />
-      <Button onClick={saveDraft} disabled={items.length === 0} className="w-full mt-4">Salvar Rascunho</Button>
+      <div className="flex gap-3 mt-4">
+        <Button onClick={() => saveDraft(items, subtotal, freight, total, opportunityId)} disabled={items.length === 0} variant="secondary" className="flex-1">Salvar Rascunho</Button>
+        <Button onClick={() => saveAndGeneratePDF(items, subtotal, freight, total, opportunityId)} disabled={items.length === 0 || generating} className="flex-1">{generating ? 'Gerando...' : 'Salvar e Gerar PDF'}</Button>
+      </div>
     </div>
   )
 }
