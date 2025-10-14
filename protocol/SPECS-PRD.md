@@ -1,8 +1,8 @@
 # STAGETEK CRM System - Product Requirements Document (PRD)
 
-**Versão**: 2.0.0
-**Data**: 1 de Outubro de 2025
-**Status**: Planejamento
+**Versão**: 2.1.0
+**Data**: 13 de Outubro de 2025
+**Status**: Em Desenvolvimento
 **Autor**: STAGETEK Engineering Team
 
 ---
@@ -222,7 +222,52 @@ Este sistema visa substituir processos manuais e planilhas por uma solução dig
 
 **Estimativa**: 1-2 semanas
 
-**Total P0**: 4-6 semanas
+---
+
+#### **P0.6 - Sistema de Cotações MVP** 🔥 **DIFERENCIAL COMPETITIVO**
+**User Story**: Como vendedor, quero gerar cotações profissionais rapidamente para não perder vendas.
+
+**Insight Executivo**: Sem cotação rápida, não há adoção. Time volta para planilhas.
+
+**RICE Score**: 15.0 (maior impacto)
+
+**Escopo MVP** (2-3 semanas):
+
+**Database:**
+- [ ] Tabela `products` (nome, SKU, categoria, preço BRL, imagem)
+- [ ] Tabela `quotations` (opportunity_id, items JSONB, total, status)
+- [ ] Seed 50 produtos (som, luz, estruturas, talhas)
+
+**Frontend:**
+- [ ] Página `/produtos` - Listagem com busca + filtros por categoria
+- [ ] Página `/oportunidades/:id/cotacao/nova` - Seleção de produtos (multi-select)
+- [ ] Input quantidade + desconto por linha
+- [ ] Campo "Frete" manual (input R$)
+- [ ] Preview total (produtos + frete)
+
+**PDF Generation:**
+- [ ] Logo Stagetek + dados da empresa
+- [ ] Tabela produtos (descrição, qtd, preço unit, subtotal)
+- [ ] Totais (subtotal, frete, total geral)
+- [ ] Termos e condições (footer)
+- [ ] Biblioteca: `react-pdf` ou `pdfmake`
+
+**Email Integration:**
+- [ ] Botão "Enviar por Email" (Resend API)
+- [ ] Template básico com PDF anexo (<2MB)
+- [ ] Status "Proposta Enviada" na oportunidade
+
+**Out of Scope P0.6** (deixar para P1.8):
+- ❌ Cálculo automático de frete (API Melhor Envio)
+- ❌ Cálculo de impostos (ICMS, IPI)
+- ❌ Regras de desconto complexas
+- ❌ Múltiplas moedas (USD/EUR)
+- ❌ Templates de email customizáveis
+- ❌ Histórico completo de cotações
+
+**Estimativa**: 2-3 semanas
+
+**Total P0**: 6-9 semanas (CRÍTICO PARA MVP)
 
 ---
 
@@ -258,17 +303,26 @@ Este sistema visa substituir processos manuais e planilhas por uma solução dig
 
 ---
 
-#### **P1.8 - Sistema de Cotações**
-**User Story**: Como vendedor, quero gerar cotações profissionais em PDF para enviar ao cliente.
+#### **P1.8 - Sistema de Cotações (Versão Completa)**
+**User Story**: Como vendedor, quero features avançadas de cotação para operações complexas.
 
-**Acceptance Criteria:**
-- [ ] Formulário: selecionar cliente, adicionar produtos (multi-select), quantidade, desconto
-- [ ] Cálculo automático: subtotal, desconto, frete, ICMS, total
-- [ ] Conversão de moeda (BRL/USD/EUR)
-- [ ] Geração de PDF (react-pdf ou jsPDF)
-- [ ] Template com logo STAGETEK
-- [ ] Envio por email (Resend API)
-- [ ] Histórico de cotações por cliente
+**Nota**: ✅ MVP básico já está em **P0.6**. Esta versão adiciona features avançadas.
+
+**Acceptance Criteria (adicionar ao MVP P0.6):**
+- [ ] **Cálculo automático de frete** (API Melhor Envio ou Correios)
+- [ ] **Cálculo de impostos** (ICMS, IPI, Substituição Tributária)
+- [ ] **Conversão de moeda** (BRL/USD/EUR com cotação atualizada)
+- [ ] **Regras de desconto** (por volume, por categoria, por cliente VIP)
+- [ ] **Templates de PDF customizáveis** (admin pode editar layout)
+- [ ] **Templates de email** (múltiplos modelos: formal, casual, urgente)
+- [ ] **Histórico completo de cotações** com versionamento (v1, v2, v3)
+- [ ] **Análise de cotações** (taxa de aceitação, tempo médio de resposta)
+- [ ] **Validade automática** (cotação expira em 15 dias)
+- [ ] **Assinatura digital** (cliente aceita online)
+
+**Out of Scope P1.8:**
+- ❌ Negociação inline (chat com cliente)
+- ❌ Comparação de fornecedores
 
 **Estimativa**: 2 semanas
 
@@ -302,7 +356,7 @@ Este sistema visa substituir processos manuais e planilhas por uma solução dig
 **Estimativa**: 2 semanas
 
 **Total P1**: +8 semanas
-**Total P0+P1**: 12-14 semanas (3 meses)
+**Total P0+P1**: 14-17 semanas (~3.5-4 meses)
 
 ---
 
@@ -985,7 +1039,9 @@ CREATE POLICY "Apenas admin pode deletar"
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0.0 | 01/10/2025 | Claude Code AI | Initial PRD - Complete reboot with React stack |
+| 2.1.0 | 13/10/2025 | Claude Code AI | **CRÍTICO**: Adicionado P0.6 (Sistema de Cotações MVP) baseado em análise executiva. Movido de P1.8 para P0 devido a RICE Score 15.0 (maior impacto). Atualizado timeline: P0 agora 6-9 semanas. Ajustado P1.8 para versão completa (features avançadas). Status: Em Desenvolvimento. |
+| 2.0.0 | 01/10/2025 | Claude Code AI | Initial PRD v2 - Complete reboot with React stack, Protocol Notecraft™, Supabase + Vercel |
+| 1.0.0 | 30/09/2025 | STAGETEK Team | PRD inicial (arquivado) |
 
 ---
 

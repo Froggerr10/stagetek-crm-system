@@ -4,32 +4,36 @@
 
 ---
 
-## 🚀 PRÓXIMOS PASSOS IMEDIATOS (11 Out 2025)
+## 🚀 PRÓXIMOS PASSOS IMEDIATOS (13 Out 2025)
 
-### **PRIORIDADE 1: Database Setup** (15-30 min)
-1. **Criar migrations SQL no Supabase**
-   - Acessar: https://twcpqhhtoqcgzplrmohi.supabase.co
-   - SQL Editor → New Query
-   - Copiar de `protocol/DATABASE-SCHEMA-V2-ANALYSIS.md`
-   - Executar migrations (criar tabelas)
+### **✅ COMPLETADO RECENTEMENTE**
+- ✅ Supabase integrado e funcionando (database + auth)
+- ✅ CRUD Clientes funcionando (create, read, update, delete)
+- ✅ CRUD Oportunidades funcionando (create, read, update, delete)
+- ✅ Modais com campos completos (incluindo endereço em JSONB)
+- ✅ Protocol Notecraft™ 100% compliance (validação automática)
+- ✅ Projeto organizado (docs movidos para pastas adequadas)
 
-2. **Testar conexão**
-   - Rodar `npm run dev`
-   - Abrir DevTools → Network
-   - Verificar chamadas Supabase
+### **PRIORIDADE 1: Detalhes da Oportunidade** (P0)
+Criar página completa `src/pages/DetalheOportunidade.tsx`:
+- Layout 3 colunas (Sidebar Left | Tabs Center | Sidebar Right)
+- Tabs: Histórico, E-mail, Tarefas, Contatos, Produtos, Arquivos
+- Navegação: clicar em oportunidade → abrir detalhes
 
-### **PRIORIDADE 2: Conectar UI ao Backend** (1-2h)
-1. Substituir mock data em `src/pages/Clientes.tsx`
-2. Substituir mock data em `src/pages/Oportunidades.tsx`
-3. Testar CRUD completo (criar, ler, atualizar, deletar)
+### **PRIORIDADE 2: Sistema de Tarefas** (P0)
+Implementar feature completa de tarefas:
+- Criar/editar/deletar tarefas
+- Tipos: Ligação, WhatsApp, Email, Reunião
+- Vincular tarefas a oportunidades
+- Notificações de tarefas vencidas
 
-### **PRIORIDADE 3: Commit & Deploy** (10 min)
-1. `git add .`
-2. `git commit -m "feat: complete Protocol Notecraft™ refactoring + Supabase setup"`
-3. `git push`
-4. Deploy Vercel (automático)
+### **PRIORIDADE 3: Configuração de Funis** (P0)
+Criar `src/pages/ConfigFunis.tsx`:
+- Editor visual de etapas (bolinhas conectadas)
+- CRUD completo de funis
+- Gerenciar múltiplos pipelines
 
-**📄 Ver seção completa abaixo para detalhes.**
+**📄 Ver detalhes completos nas seções abaixo.**
 
 ---
 
@@ -48,31 +52,43 @@ Antes de fazer QUALQUER alteração, você DEVE:
 
 ---
 
-## 🎯 STATUS DE IMPLEMENTAÇÃO (Atualizado: 11 Out 2025)
+## 🎯 STATUS DE IMPLEMENTAÇÃO (Atualizado: 13 Out 2025)
 
-### 🎉 MARCOS RECENTES (11 Out 2025)
+### 🎉 MARCOS RECENTES (13 Out 2025)
 
-#### **✅ Protocol Notecraft™ - 100% COMPLIANCE ALCANÇADA**
-- ✅ Refatoração completa de 10 componentes (-434 linhas, -48% média)
-- ✅ Automação criada: `scripts/validate-notecraft.js`
-- ✅ Pre-commit hook configurado (Husky) - **commits bloqueados** se violarem limites
-- ✅ npm script: `npm run validate:notecraft` disponível
-- ✅ Componentes extraídos para reuso:
+#### **✅ Supabase Integration - 100% FUNCIONAL**
+- ✅ Database conectado e funcionando
+- ✅ Tabelas criadas: clients, opportunities, funnel_stages, users
+- ✅ RLS (Row Level Security) policies configuradas
+- ✅ CRUD Clientes: Create, Read, Update, Delete ✅
+- ✅ CRUD Oportunidades: Create, Read, Update, Delete ✅
+- ✅ Seed data: 5 clientes, 5 estágios, 7 oportunidades de teste
+- ✅ Queries relacionadas funcionando (client + stage em opportunities)
+
+#### **✅ Modais & Forms - 100% COMPLETOS**
+- ✅ FormField component flexível (suporta children e input props)
+- ✅ ClienteModal (49 linhas) com campos completos:
+  - Nome, CNPJ, Email, Phone, Website, Status
+  - AddressFields component (22 linhas) para endereço JSONB
+- ✅ OportunidadeModal (50 linhas) com campos completos:
+  - Título, Cliente (select), Valor, Probabilidade, Estágio (select), Data
+- ✅ Selects com contraste correto (bg-gray-900, text-white)
+- ✅ Validação funcional com feedback visual
+
+#### **✅ Protocol Notecraft™ - 100% COMPLIANCE AUTOMÁTICA**
+- ✅ Refatoração completa de 12 componentes
+- ✅ Automação: `scripts/validate-notecraft.js`
+- ✅ Pre-commit hook (Husky) bloqueia violações
+- ✅ npm script: `npm run validate:notecraft`
+- ✅ Componentes reutilizáveis:
   - `useClienteForm.ts` (61 linhas) - Hook form clientes
   - `useOportunidadeForm.ts` (67 linhas) - Hook form oportunidades
   - `ModalHeader.tsx` (16 linhas) - Header reutilizável
   - `ModalActions.tsx` (20 linhas) - Actions reutilizáveis
-  - `ClientTableHeader.tsx` (20 linhas) - Header tabela
-  - `ClientTableRow.tsx` (32 linhas) - Row tabela
-  - `TopBarActions.tsx` (17 linhas) - Actions TopBar
+  - `AddressFields.tsx` (22 linhas) - Campos de endereço
+  - `FormField.tsx` (17 linhas) - Field genérico flexível
 
-**Resultado**: Zero violações, zero manutenção manual necessária.
-
-#### **✅ Supabase - CONFIGURADO E PRONTO**
-- ✅ Projeto criado: `twcpqhhtoqcgzplrmohi.supabase.co`
-- ✅ Credenciais configuradas em `.env`
-- ✅ Cliente Supabase criado: `src/lib/supabase.ts`
-- ⏳ **PRÓXIMO**: Executar migrations + testar conexão
+**Resultado**: Zero violações, zero warnings, 100% compliance
 
 ---
 
@@ -134,29 +150,131 @@ Antes de fazer QUALQUER alteração, você DEVE:
 
 ---
 
-### ⏳ O que FALTA (PRÓXIMOS PASSOS - P0)
+### 🚨 BLOCKERS CRÍTICOS (Resolver ANTES de P0.5)
 
-#### **1. Integração Supabase - Database Schema** (PRIORIDADE MÁXIMA)
+#### **1. Segurança & Compliance (RLS Policies)** ⏰ 1 semana
 
-**Status**: Supabase configurado, mas tabelas não criadas.
+**Status**: 🔴 **BLOQUEADOR** - RLS incompleto pode causar vazamento de dados
+
+**Problema**: Apenas policies de SELECT existem. Faltam INSERT/UPDATE/DELETE.
 
 **Ações necessárias**:
-- [ ] Criar migrations SQL:
-  - [ ] Tabela `clients` (CNPJ, nome, email, phone, website, status, created_by)
-  - [ ] Tabela `stages` (nome, cor, ordem, pipeline_id)
-  - [ ] Tabela `deals` (título, cliente_id, estágio_id, valor, probabilidade, data_fechamento)
-  - [ ] Tabela `contacts` (nome, email, phone, client_id)
-  - [ ] Tabela `tasks` (título, descrição, tipo, data_vencimento, deal_id, responsável)
-  - [ ] RLS (Row Level Security) policies
-- [ ] Executar migrations no Supabase
-- [ ] Testar queries básicas (INSERT, SELECT, UPDATE, DELETE)
-- [ ] Seed data inicial (funis padrão, estágios padrão)
+- [ ] **RLS completo por tabela**:
+  - [ ] `clients` (INSERT/UPDATE/DELETE + org_id scoping)
+  - [ ] `opportunities` (INSERT/UPDATE/DELETE + owner validation)
+  - [ ] `funnel_stages` (apenas admin pode modificar)
+  - [ ] `contacts` (INSERT/UPDATE/DELETE + client_id validation)
+  - [ ] `tasks` (INSERT/UPDATE/DELETE + assignee validation)
+  - [ ] `products` (apenas admin pode modificar)
+- [ ] **Storage policies**:
+  - [ ] Bucket PDFs com assinatura temporal (1h)
+  - [ ] Upload limitado por role (authenticated users)
+  - [ ] Download apenas para owner da oportunidade
+- [ ] **Auditoria**:
+  - [ ] Criar tabela `activity_log` (quem, o quê, quando)
+  - [ ] Triggers em UPDATE/DELETE para log automático
+- [ ] **Masking PII**:
+  - [ ] Emails (mostrar ema***@domain.com)
+  - [ ] Telefones (mostrar (11) 9****-4321)
 
-**Arquivo de referência**: `protocol/DATABASE-SCHEMA-V2-ANALYSIS.md` (completo)
+**Referência**: Ver `protocol/TECH-DEBT.md` (será criado)
+
+#### **2. Storage Limits (Supabase Free)** ⏰ 2 dias
+
+**Status**: 🟡 **MÉDIO** - Pode estourar 2GB com PDFs
+
+**Ações**:
+- [ ] Implementar cold-storage (S3 compatível) para PDFs >30 dias
+- [ ] Política de expiração de anexos (deletar após 90 dias)
+- [ ] Compressão de imagens (produtos)
 
 ---
 
-#### **2. Detalhes da Oportunidade** (0% implementado)
+### 🚀 P0.5 - COTAÇÃO MVP (DIFERENCIAL COMPETITIVO)
+
+#### **Status**: 🔴 **PRIORIDADE MÁXIMA** - Sem isso, CRM não tem valor real
+
+**Insight da análise executiva**:
+> "O valor do CRM está aí para Stagetek (preço, lead time, frete, impostos). Sem isso, o time volta para planilhas."
+
+**RICE Score**: 15.0 (Reach: 5 | Impact: 10 | Confidence: 90% | Effort: 3 weeks)
+
+**Por que P0.5?**
+- ✅ P0 (CRUD básico) está completo
+- 🚨 Sem cotação rápida, não há adoção
+- 💰 Momento wow: cotação em 2-3 cliques (vs 2h em planilha)
+
+#### **Cotação MVP - Requisitos**
+
+**User Story**:
+```gherkin
+As a: Vendedor Stagetek
+I want to: Selecionar produtos do catálogo e gerar PDF profissional
+So that: Eu envie proposta em <5 minutos (vs 2h em planilha)
+```
+
+**Escopo P0.5** (2-3 semanas):
+- [ ] **Database**:
+  - [ ] Tabela `products` (nome, SKU, categoria, preço BRL/USD/EUR, imagem)
+  - [ ] Tabela `quotations` (opportunity_id, items JSONB, total, status)
+  - [ ] Seed data: 50 produtos (som, luz, estruturas, talhas)
+- [ ] **Frontend**:
+  - [ ] Página `/produtos` (listagem + busca + filtros por categoria)
+  - [ ] Página `/oportunidades/:id/cotacao/nova` (seleção de produtos)
+  - [ ] Multi-select com quantidade/desconto por linha
+  - [ ] Campo "Frete" manual (input R$)
+  - [ ] Preview total (produtos + frete)
+- [ ] **PDF Generation**:
+  - [ ] Logo Stagetek + dados da empresa
+  - [ ] Tabela produtos (descrição, qtd, preço unit, subtotal)
+  - [ ] Totais (subtotal, frete, total geral)
+  - [ ] Termos e condições (footer)
+  - [ ] Biblioteca: `react-pdf` ou `pdfmake`
+- [ ] **Email Integration**:
+  - [ ] Botão "Enviar por Email" (Resend API)
+  - [ ] Template básico com PDF anexo
+  - [ ] Status "Proposta Enviada" na oportunidade
+
+**Out of Scope P0.5** (deixar para P1):
+- ❌ Cálculo automático de frete (API Melhor Envio)
+- ❌ Cálculo de impostos (ICMS, IPI)
+- ❌ Regras de desconto complexas
+- ❌ Múltiplas moedas (USD/EUR)
+- ❌ Templates de email customizáveis
+
+**Acceptance Criteria**:
+```gherkin
+✅ Given: Estou na oportunidade "Pedido Set Luz"
+✅ When: Clico "Nova Cotação"
+✅ Then: Vejo catálogo com 50+ produtos
+✅ And: Posso buscar por nome/SKU
+✅ And: Posso filtrar por categoria (Som, Luz, Estrutura)
+✅ When: Adiciono 5 produtos ao carrinho
+✅ And: Ajusto quantidade/desconto
+✅ And: Preencho frete manual (R$ 500)
+✅ And: Clico "Gerar PDF"
+✅ Then: PDF é gerado em <3s
+✅ And: Preview do PDF é exibido
+✅ When: Clico "Enviar por Email"
+✅ Then: Email enviado em <30s
+✅ And: Status muda para "Proposta Enviada"
+✅ And: Cotação fica salva no histórico
+```
+
+**Definition of Done**:
+- [ ] Código passa em Protocol Notecraft™ validation
+- [ ] Testes E2E (Playwright) cobrem happy path
+- [ ] PDF renderiza corretamente em mobile/desktop
+- [ ] Email chega com PDF anexado (<2MB)
+- [ ] RLS policies completas para `quotations`
+
+**Tempo estimado**: 2-3 semanas (Sprint 2)
+
+---
+
+### ⏳ O que FALTA (P1 - ALTA PRIORIDADE)
+
+#### **1. Detalhes da Oportunidade** (0% implementado)
 
 **Baseado em**: `RD-STATION-ANALYSIS.md` linhas 224-339 + `tarefas.png` screenshot
 
@@ -578,25 +696,131 @@ const data: any = fetchData() // ❌ PROIBIDO
 
 ---
 
-## 🎯 PRÓXIMOS PASSOS RECOMENDADOS
+## 🗓️ ROADMAP ATUALIZADO (Baseado em RICE Score)
 
-### **Opção 1: Completar P0 (Recomendado)**
+### **Sprint 0: Blockers Críticos** ⏰ 1-2 semanas (ATUAL)
+**Objetivo**: Resolver débitos técnicos que bloqueiam P0.5
+
 ```
-Semana 1: TopBar completo + integração em todas as páginas
-Semana 2: Detalhes da Oportunidade (layout 3 colunas)
-Semana 3: Detalhes da Oportunidade (Tab Histórico + Tarefas)
-Semana 4: Detalhes da Oportunidade (Tabs E-mail, Contatos, Produtos)
-Semana 5: Configuração de Funis (editor visual)
+Semana 1-2 (10-14 dias):
+├─ RLS Policies completas (INSERT/UPDATE/DELETE) - 5 dias
+├─ Storage policies (bucket PDFs) - 2 dias
+├─ Tabela activity_log + triggers - 2 dias
+├─ Documentação (USER-STORIES, TECH-DEBT, VALUE-PROP) - 1 dia
+└─ Commit reorganização de arquivos + push GitHub - 1 dia
 ```
 
-### **Opção 2: Quick Wins (Validação Rápida)**
+**Entregáveis**:
+- ✅ Zero vulnerabilidades de segurança
+- ✅ LGPD compliance básico
+- ✅ Documentação de produto estruturada
+- ✅ Technical debt visível e gerenciado
+
+---
+
+### **Sprint 1: Cotação MVP (P0.5)** ⏰ 2-3 semanas
+**Objetivo**: Entregar o "momento wow" - cotação em 2-3 cliques
+
 ```
-Semana 1: TopBar + Navegação básica
-Semana 2: Melhorias no Funil (filtros, estrelas, ícones)
-Semana 3: Detalhes Oportunidade simplificado (apenas Histórico)
-Semana 4: Sistema de Tarefas básico
-Semana 5: Refinamentos + testes
+Semana 3-5 (14-21 dias):
+├─ Database: products + quotations + seed 50 itens - 3 dias
+├─ Frontend: /produtos (listagem, busca, filtros) - 3 dias
+├─ Frontend: /oportunidades/:id/cotacao/nova - 4 dias
+├─ PDF Generation (react-pdf) - 4 dias
+├─ Email Integration (Resend) - 2 dias
+├─ Testes E2E (Playwright) - 2 dias
+└─ Refinamentos + bug fixes - 3 dias
 ```
+
+**Entregáveis**:
+- ✅ Catálogo 50+ produtos navegável
+- ✅ Cotação completa em <5min
+- ✅ PDF profissional gerado
+- ✅ Email enviado automaticamente
+- ✅ 90% adoção (vendedores usam vs planilha)
+
+**RICE Score**: 15.0 (maior impacto)
+
+---
+
+### **Sprint 2: Detalhes Oportunidade + UX** ⏰ 2-3 semanas
+**Objetivo**: Navegação completa e visibilidade do pipeline
+
+```
+Semana 6-8 (14-21 dias):
+├─ Layout 3 colunas (Sidebar Left | Tabs | Sidebar Right) - 4 dias
+├─ Tab Histórico (timeline + anotações) - 3 dias
+├─ Tab Tarefas (criar, listar, notificar) - 4 dias
+├─ Tab Contatos (vincular contatos) - 2 dias
+├─ Migrar Kanban HTML → React - 3 dias
+├─ Melhorias UX (estrelas, avatars, filtros) - 3 dias
+└─ Testes E2E + refinamentos - 2 dias
+```
+
+**Entregáveis**:
+- ✅ Navegação: Clique em card → detalhes
+- ✅ Sistema de tarefas funcional
+- ✅ Funil Kanban em React (drag-and-drop)
+- ✅ Timeline completa de atividades
+
+**RICE Scores**: Detalhes (14.0), Tarefas (10.5)
+
+---
+
+### **Sprint 3: Relatórios + Integrações** ⏰ 2 semanas
+**Objetivo**: Dados para decisão e automação
+
+```
+Semana 9-10 (10-14 dias):
+├─ Dashboard conversão por etapa - 3 dias
+├─ Relatório motivos de perda - 2 dias
+├─ Integração Slack (webhook) - 2 dias
+├─ Configuração de Funis (editor visual) - 4 dias
+├─ Beta testing (2 vendedores) - 2 dias
+└─ Ajustes baseados em feedback - 2 dias
+```
+
+**Entregáveis**:
+- ✅ KPIs: velocidade proposta, conversão, perdas
+- ✅ Notificações Slack (proposta enviada, deal ganho)
+- ✅ Editor de funis (criar/editar etapas)
+- ✅ Beta validado por usuários reais
+
+**RICE Score**: Config Funis (13.5), Relatórios (4.8)
+
+---
+
+### **Sprint 4: Go-Live MVP** ⏰ 1 semana
+**Objetivo**: Rollout completo com treinamento
+
+```
+Semana 11 (5-7 dias):
+├─ Ajustes finais (bugs críticos) - 2 dias
+├─ Treinamento time comercial (5 pessoas) - 1 dia
+├─ Monitoramento (Sentry setup) - 1 dia
+├─ Documentação usuário final - 1 dia
+└─ Go-live produção - 1 dia
+```
+
+**Entregáveis**:
+- ✅ MVP funcional em produção
+- ✅ Time treinado e usando
+- ✅ Monitoramento ativo
+- ✅ Documentação completa
+
+---
+
+### **Timeline Total**: 10-11 semanas (~70-75 dias)
+
+**Marcos**:
+- ✅ **Dia 14**: Blockers resolvidos, segurança OK
+- ✅ **Dia 35**: Cotação MVP funcionando (momento wow)
+- ✅ **Dia 56**: Navegação completa + tarefas
+- ✅ **Dia 70**: Relatórios + integrações
+- ✅ **Dia 77**: **GO-LIVE MVP**
+
+**Buffer**: 2 semanas (imprevistos, scope pequeno)
+**Deadline realista**: **90 dias** (12-13 semanas)
 
 ---
 
@@ -712,10 +936,31 @@ vercel --prod
 
 ---
 
+## 🎯 OKRs Q1 2026 (MVP - 90 dias)
+
+### **Objective 1**: Reduzir tempo de resposta comercial em 80%
+- **KR1**: Tempo médio lead→cotação < 30min (baseline: 2h) ⏱️
+- **KR2**: 80% das cotações enviadas em <24h 📧
+- **KR3**: NPS vendedores ≥ 8/10 ⭐
+
+### **Objective 2**: Aumentar visibilidade do pipeline
+- **KR1**: 100% das oportunidades no CRM (vs 40% em planilha) 📊
+- **KR2**: Dashboard de conversão atualizado diariamente 📈
+- **KR3**: Taxa de uso ≥ 90% (4/5 vendedores ativos) 👥
+
+### **Objective 3**: Estabilidade e segurança
+- **KR1**: Zero incidentes de perda de dados 🔒
+- **KR2**: 99% uptime (Supabase + Vercel) ⚡
+- **KR3**: RLS policies 100% completas (LGPD compliance) ✅
+
+**Métrica North Star**: **Velocidade de proposta** (tempo lead→cotação enviada)
+
+---
+
 **Built with ❤️ following Protocol Notecraft™**
 **STAGETEK Engineering Team**
 
-**Última atualização**: 3 de Outubro de 2025
+**Última atualização**: 13 de Outubro de 2025
 
 ---
 
