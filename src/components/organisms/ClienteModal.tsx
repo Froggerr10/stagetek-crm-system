@@ -4,21 +4,20 @@ import ModalHeader from '@/components/molecules/ModalHeader'
 import ModalActions from '@/components/molecules/ModalActions'
 import FormField from '@/components/molecules/FormField'
 import AddressFields from '@/components/molecules/AddressFields'
+import StatusSelect from '@/components/molecules/StatusSelect'
+
+type CreateClienteFn = (data: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => Promise<Client | undefined>
+type UpdateClienteFn = (id: string, data: Partial<Client>) => Promise<Client | undefined>
 
 interface ClienteModalProps {
   cliente: Client | null
   onClose: () => void
-  createCliente: (data: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => Promise<Client | undefined>
-  updateCliente: (id: string, data: Partial<Client>) => Promise<Client | undefined>
+  createCliente: CreateClienteFn
+  updateCliente: UpdateClienteFn
 }
 
 export default function ClienteModal({ cliente, onClose, createCliente, updateCliente }: ClienteModalProps) {
-  const { formData, setFormData, loading, handleSubmit } = useClienteForm({
-    cliente,
-    onSuccess: onClose,
-    createCliente,
-    updateCliente
-  })
+  const { formData, setFormData, loading, handleSubmit } = useClienteForm({ cliente, onSuccess: onClose, createCliente, updateCliente })
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -39,15 +38,7 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
           </div>
 
           <AddressFields address={formData.address} onChange={(address) => setFormData({ ...formData, address })} />
-
-          <div>
-            <label className="block text-base font-medium text-gray-300 mb-2">Status *</label>
-            <select value={formData.status} onChange={(e) => setFormData({ ...formData, status: e.target.value as 'active' | 'inactive' })} required className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-stagetek-red">
-              <option value="active" className="bg-gray-900 text-white">Ativo</option>
-              <option value="inactive" className="bg-gray-900 text-white">Inativo</option>
-            </select>
-          </div>
-
+          <StatusSelect value={formData.status} onChange={(status) => setFormData({ ...formData, status })} />
           <ModalActions onCancel={onClose} loading={loading} submitText={cliente ? 'Atualizar' : 'Criar Cliente'} />
         </form>
       </div>

@@ -81,7 +81,12 @@ export const useClientes = (filters?: ClientFilters) => {
       await getClientes() // Refresh list
       return data
     } catch (err: any) {
-      toast.error(err.message || 'Erro ao criar cliente')
+      // Handle unique constraint violation (CNPJ duplicate)
+      if (err.code === '23505' || err.message?.includes('duplicate') || err.message?.includes('unique')) {
+        toast.error('Este CNPJ já está cadastrado. Verifique se o cliente já existe.')
+      } else {
+        toast.error(err.message || 'Erro ao criar cliente')
+      }
       throw err
     }
   }
@@ -101,7 +106,12 @@ export const useClientes = (filters?: ClientFilters) => {
       await getClientes() // Refresh list
       return data
     } catch (err: any) {
-      toast.error(err.message || 'Erro ao atualizar cliente')
+      // Handle unique constraint violation (CNPJ duplicate)
+      if (err.code === '23505' || err.message?.includes('duplicate') || err.message?.includes('unique')) {
+        toast.error('Este CNPJ já pertence a outro cliente.')
+      } else {
+        toast.error(err.message || 'Erro ao atualizar cliente')
+      }
       throw err
     }
   }
