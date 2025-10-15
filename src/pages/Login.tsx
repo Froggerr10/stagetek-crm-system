@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import { useAuth } from '@/hooks/useAuth'
 import { supabase } from '@/lib/supabase'
 
 export default function Login() {
@@ -8,27 +10,27 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [remember, setRemember] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
   const navigate = useNavigate()
+  const { signIn, loading } = useAuth()
 
   const handleGoogleSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
-    if (error) setError(error.message)
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
+      if (error) throw error
+      toast.success('Login com Google realizado!')
+    } catch (err: any) {
+      toast.error(err.message || 'Erro ao fazer login com Google')
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-    setLoading(true)
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) throw error
+      await signIn(email, password)
+      toast.success('Login realizado com sucesso!')
       navigate('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Erro ao fazer login')
-    } finally {
-      setLoading(false)
+      toast.error(err.message || 'Credenciais inválidas')
     }
   }
 
@@ -85,8 +87,6 @@ export default function Login() {
 
         {/* Form */}
         <form onSubmit={handleSubmit}>
-          {error && <div className="mb-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">{error}</div>}
-
           <div className="mb-4">
             <label className="block text-sm font-medium text-white mb-2">E-mail</label>
             <div className="relative">
