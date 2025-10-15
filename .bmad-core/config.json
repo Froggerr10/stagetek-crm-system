@@ -1,0 +1,8 @@
+{
+  "docs_path": "docs",
+  "src_path": "src",
+  "ide": ["Claude Code", "Cursor"],
+  "mode": "Brownfield",
+  "token_optimization": true,
+  "agents": ["pm", "architect", "po", "sm", "dev", "qa", "analyst", "ux-expert"]
+}

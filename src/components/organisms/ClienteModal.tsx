@@ -8,10 +8,17 @@ import AddressFields from '@/components/molecules/AddressFields'
 interface ClienteModalProps {
   cliente: Client | null
   onClose: () => void
+  createCliente: (data: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => Promise<Client | undefined>
+  updateCliente: (id: string, data: Partial<Client>) => Promise<Client | undefined>
 }
 
-export default function ClienteModal({ cliente, onClose }: ClienteModalProps) {
-  const { formData, setFormData, loading, handleSubmit } = useClienteForm(cliente, onClose)
+export default function ClienteModal({ cliente, onClose, createCliente, updateCliente }: ClienteModalProps) {
+  const { formData, setFormData, loading, handleSubmit } = useClienteForm({
+    cliente,
+    onSuccess: onClose,
+    createCliente,
+    updateCliente
+  })
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">

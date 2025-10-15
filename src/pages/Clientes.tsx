@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/hooks/useAuth'
+import { useClientes } from '@/hooks/useClientes'
 import type { Client } from '@/types'
 import Button from '@/components/atoms/Button'
 import Spinner from '@/components/atoms/Spinner'
@@ -10,35 +9,25 @@ import ClientTable from '@/components/organisms/ClientTable'
 import ClienteModal from '@/components/organisms/ClienteModal'
 
 export default function Clientes() {
-  const { user } = useAuth()
-  const [clientes, setClientes] = useState<Client[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'active' | 'inactive' | 'all'>('active')
   const [showModal, setShowModal] = useState(false)
   const [selectedCliente, setSelectedCliente] = useState<Client | null>(null)
 
-  useEffect(() => { fetchClientes() }, [])
+  // Debounce search input (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSearchTerm(searchInput)
+    }, 300)
 
-  const fetchClientes = async () => {
-    setLoading(true)
-    const { data, error } = await supabase
-      .from('clients')
-      .select('*')
-      .order('name', { ascending: true })
+    return () => clearTimeout(timer)
+  }, [searchInput])
 
-    if (error) {
-      console.error('Erro ao buscar clientes:', error)
-    } else if (data) {
-      setClientes(data)
-    }
-    setLoading(false)
-  }
-
-  const filteredClientes = clientes.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    c.cnpj?.includes(search) ||
-    c.email?.toLowerCase().includes(search.toLowerCase())
-  )
+  const { clientes, loading, error, createCliente, updateCliente, deleteCliente } = useClientes({
+    search: searchTerm,
+    status: statusFilter
+  })
 
   const handleEdit = (cliente: Client) => {
     setSelectedCliente(cliente)
@@ -46,25 +35,33 @@ export default function Clientes() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir este cliente?')) return
-
-    const { error } = await supabase.from('clients').delete().eq('id', id)
-
-    if (error) {
-      console.error('Erro ao deletar cliente:', error)
-      alert('Erro ao deletar cliente: ' + error.message)
-    } else {
-      fetchClientes()
-    }
+    if (!confirm('Tem certeza que deseja desativar este cliente?')) return
+    await deleteCliente(id)
   }
 
   const handleCloseModal = () => {
     setShowModal(false)
     setSelectedCliente(null)
-    fetchClientes()
   }
 
-  if (loading) return <Spinner size="lg" />
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner size="lg" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-8">
+        <div className="bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-400">
+          <p className="font-semibold">Erro ao carregar clientes</p>
+          <p className="text-sm mt-1">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-8">
@@ -72,10 +69,67 @@ export default function Clientes() {
         <h1 className="text-3xl font-bold text-white mb-4 md:mb-0">Clientes B2B</h1>
         <Button onClick={() => setShowModal(true)}>+ Novo Cliente</Button>
       </div>
-      <SearchBar value={search} onChange={setSearch} placeholder="Buscar por nome, CNPJ ou indústria..." className="mb-6" />
-      <div className="hidden md:block"><ClientTable clientes={filteredClientes} onEdit={handleEdit} onDelete={handleDelete} /></div>
-      <div className="md:hidden space-y-4">{filteredClientes.map((c) => <ClientCard key={c.id} cliente={c} onEdit={() => handleEdit(c)} onDelete={() => handleDelete(c.id)} />)}</div>
-      {showModal && <ClienteModal cliente={selectedCliente} onClose={handleCloseModal} />}
+
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex-1">
+          <SearchBar
+            value={searchInput}
+            onChange={setSearchInput}
+            placeholder="Buscar por nome, CNPJ ou e-mail..."
+          />
+        </div>
+
+        <div className="md:w-48">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as 'active' | 'inactive' | 'all')}
+            className="w-full h-12 px-4 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-stagetek-red focus:border-transparent"
+          >
+            <option value="all" className="bg-gray-900 text-white">Todos os Status</option>
+            <option value="active" className="bg-gray-900 text-white">Ativos</option>
+            <option value="inactive" className="bg-gray-900 text-white">Inativos</option>
+          </select>
+        </div>
+      </div>
+
+      {clientes.length === 0 ? (
+        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-12 text-center">
+          <p className="text-gray-400 text-lg">
+            {searchTerm || statusFilter !== 'active' ? 'Nenhum cliente encontrado' : 'Nenhum cliente cadastrado'}
+          </p>
+          <p className="text-gray-500 text-sm mt-2">
+            {searchTerm || statusFilter !== 'active'
+              ? 'Tente ajustar os filtros de busca ou status'
+              : 'Clique em "Novo Cliente" para adicionar o primeiro cliente'
+            }
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="hidden md:block">
+            <ClientTable clientes={clientes} onEdit={handleEdit} onDelete={handleDelete} />
+          </div>
+          <div className="md:hidden space-y-4">
+            {clientes.map((c) => (
+              <ClientCard
+                key={c.id}
+                cliente={c}
+                onEdit={() => handleEdit(c)}
+                onDelete={() => handleDelete(c.id)}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {showModal && (
+        <ClienteModal
+          cliente={selectedCliente}
+          onClose={handleCloseModal}
+          createCliente={createCliente}
+          updateCliente={updateCliente}
+        />
+      )}
     </div>
   )
 }

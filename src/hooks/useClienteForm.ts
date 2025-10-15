@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/hooks/useAuth'
 import type { Client } from '@/types'
 
-export function useClienteForm(cliente: Client | null, onSuccess: () => void) {
-  const { user } = useAuth()
+interface UseClienteFormProps {
+  cliente: Client | null
+  onSuccess: () => void
+  createCliente: (data: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => Promise<Client | undefined>
+  updateCliente: (id: string, data: Partial<Client>) => Promise<Client | undefined>
+}
+
+export function useClienteForm({ cliente, onSuccess, createCliente, updateCliente }: UseClienteFormProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -47,24 +51,24 @@ export function useClienteForm(cliente: Client | null, onSuccess: () => void) {
     try {
       const payload = {
         name: formData.name,
-        cnpj: formData.cnpj || null,
-        email: formData.email || null,
-        phone: formData.phone || null,
-        website: formData.website || null,
+        cnpj: formData.cnpj || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        website: formData.website || '',
         status: formData.status,
-        address: formData.address.city || formData.address.state ? formData.address : null,
-        ...(cliente ? {} : { created_by: user?.id })
+        address: formData.address.city || formData.address.state ? formData.address : null
+      } as any
+
+      if (cliente) {
+        await updateCliente(cliente.id, payload)
+      } else {
+        await createCliente(payload)
       }
 
-      const { error } = cliente
-        ? await supabase.from('clients').update(payload).eq('id', cliente.id)
-        : await supabase.from('clients').insert(payload)
-
-      if (error) throw error
       onSuccess()
     } catch (error: any) {
+      // Error handling is done in useClientes hook with toast
       console.error('Erro ao salvar cliente:', error)
-      alert('Erro ao salvar cliente: ' + error.message)
     } finally {
       setLoading(false)
     }
