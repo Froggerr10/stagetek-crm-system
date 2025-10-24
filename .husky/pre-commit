@@ -1,12 +1,2 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "🍎 Running Protocol Notecraft™ validation..."
-node scripts/validate-notecraft.js
-
-if [ $? -ne 0 ]; then
-  echo ""
-  echo "❌ Commit blocked: Protocol Notecraft™ violations detected"
-  echo "Please fix the files above and try again"
-  exit 1
-fi
+npm run verify:all || exit 1

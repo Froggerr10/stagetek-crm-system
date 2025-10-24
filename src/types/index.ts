@@ -205,6 +205,7 @@ export type OpportunityFormData = Omit<Opportunity, 'id' | 'created_at' | 'updat
 export type NoteFormData = Omit<Note, 'id' | 'created_at' | 'created_by'>
 export type TaskFormData = Omit<Task, 'id' | 'created_at' | 'updated_at' | 'created_by' | 'is_completed' | 'completed_at'>
 export type QuotationFormData = Omit<Quotation, 'id' | 'quotation_number' | 'created_at' | 'updated_at' | 'created_by' | 'pdf_url' | 'sent_at'>
+export type ContactFormData = Omit<Contact, 'id' | 'created_at' | 'updated_at'>
 
 // Database response types (for Supabase queries with relations)
 export interface OpportunityWithRelations extends Opportunity {
@@ -218,22 +219,23 @@ export interface FunnelWithStages extends Funnel {
 }
 
 // =====================================================
-// 11. LEGACY TYPES (Future Features - Not in DB yet)
+// 11. CONTACTS (Contatos vinculados a clientes/oportunidades)
 // =====================================================
-
-// These types are for future features (Phase 2+)
-// Not implemented in current database schema
-
 export interface Contact {
   id: string
-  client_id: string
+  client_id: string | null
+  opportunity_id: string | null
   name: string
   email: string | null
   phone: string | null
-  role: string | null
+  position: string | null
   is_primary: boolean
+  notes: string | null
   created_at: string
   updated_at: string
+  // Relations
+  client?: Client
+  opportunity?: Opportunity
 }
 
 export interface Phone {

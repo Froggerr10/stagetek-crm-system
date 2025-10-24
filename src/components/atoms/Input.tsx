@@ -1,18 +1,18 @@
 import { InputHTMLAttributes } from 'react'
+import { cn } from '@/lib/utils'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean
 }
 
 export default function Input({ error, className = '', ...props }: InputProps) {
-  const baseStyles = 'w-full px-4 py-3 bg-gray-900/80 border rounded-lg text-white text-base placeholder:text-gray-500 transition focus:outline-none focus:ring-2 focus:bg-gray-900'
-  const errorStyles = error
-    ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-    : 'border-gray-700 focus:border-stagetek-red focus:ring-stagetek-red'
-
   return (
     <input
-      className={`${baseStyles} ${errorStyles} ${className}`}
+      className={cn(
+        'flex h-10 w-full rounded-lg border px-4 py-2 text-sm bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e90101] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50',
+        error && 'border-red-500 focus:ring-red-500',
+        className
+      )}
       {...props}
     />
   )

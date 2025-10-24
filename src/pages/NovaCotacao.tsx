@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 import type { Product, QuotationItem } from '@/types'
 import ProductCatalog from '@/components/organisms/ProductCatalog'
 import QuotationCart from '@/components/organisms/QuotationCart'
-import Button from '@/components/atoms/Button'
+import Button from '@/components/molecules/Button'
 
 export default function NovaCotacao() {
   const { opportunityId } = useParams()

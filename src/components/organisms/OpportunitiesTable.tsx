@@ -1,5 +1,5 @@
 import { MoreVertical } from 'lucide-react'
-import Badge from '@/components/atoms/Badge'
+import Badge from '@/components/molecules/Badge'
 
 const data = [
   { id: 1, name: 'Joao Silva', value: 'R$ 45.000', stage: 'negotiation', label: 'Negociacao', date: 'Hoje', avatar: 'JS' },

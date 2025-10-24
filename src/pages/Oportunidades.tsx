@@ -160,7 +160,7 @@ export default function Oportunidades() {
                 filteredOpportunities.map((opp) => (
                   <tr key={opp.id} className="hover:bg-white/5">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-base font-medium text-white">{opp.title}</div>
+                      <button onClick={() => navigate(`/oportunidades/${opp.id}`)} className="text-base font-medium text-white hover:text-primary text-left">{opp.title}</button>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-base text-gray-300">{(opp.client as any)?.name || '-'}</div>
@@ -196,8 +196,8 @@ export default function Oportunidades() {
             filteredOpportunities.map((opp) => (
               <div key={opp.id} className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg shadow p-4">
                 <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="font-semibold text-white">{opp.title}</h3>
+                  <div onClick={() => navigate(`/oportunidades/${opp.id}`)} className="cursor-pointer flex-1">
+                    <h3 className="font-semibold text-white hover:text-primary">{opp.title}</h3>
                     <p className="text-sm text-gray-300">{(opp.client as any)?.name}</p>
                   </div>
                   {getStatusBadge(opp.status)}

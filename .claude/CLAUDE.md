@@ -1031,3 +1031,4 @@ vercel --prod
 **NÃO TRABALHE SEM CONSULTAR A DOCUMENTAÇÃO.**
 
 Isso é um projeto REAL com requisitos ESPECÍFICOS. Sua responsabilidade é implementar EXATAMENTE o que está documentado, não "melhorar" sem contexto.
+- verificar sempre o contexto pra evitar que uma tarefa começe e não tenha tokens suficientes para terminar

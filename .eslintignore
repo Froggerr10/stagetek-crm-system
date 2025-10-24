@@ -1,0 +1,12 @@
+node_modules
+dist
+build
+coverage
+.husky
+.bmad-core
+.claude
+.cursor
+.storybook
+public
+scripts
+apple-design-system

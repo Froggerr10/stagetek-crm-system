@@ -1,5 +1,5 @@
-import Badge from '@/components/atoms/Badge'
-import Button from '@/components/atoms/Button'
+import Badge from '@/components/molecules/Badge'
+import Button from '@/components/molecules/Button'
 import { maskEmail, maskPhone, maskCNPJ } from '@/lib/utils'
 import type { Client } from '@/types'
 

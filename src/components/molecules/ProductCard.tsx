@@ -1,6 +1,6 @@
 import type { Product } from '@/types'
-import Button from '@/components/atoms/Button'
-import Badge from '@/components/atoms/Badge'
+import Button from '@/components/molecules/Button'
+import Badge from '@/components/molecules/Badge'
 
 interface ProductCardProps {
   product: Product

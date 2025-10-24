@@ -1,12 +1,13 @@
 import { useState } from 'react'
-import { Search } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import NavLink from '@/components/molecules/NavLink'
+import SearchBar from '@/components/molecules/SearchBar'
 import TopBarActions from '@/components/molecules/TopBarActions'
 import UserMenu from '@/components/molecules/UserMenu'
 
 export default function TopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const location = useLocation()
 
   return (
     <div className="h-16 bg-[rgba(255,255,255,0.08)] backdrop-blur-md border-b border-white/15 flex items-center justify-between px-6 sticky top-0 z-40">
@@ -16,17 +17,14 @@ export default function TopBar() {
 
       <div className="flex items-center gap-4">
         <nav className="hidden md:flex items-center gap-1">
-          <NavLink to="/dashboard" label="Dashboard" />
-          <NavLink to="/oportunidades" label="Oportunidades" />
-          <NavLink to="/clientes" label="Clientes" />
-          <NavLink to="/contatos" label="Contatos" />
-          <NavLink to="/tarefas" label="Tarefas" badge={12} />
-          <NavLink to="/analisar" label="Analisar" />
+          <NavLink to="/dashboard" label="Dashboard" active={location.pathname === '/dashboard'} />
+          <NavLink to="/funil" label="Funil" active={location.pathname.startsWith('/funil')} />
+          <NavLink to="/oportunidades" label="Oportunidades" active={location.pathname.startsWith('/oportunidades')} />
+          <NavLink to="/clientes" label="Clientes" active={location.pathname.startsWith('/clientes')} />
         </nav>
 
-        <div className="relative hidden md:block">
-          <input type="search" placeholder="Buscar..." className="w-64 h-10 bg-white/8 border border-white/15 rounded-lg pl-10 pr-4 text-white text-base placeholder:text-gray-500 focus:outline-none focus:border-[#e90101] transition-colors" />
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+        <div className="hidden md:block md:w-64">
+          <SearchBar value="" onChange={() => {}} placeholder="Buscar..." className="h-10" />
         </div>
 
         <TopBarActions />

@@ -5,7 +5,7 @@ import type { QuotationItem as QuotationItemType } from '@/types'
 import QuotationItem from '@/components/molecules/QuotationItem'
 import QuotationTotals from '@/components/molecules/QuotationTotals'
 import EmailModal from '@/components/molecules/EmailModal'
-import Button from '@/components/atoms/Button'
+import Button from '@/components/molecules/Button'
 
 interface QuotationCartProps {
   items: QuotationItemType[]

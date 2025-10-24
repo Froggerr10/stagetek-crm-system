@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useClientes } from '@/hooks/useClientes'
 import type { Client } from '@/types'
-import Button from '@/components/atoms/Button'
+import Button from '@/components/molecules/Button'
 import Spinner from '@/components/atoms/Spinner'
+import Select from '@/components/molecules/Select'
 import SearchBar from '@/components/molecules/SearchBar'
 import ClientCard from '@/components/molecules/ClientCard'
 import ClientTable from '@/components/organisms/ClientTable'
@@ -80,15 +81,15 @@ export default function Clientes() {
         </div>
 
         <div className="md:w-48">
-          <select
+          <Select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as 'active' | 'inactive' | 'all')}
-            className="w-full h-12 px-4 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-stagetek-red focus:border-transparent"
+            className="h-12"
           >
-            <option value="all" className="bg-gray-900 text-white">Todos os Status</option>
-            <option value="active" className="bg-gray-900 text-white">Ativos</option>
-            <option value="inactive" className="bg-gray-900 text-white">Inativos</option>
-          </select>
+            <option value="all">Todos os Status</option>
+            <option value="active">Ativos</option>
+            <option value="inactive">Inativos</option>
+          </Select>
         </div>
       </div>
 

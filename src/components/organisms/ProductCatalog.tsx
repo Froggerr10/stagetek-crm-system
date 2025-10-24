@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import type { Product } from '@/types'
 import ProductCard from '@/components/molecules/ProductCard'
-import Badge from '@/components/atoms/Badge'
 
 interface ProductCatalogProps {
   products: Product[]
@@ -29,9 +28,19 @@ export default function ProductCatalog({ products, onAddProduct }: ProductCatalo
           placeholder="Buscar por nome ou SKU..."
           className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400"
         />
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {categories.map(cat => (
-            <Badge key={cat} variant={selectedCategory === cat ? 'default' : 'outline'} onClick={() => setSelectedCategory(cat)} className="cursor-pointer">{cat}</Badge>
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-full transition-all ${
+                selectedCategory === cat
+                  ? 'bg-[#e90101] text-white border border-[#e90101]'
+                  : 'bg-white/10 text-gray-300 border border-white/20 hover:bg-white/20 hover:text-white'
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import Input from '@/components/atoms/Input'
-import Button from '@/components/atoms/Button'
+import Button from '@/components/molecules/Button'
 
 interface EmailModalProps {
   onSend: (email: string) => void
