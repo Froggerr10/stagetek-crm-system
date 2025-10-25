@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import OpportunityCard from './OpportunityCard'
+import OpportunityCard from '@/components/organisms/OpportunityCard'
 import type { Opportunity, FunnelStage } from '@/types'
 
 interface KanbanColumnProps {
