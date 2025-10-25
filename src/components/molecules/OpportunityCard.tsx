@@ -5,17 +5,19 @@ import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import Avatar from '@/components/atoms/Avatar'
 import Stars from '@/components/atoms/Stars'
+import QuickActionsBar from '@/components/molecules/QuickActionsBar'
+import { useTasks } from '@/hooks/useTasks'
 import type { Opportunity } from '@/types'
 
 export default function OpportunityCard({ opportunity, onClick }: { opportunity: Opportunity; onClick: () => void }) {
+  const { createTask } = useTasks()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: opportunity.id })
   const style = { transform: CSS.Transform.toString(transform), transition }
   const timeAgo = formatDistanceToNow(new Date(opportunity.created_at), { addSuffix: true, locale: ptBR })
-  const formatCurrency = (val: number | null) => val ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val) : 'R$ 0,00'
-
   const tempConfig = { hot: { icon: Flame, color: 'text-[#e90101]' }, warm: { icon: Droplet, color: 'text-orange-500' }, cold: { icon: Snowflake, color: 'text-blue-400' } }
   const temp = (opportunity as any).temperature || 'warm'
   const TempIcon = tempConfig[temp as keyof typeof tempConfig]?.icon || Droplet
+  const value = opportunity.value ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(opportunity.value) : 'R$ 0,00'
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} className={`bg-[rgba(255,255,255,0.08)] border border-white/15 rounded-lg p-3 cursor-pointer hover:border-white/30 transition-all ${isDragging ? 'opacity-50' : ''}`}>
@@ -32,12 +34,10 @@ export default function OpportunityCard({ opportunity, onClick }: { opportunity:
           </div>
           <Stars rating={(opportunity as any).qualification || 3} />
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
-            <span className="text-base font-bold text-[#e90101]">{formatCurrency(opportunity.value)}</span>
-            <div className="flex items-center gap-1 text-xs text-gray-400">
-              <Calendar className="w-3 h-3" />
-              <span>{timeAgo}</span>
-            </div>
+            <span className="text-base font-bold text-[#e90101]">{value}</span>
+            <div className="flex items-center gap-1 text-xs text-gray-400"><Calendar className="w-3 h-3" /><span>{timeAgo}</span></div>
           </div>
+          <QuickActionsBar opportunityId={opportunity.id} clientId={opportunity.client_id} clientName={(opportunity.client as any)?.name || 'Cliente'} onCreateTask={createTask} />
         </div>
       </div>
     </div>
