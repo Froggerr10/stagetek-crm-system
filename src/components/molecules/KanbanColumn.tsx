@@ -19,7 +19,8 @@ export default function KanbanColumn({ stage, opportunities, onCardClick }: Kanb
       <div className="bg-[rgba(255,255,255,0.05)] rounded-lg p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stage.color }} />
+            {/* eslint-disable-next-line no-restricted-syntax */}
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stage.color || '#6b7280' }} />
             <h3 className="font-semibold text-white">{stage.name}</h3>
             <span className="text-xs text-gray-400">({opportunities.length})</span>
           </div>
