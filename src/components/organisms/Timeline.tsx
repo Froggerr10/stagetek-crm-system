@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import TimelineItem from '@/components/molecules/TimelineItem'
 import Spinner from '@/components/atoms/Spinner'
@@ -12,12 +12,12 @@ export default function Timeline({ opportunityId }: { opportunityId: string }) {
   const [newNote, setNewNote] = useState('')
   const [creating, setCreating] = useState(false)
 
-  const fetchActivities = async () => {
+  const fetchActivities = useCallback(async () => {
     setLoading(true)
     const { data } = await supabase.from('notes').select('id, content, created_at').eq('opportunity_id', opportunityId).order('created_at', { ascending: false })
     setActivities((data || []).map(n => ({ id: n.id, type: 'note' as const, content: n.content, created_at: n.created_at })))
     setLoading(false)
-  }
+  }, [opportunityId])
 
   const handleCreateNote = async () => {
     if (!newNote.trim() || creating) return
@@ -29,7 +29,7 @@ export default function Timeline({ opportunityId }: { opportunityId: string }) {
     fetchActivities()
   }
 
-  useEffect(() => { fetchActivities() }, [opportunityId])
+  useEffect(() => { fetchActivities() }, [fetchActivities])
 
   if (loading) return <div className="flex justify-center py-8"><Spinner size="md" /></div>
 

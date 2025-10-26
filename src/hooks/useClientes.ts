@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import type { Client } from '@/types'
@@ -13,7 +13,7 @@ export const useClientes = (filters?: ClientFilters) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const getClientes = async () => {
+  const getClientes = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -44,7 +44,7 @@ export const useClientes = (filters?: ClientFilters) => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filters?.search, filters?.status])
 
   const getClienteById = async (id: string): Promise<Client | null> => {
     try {
@@ -137,7 +137,7 @@ export const useClientes = (filters?: ClientFilters) => {
   // Fetch on mount and when filters change
   useEffect(() => {
     getClientes()
-  }, [filters?.search, filters?.status])
+  }, [getClientes])
 
   return {
     clientes,

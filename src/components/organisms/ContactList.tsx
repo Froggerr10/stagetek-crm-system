@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -13,9 +13,7 @@ export default function ContactList({ opportunityId, clientId }: { opportunityId
   const [modalOpen, setModalOpen] = useState(false)
   const [editingContact, setEditingContact] = useState<Contact | null>(null)
 
-  useEffect(() => { fetchContacts() }, [opportunityId, clientId])
-
-  const fetchContacts = async () => {
+  const fetchContacts = useCallback(async () => {
     setLoading(true)
     let query = supabase.from('contacts').select('*').order('is_primary', { ascending: false }).order('created_at', { ascending: false })
     if (opportunityId) query = query.eq('opportunity_id', opportunityId)
@@ -23,7 +21,9 @@ export default function ContactList({ opportunityId, clientId }: { opportunityId
     const { data } = await query
     setContacts(data || [])
     setLoading(false)
-  }
+  }, [opportunityId, clientId])
+
+  useEffect(() => { fetchContacts() }, [fetchContacts])
 
   const handleSave = async (formData: ContactFormData) => {
     if (editingContact) {
