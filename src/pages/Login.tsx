@@ -35,32 +35,22 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 relative" style={{
-      background: 'radial-gradient(circle at top left, #1a0404, #0a0a0a)'
-    }}>
+    <div className="min-h-screen flex items-center justify-center p-4 relative bg-gradient-to-br from-[#1a0404] via-[#0a0a0a] to-[#0a0a0a]">
       {/* Background Effects */}
-      <div className="fixed inset-0 pointer-events-none" style={{
-        background: 'radial-gradient(circle at 20% 20%, rgba(233,1,1,0.15), transparent 40%), radial-gradient(circle at 80% 80%, rgba(233,1,1,0.1), transparent 30%)',
-        zIndex: 0
+      {/* eslint-disable-next-line no-restricted-syntax */}
+      <div className="fixed inset-0 pointer-events-none z-0" style={{
+        background: 'radial-gradient(circle at 20% 20%, rgba(233,1,1,0.15), transparent 40%), radial-gradient(circle at 80% 80%, rgba(233,1,1,0.1), transparent 30%)'
       }} />
-      <div className="fixed inset-0 pointer-events-none" style={{
+      {/* eslint-disable-next-line no-restricted-syntax */}
+      <div className="fixed inset-0 pointer-events-none z-[1]" style={{
         backgroundImage: 'radial-gradient(rgba(233,1,1,0.03) 1px, transparent 1px)',
-        backgroundSize: '40px 40px',
-        zIndex: 1
+        backgroundSize: '40px 40px'
       }} />
 
       {/* Login Card */}
-      <div className="w-full max-w-[480px] p-12 relative z-10 animate-[cardEntrance_0.6s_cubic-bezier(0.4,0,0.2,1)]" style={{
-        background: 'rgba(255,255,255,0.08)',
-        backdropFilter: 'blur(24px) saturate(180%)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        borderRadius: '16px',
-        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06), 0 0 60px rgba(233,1,1,0.05)'
-      }}>
+      <div className="w-full max-w-[480px] p-12 relative z-10 animate-[cardEntrance_0.6s_cubic-bezier(0.4,0,0.2,1)] bg-[rgba(255,255,255,0.08)] backdrop-blur-[24px] backdrop-saturate-[180%] border border-white/10 rounded-2xl shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-1px_rgba(0,0,0,0.06),0_0_60px_rgba(233,1,1,0.05)]">
         {/* Logo */}
-        <h1 className="text-4xl font-bold text-white text-center tracking-tight animate-[logoPulse_2s_ease-in-out_infinite]" style={{
-          textShadow: '0 0 20px rgba(233,1,1,0.4), 0 2px 4px rgba(0,0,0,0.3)'
-        }}>
+        <h1 className="text-4xl font-bold text-white text-center tracking-tight animate-[logoPulse_2s_ease-in-out_infinite] [text-shadow:0_0_20px_rgba(233,1,1,0.4),0_2px_4px_rgba(0,0,0,0.3)]">
           STAGETEK
         </h1>
         <p className="text-center text-sm text-gray-400 mt-2">Sistema de Gestão Comercial B2B</p>
@@ -68,7 +58,7 @@ export default function Login() {
 
         {/* OAuth */}
         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Acesso rápido</p>
-        <button onClick={handleGoogleSignIn} type="button" className="w-full h-12 flex items-center justify-center gap-3 bg-white/5 border border-white/10 rounded-lg text-white font-medium transition-all hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-sm" style={{ backdropFilter: 'blur(8px)' }}>
+        <button onClick={handleGoogleSignIn} type="button" className="w-full h-12 flex items-center justify-center gap-3 bg-white/5 border border-white/10 rounded-lg text-white font-medium transition-all hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5 hover:shadow-sm backdrop-blur-[8px]">
           <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 20 20" fill="none">
             <path d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34z" fill="#4285F4"/>
             <path d="M10 20c2.7 0 4.96-.89 6.62-2.42l-3.16-2.45c-.86.58-1.97.93-3.46.93-2.64 0-4.88-1.74-5.68-4.15H1.07v2.52C2.72 17.75 6.09 20 10 20z" fill="#34A853"/>
@@ -81,6 +71,7 @@ export default function Login() {
         {/* Divider */}
         <div className="flex items-center my-8 gap-4">
           <div className="flex-1 h-px bg-white/10" />
+          {/* eslint-disable-next-line no-restricted-syntax */}
           <span className="text-xs font-medium text-gray-500 px-4" style={{ background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%)' }}>OU</span>
           <div className="flex-1 h-px bg-white/10" />
         </div>
@@ -114,9 +105,7 @@ export default function Login() {
             <a href="#" className="text-sm font-medium text-[#e90101] hover:text-[#ff0101] hover:underline transition-colors">Esqueceu a senha?</a>
           </div>
 
-          <button type="submit" disabled={loading} className="w-full h-[52px] mt-6 bg-gradient-to-br from-[#e90101] to-[#c10101] text-white font-semibold text-[15px] tracking-wide rounded-lg transition-all hover:-translate-y-0.5 hover:from-[#ff0101] hover:to-[#d10101] active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2" style={{
-            boxShadow: '0 4px 12px rgba(233,1,1,0.3), 0 0 20px rgba(233,1,1,0.2)'
-          }}>
+          <button type="submit" disabled={loading} className="w-full h-[52px] mt-6 bg-gradient-to-br from-[#e90101] to-[#c10101] text-white font-semibold text-[15px] tracking-wide rounded-lg transition-all hover:-translate-y-0.5 hover:from-[#ff0101] hover:to-[#d10101] active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(233,1,1,0.3),0_0_20px_rgba(233,1,1,0.2)]">
             {loading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
