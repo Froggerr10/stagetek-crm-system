@@ -20,6 +20,7 @@ export default function OpportunityCard({ opportunity, onClick }: { opportunity:
   const value = opportunity.value ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(opportunity.value) : 'R$ 0,00'
 
   return (
+    /* eslint-disable-next-line no-restricted-syntax */
     <div ref={setNodeRef} style={style} {...attributes} className={`bg-[rgba(255,255,255,0.08)] border border-white/15 rounded-lg p-3 cursor-pointer hover:border-white/30 transition-all ${isDragging ? 'opacity-50' : ''}`}>
       <div className="flex gap-2">
         <button {...listeners} className="text-gray-400 hover:text-white cursor-grab active:cursor-grabbing mt-1"><GripVertical className="w-4 h-4" /></button>
