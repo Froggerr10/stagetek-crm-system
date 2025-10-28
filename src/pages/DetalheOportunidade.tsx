@@ -9,6 +9,7 @@ import TaskList from '@/components/organisms/TaskList'
 import Timeline from '@/components/organisms/Timeline'
 import ContactList from '@/components/organisms/ContactList'
 import EmailComposer from '@/components/organisms/EmailComposer'
+import ProductLink from '@/components/organisms/ProductLink'
 import type { Opportunity, Client, FunnelStage } from '@/types'
 
 type TabType = 'historico' | 'email' | 'tarefas' | 'contatos' | 'produtos' | 'arquivos'
@@ -134,7 +135,7 @@ export default function DetalheOportunidade() {
                 {activeTab === 'email' && <EmailComposer opportunityId={id!} clientEmail={(opportunity.client as any)?.email} onEmailSent={() => setActiveTab('historico')} />}
                 {activeTab === 'tarefas' && <TaskList opportunityId={id} />}
                 {activeTab === 'contatos' && <ContactList opportunityId={id} />}
-                {activeTab === 'produtos' && <div className="text-gray-400">Produtos vinculados em desenvolvimento...</div>}
+                {activeTab === 'produtos' && <ProductLink opportunityId={id!} />}
                 {activeTab === 'arquivos' && <div className="text-gray-400">Anexos em desenvolvimento...</div>}
               </div>
             </div>
