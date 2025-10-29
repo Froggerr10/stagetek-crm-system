@@ -10,7 +10,9 @@
       "Bash(npm install:*)",
       "Bash(test:*)",
       "Bash(npx shadcn@latest add:*)",
-      "Bash(npx supabase:*)"
+      "Bash(npx supabase:*)",
+      "Bash(npx eslint:*)",
+      "Read(//c/Users/David/AppData/Roaming/Claude/**)"
     ],
     "deny": [],
     "ask": []

@@ -4,74 +4,82 @@
 
 ---
 
-## 🚀 PRÓXIMOS PASSOS IMEDIATOS (14 Out 2025)
+## 🚀 MVP STATE OF ART - 7 Gaps Críticos P0 (25 Out 2025)
 
-### **✅ COMPLETADO RECENTEMENTE (Sprint 1 Day 1)**
-- ✅ Supabase integrado e funcionando (database + auth)
-- ✅ CRUD Clientes funcionando (create, read, update, delete)
-- ✅ CRUD Oportunidades funcionando (create, read, update, delete)
-- ✅ Modais com campos completos (incluindo endereço em JSONB)
-- ✅ Protocol Notecraft™ 100% compliance (validação automática)
-- ✅ Projeto organizado (docs movidos para pastas adequadas)
-- ✅ **Sistema de Cotações MVP COMPLETO** (P0.5):
-  - ✅ Database: products + quotations (JSONB hybrid model)
-  - ✅ 15 produtos seedados (Som, Luz, Estrutura, Talha)
-  - ✅ Página NovaCotacao.tsx (catálogo + carrinho)
-  - ✅ Geração de PDF profissional (@react-pdf/renderer)
-  - ✅ Envio de email via Supabase Edge Function + Resend
-  - ✅ Auto-numeração de cotações (QT-YYYYMM-NNN)
-  - ✅ UX validações (R$ prefix, anti-negative, remove button)
+### **✅ COMPLETADO (Sprint 1 Day 1 - 23 Out)**
+- ✅ CRUD Clientes + Oportunidades + Contacts (100%)
+- ✅ Sistema de Cotações MVP (P0.5 completo)
+- ✅ Protocol Notecraft™ 100% compliance
+- ✅ Documentação BMAD completa (15 docs criados)
 
-### **PRIORIDADE 1: Lista de Cotações + Itens Customizados** (P0.5 cont.)
-Criar página completa `src/pages/DetalheOportunidade.tsx`:
-- Layout 3 colunas (Sidebar Left | Tabs Center | Sidebar Right)
-- Tabs: Histórico, E-mail, Tarefas, Contatos, Produtos, Arquivos
-- Navegação: clicar em oportunidade → abrir detalhes
+### **⏰ SPRINT MVP STATE OF ART (7.5 dias - 25 Out a 2 Nov)**
 
-### **PRIORIDADE 2: Sistema de Tarefas** (P0)
-Implementar feature completa de tarefas:
-- Criar/editar/deletar tarefas
-- Tipos: Ligação, WhatsApp, Email, Reunião
-- Vincular tarefas a oportunidades
-- Notificações de tarefas vencidas
+**Baseado em**: `.ai/relatorios-avaliacao-critica.md` + `docs/stories/*.md`
 
-### **PRIORIDADE 3: Configuração de Funis** (P0)
-Criar `src/pages/ConfigFunis.tsx`:
-- Editor visual de etapas (bolinhas conectadas)
-- CRUD completo de funis
-- Gerenciar múltiplos pipelines
+#### **Dia 1-2: Barra de Filtros (G-001)** - Story 2.1
+- [ ] FilterBar organism (6 controles: Funil, Responsável, Status, etc.)
+- [ ] Zustand store + URL params
+- [ ] Mobile: modal full-screen
 
-**📄 Ver detalhes completos nas seções abaixo.**
+#### **Dia 3: Tab Email (G-002)** - Story 1.1
+- [ ] EmailComposer organism
+- [ ] Integrar com Resend API existente
+- [ ] Salvar em `emails_sent` table
+
+#### **Dia 4: Tab Produtos (G-003)** - Story 1.2
+- [ ] ProductLink organism
+- [ ] Criar table `opportunity_products` (many-to-many)
+
+#### **Dia 5: Tab Arquivos (G-004)** - Story 1.3
+- [ ] FileUpload organism
+- [ ] Supabase Storage bucket `attachments`
+- [ ] RLS policies (upload/download)
+
+#### **Dia 6: Quick Actions Cards (G-005)** - Story 3.2
+- [ ] Ícones rodapé OpportunityCard (📞 Phone, ✉️ Mail)
+- [ ] Handlers: criar tarefa / abrir email
+
+#### **Dia 6 (2h): Fix Botões ClientCard (G-006)** - Story 3.1
+- [ ] Trocar variant="ghost" → "outline"
+- [ ] Adicionar ícones Lucide (Edit, Trash2)
+
+#### **Dia 7: Layout Detalhe Match RD (G-007)** - Story 3.3
+- [ ] Banner verde (<24h oportunidade)
+- [ ] Ajustar sidebars + temperatura/qualificação
+- [ ] Form CRIAR ANOTAÇÃO destacado
+
+**📄 Detalhes completos**: `docs/stories/*.md` (7 stories criadas)
 
 ---
 
 ## 🚨 LEIA PRIMEIRO: CONTEXTO CRÍTICO
 
-**VOCÊ ESTÁ TRABALHANDO EM UM PROJETO REAL COM REQUISITOS ESPECÍFICOS.**
+**PROJETO REAL COM ESTRUTURA BMAD. SIGA RIGOROSAMENTE.**
 
-Antes de fazer QUALQUER alteração, você DEVE:
+### **📋 Documentação BMAD (Prioridade)**
+1. ✅ **`.ai/relatorios-avaliacao-critica.md`** (295 linhas) - Gap analysis P0 (7 gaps críticos)
+2. ✅ **`docs/stories/*.md`** (7 stories) - Tasks executáveis (1.1 a 3.3)
+3. ✅ **`docs/prd/*.md`** (4 epics) - Features agrupadas (EPIC-001 a EPIC-004)
+4. ✅ **`docs/architecture/*.md`** (4 shards) - Tech stack, DB schema, coding standards
 
-1. ✅ Ler `protocol/PRD.md` (995 linhas) - Product Requirements Document COMPLETO
-2. ✅ Ler `protocol/RD-STATION-ANALYSIS.md` (1200 linhas) - Análise DETALHADA das telas do RD Station
-3. ✅ Ler `protocol/GAP-ANALYSIS.md` (556 linhas) - O que está faltando vs o que deve ser feito
-4. ✅ Ler `protocol/FEATURES-PRIORITIZED.md` - Priorização P0/P1/P2/P3
+### **📚 Contexto Estratégico (Opcional)**
+- `protocol/EXECUTIVE-STRATEGIC-REPORT.md` (contexto executivo)
+- `protocol/INVENTORY-RD-STATION-COMPLETE.md` (287 features RD Station)
+- `protocol/RD-STATION-UX-DEEP-ANALYSIS.md` (análise UX profunda)
 
-**NUNCA** faça correções visuais ou melhorias sem entender o FLUXO COMPLETO do sistema.
+**REGRA**: Para implementar features, leia STORIES primeiro. Para contexto, leia PROTOCOL.
 
 ---
 
-## 🎯 STATUS DE IMPLEMENTAÇÃO (Atualizado: 14 Out 2025)
+## 🎯 STATUS DE IMPLEMENTAÇÃO (Atualizado: 25 Out 2025)
 
-### 🎉 MARCOS RECENTES (14 Out 2025 - Sprint 1 Day 1 Complete)
+### 🎉 MARCOS RECENTES (Sprint 1 Day 1 - 23 Out 2025)
 
 #### **✅ Supabase Integration - 100% FUNCIONAL**
-- ✅ Database conectado e funcionando
-- ✅ Tabelas criadas: clients, opportunities, funnel_stages, users
-- ✅ RLS (Row Level Security) policies configuradas
-- ✅ CRUD Clientes: Create, Read, Update, Delete ✅
-- ✅ CRUD Oportunidades: Create, Read, Update, Delete ✅
-- ✅ Seed data: 5 clientes, 5 estágios, 7 oportunidades de teste
-- ✅ Queries relacionadas funcionando (client + stage em opportunities)
+- ✅ Database conectado: clients, contacts (**CORRIGIDO**: existe desde 23 Out), opportunities, funnel_stages, funnels, tasks, notes, products, quotations
+- ✅ RLS policies: SELECT implementado (INSERT/UPDATE/DELETE pendente - ver blocker crítico)
+- ✅ CRUD completo: Clientes, Oportunidades, Cotações
+- ✅ Seed data: 5 clientes, 15 produtos, 7 oportunidades teste
 
 #### **✅ Modais & Forms - 100% COMPLETOS**
 - ✅ FormField component flexível (suporta children e input props)
@@ -162,14 +170,11 @@ Antes de fazer QUALQUER alteração, você DEVE:
 - ✅ Gráficos Chart.js (no HTML)
 - ⏳ **PRÓXIMO**: Conectar gráficos ao Supabase (dados reais)
 
-#### **Navegação & Layout**
-- ✅ TopBar (`src/components/organisms/TopBar.tsx` - 44 linhas)
-  - Logo STAGETEK
-  - Navegação horizontal (Dashboard, Oportunidades, Clientes, etc.)
-  - SearchBar
-  - Notificações + Ajuda + Apps
-  - UserMenu dropdown (31 linhas)
-- ✅ MainLayout com TopBar + conteúdo
+#### **Navegação & Layout** (**CORRIGIDO**: 23 Out 2025)
+- ✅ TopBar (`src/components/organisms/TopBar.tsx` - 44 linhas) - **EXISTE**
+- ✅ MainLayout com TopBar integrado
+- ✅ Navegação: Dashboard, Clientes, Oportunidades, Funil
+- ⏳ **FALTA**: Atalho "Tarefas" no menu (badge "67") - ver G-002
 
 ---
 
@@ -305,153 +310,19 @@ So that: Eu envie proposta em <5 minutos (vs 2h em planilha)
 
 ---
 
-### ⏳ O que FALTA (P1 - ALTA PRIORIDADE)
+### ⏳ 7 P0 GAPS - MVP STATE OF ART (7.5 dias)
 
-#### **1. Detalhes da Oportunidade** (0% implementado)
+**Baseado em**: `.ai/relatorios-avaliacao-critica.md` (Gap Analysis detalhado)
 
-**Baseado em**: `RD-STATION-ANALYSIS.md` linhas 224-339 + `tarefas.png` screenshot
+#### **G-001: Barra de Filtros (2 dias)** - `docs/stories/2.1.barra-filtros.md`
+#### **G-002: Tab Email (1 dia)** - `docs/stories/1.1.tab-email.md`
+#### **G-003: Tab Produtos (1 dia)** - `docs/stories/1.2.tab-produtos.md`
+#### **G-004: Tab Arquivos (1 dia)** - `docs/stories/1.3.tab-arquivos.md`
+#### **G-005: Quick Actions Cards (4h)** - `docs/stories/3.2.quick-actions-cards.md`
+#### **G-006: Fix Botões ClientCard (2h)** - `docs/stories/3.1.fix-botoes-clientcard.md`
+#### **G-007: Layout Detalhe Match RD (1 dia)** - `docs/stories/3.3.layout-detalhe-match-rd.md`
 
-**Página completa**: `src/pages/DetalheOportunidade.tsx` (NÃO EXISTE!)
-
-**Layout necessário**:
-```
-┌─────────────────────────────────────────────────────┐
-│ TopBar (Logo | Menu | Busca | Avatar)              │
-├──────────────┬──────────────────────┬───────────────┤
-│ Sidebar Left │   Tabs Centrais      │ Sidebar Right │
-│              │                      │               │
-│ - Funil      │ ✅ HISTÓRICO (ativo) │ - Responsável │
-│ - Estágio    │ □ E-MAIL             │ - Dados       │
-│ - Qualif.    │ □ TAREFAS            │   Cliente     │
-│ - Valores    │ □ CONTATOS           │ - Dados Oport.│
-│ - Datas      │ □ PRODUTOS           │ - Dados       │
-│              │ □ ARQUIVOS           │   Contato     │
-└──────────────┴──────────────────────┴───────────────┘
-```
-
-**Header da Oportunidade** (topo da página):
-- [ ] Botão "←" (voltar)
-- [ ] Título: Nome da oportunidade (ex: "Venda JANEIRO")
-- [ ] Subtítulo: Nome da empresa/origem (ex: "RD Station")
-- [ ] Botão: "👍 Marcar venda" (verde)
-- [ ] Botão: "👎 Marcar perda" (vermelho)
-- [ ] Ícone: Engrenagem (configurações)
-- [ ] Ícone: Lixeira (excluir)
-- [ ] Texto: "Saldo: R$ 91,12" (canto superior direito)
-
-**Sidebar Esquerda**:
-- [ ] Funil e estágio de vendas (visual com bolinhas)
-- [ ] Qualificação (5 estrelas) - "Quente"
-- [ ] Valores (R$ 5,00 + R$ 5,00)
-- [ ] Data de criação
-- [ ] Previsão de fechamento
-
-**Tabs Centrais**:
-- [ ] Tab "HISTÓRICO DA OPORTUNIDADE" (ativa por padrão)
-  - [ ] Timeline de eventos
-  - [ ] Formulário: "Criar Anotação"
-  - [ ] Checkboxes de filtro (Anotação, Tarefa, Email, etc.)
-- [ ] Tab "E-MAIL"
-  - [ ] Formulário de envio de email
-  - [ ] Seletor de modelo de email
-  - [ ] Editor WYSIWYG
-- [ ] Tab "TAREFAS" ⭐ **NOVO** (baseado em `tarefas.png`)
-  - [ ] Seção "PRÓXIMAS TAREFAS" com lista
-  - [ ] Formulário "CRIAR TAREFA"
-  - [ ] Ícones por tipo (Ligação, WhatsApp, Email, Reunião)
-- [ ] Tab "CONTATOS"
-- [ ] Tab "PRODUTOS E SERVIÇOS"
-- [ ] Tab "ARQUIVOS"
-
-**Sidebar Direita**:
-- [ ] Responsável (dropdown)
-- [ ] Dados da Empresa/Cliente (expansível)
-- [ ] Dados da Oportunidade (expansível)
-- [ ] Dados do Contato (expansível)
-
-**Status**: Página NÃO EXISTE. Ao clicar em card do Kanban, NADA acontece.
-
-**Ação**: Criar `src/pages/DetalheOportunidade.tsx` completo com todas as tabs.
-
----
-
-#### **3. Configuração de Funis** (0% implementado)
-
-**Baseado em**: `RD-STATION-ANALYSIS.md` linhas 586-675 + `Funil_4.png` screenshot
-
-**Página**: `src/pages/ConfigFunis.tsx` (NÃO EXISTE!)
-
-**Funcionalidades necessárias**:
-- [ ] Lista de funis (ex: "Funil PADRÃO (Não Alterar)", "Funil Prospecção", "Funil de carteira")
-- [ ] **Editor visual de etapas** (bolinhas conectadas por linha azul):
-  - [ ] Círculo azul preenchido para cada etapa
-  - [ ] Label: Nome da etapa (ex: "Sem contato / Lead")
-  - [ ] Sigla: "Sigla: SC/L"
-  - [ ] Botão "+" verde (adicionar nova etapa)
-- [ ] Botão: "▷" (expandir/colapsar funil)
-- [ ] Botão: "⚙️ Editar automação entre funis" (azul)
-- [ ] Ícone: Lixeira (excluir funil)
-- [ ] CRUD completo:
-  - [ ] Criar novo funil
-  - [ ] Renomear funil
-  - [ ] Adicionar/Remover etapas
-  - [ ] Configurar siglas
-  - [ ] Deletar funil
-
-**Status**: Página NÃO EXISTE. Impossível gerenciar múltiplos funis.
-
-**Ação**: Criar `src/pages/ConfigFunis.tsx` com editor visual.
-
----
-
-#### **4. Melhorias no Funil Kanban** (40% implementado)
-
-**Baseado em**: `GAP-ANALYSIS.md` linhas 39-77
-
-**Faltam**:
-- [ ] **Filtros no topo** (linha horizontal):
-  - [ ] Dropdown: "Funil de vendas" (selecionar funil ativo)
-  - [ ] Dropdown: "Minhas oportunidades" (filtrar por usuário)
-  - [ ] Dropdown: "Status da oportunidade" (Aberto, Ganho, Perdido)
-  - [ ] Botão: "⟳ Recarregar"
-  - [ ] Botão: "▦ Filtro ativo" (mostrar quantos filtros aplicados)
-- [ ] **Cards de Oportunidade** (melhorar):
-  - [ ] Qualificação com estrelas (1-5 estrelas) ⭐⭐⭐⭐⭐
-  - [ ] Ícone telefone (ação rápida) 📞
-  - [ ] Ícone e-mail (ação rápida) ✉️
-  - [ ] Avatar do cliente (inicial)
-  - [ ] Indicador de tarefas atrasadas (ícone vermelho)
-- [ ] **Tooltip ao hover**:
-  - [ ] Mostrar nome completo + status + próximas ações
-
-**Status**: Kanban básico funciona, mas falta 60% das features visuais.
-
-**Ação**: Refatorar `pages/funil-vendas.html` para adicionar filtros e melhorar cards.
-
----
-
-#### **5. Sistema de Tarefas** (0% implementado)
-
-**Baseado em**: `tarefas.png` screenshot
-
-**Elementos necessários**:
-- [ ] Tipos de tarefa: Ligação, WhatsApp, Email, Reunião
-- [ ] Campos do formulário:
-  - [ ] Dropdown: "Tipo" (com ícone)
-  - [ ] DatePicker: "Data"
-  - [ ] TimePicker: "Hora"
-  - [ ] Seletor: "Responsável" (avatar + nome + email)
-- [ ] Lista de tarefas:
-  - [ ] Ícone por tipo
-  - [ ] Título da tarefa
-  - [ ] Timestamp relativo ("Hoje às 10:27")
-  - [ ] Ações: Editar, Deletar, Concluir (checkmark azul)
-- [ ] Integração com Timeline de Histórico
-- [ ] Notificações de tarefas vencidas
-
-**Status**: NÃO EXISTE sistema de tarefas. Não é possível criar, listar ou gerenciar.
-
-**Ação**: Criar feature completa de tarefas (backend + frontend).
+**📄 Ver detalhes completos de AC/Tasks em cada story**
 
 ---
 
@@ -720,16 +591,19 @@ const data: any = fetchData() // ❌ PROIBIDO
 
 ## 📋 Checklist ANTES de Codar
 
-- [ ] Li `protocol/PRD.md` completo?
-- [ ] Li `protocol/RD-STATION-ANALYSIS.md` completo?
-- [ ] Li `protocol/GAP-ANALYSIS.md` completo?
-- [ ] Entendo qual feature estou implementando (P0/P1/P2/P3)?
-- [ ] Sei qual fluxo de navegação essa feature afeta?
-- [ ] Tenho certeza que não estou duplicando código existente?
-- [ ] Vou seguir limites de linhas do Protocol Notecraft™?
-- [ ] Vou usar TypeScript strict?
-- [ ] Vou usar Tailwind (não CSS inline)?
-- [ ] É mobile-first?
+### **Workflow BMAD (OBRIGATÓRIO)**
+- [ ] Li a **story específica** em `docs/stories/*.md`?
+- [ ] Entendo os **Acceptance Criteria** da story?
+- [ ] Li o **epic relacionado** em `docs/prd/*.md`?
+- [ ] Consultei **database schema** em `docs/architecture/database-schema.md`?
+- [ ] Consultei **coding standards** em `docs/architecture/coding-standards.md`?
+
+### **Protocol Notecraft™ (SEMPRE)**
+- [ ] Componente respeita limites de linhas (atoms ≤20, molecules ≤35, organisms ≤50)?
+- [ ] TypeScript strict (zero `any`)?
+- [ ] Tailwind CSS (zero CSS inline)?
+- [ ] Mobile-first (responsive breakpoints)?
+- [ ] Busquei componentes reutilizáveis existentes (source-tree.md)?
 
 ---
 
@@ -869,16 +743,19 @@ Semana 11 (5-7 dias):
 
 ## 📚 Referências Obrigatórias
 
-### **Documentação de Produto**
-- `/protocol/PRD.md` - Product Requirements Document (995 linhas)
-- `/protocol/RD-STATION-ANALYSIS.md` - Análise de telas (1200 linhas)
-- `/protocol/GAP-ANALYSIS.md` - Gap analysis (556 linhas)
-- `/protocol/FEATURES-PRIORITIZED.md` - Priorização
+### **📋 Documentação BMAD (Prioridade 1 - 25 Out 2025)**
+- **`.ai/relatorios-avaliacao-critica.md`** - Gap analysis (7 P0 gaps + roadmap 7.5 dias)
+- **`docs/stories/*.md`** - 7 stories executáveis (1.1 a 3.3)
+- **`docs/prd/*.md`** - 4 epics (EPIC-001 a EPIC-004)
+- **`docs/architecture/tech-stack.md`** - Stack completo + ADRs
+- **`docs/architecture/database-schema.md`** - 11 tabelas + RLS policies
+- **`docs/architecture/coding-standards.md`** - Protocol Notecraft™ enforcement
+- **`docs/architecture/source-tree.md`** - 55 componentes mapeados
 
-### **Documentação Técnica**
-- `/protocol/PROTOCOL-NOTECRAFT.md` - Atomic Design rules
-- `/protocol/BRANDING-STANDARDS.md` - STAGETEK brand
-- `/protocol/ARCHITECTURE.md` - System architecture
+### **📚 Contexto Estratégico (Opcional)**
+- `/protocol/EXECUTIVE-STRATEGIC-REPORT.md` - Análise executiva
+- `/protocol/INVENTORY-RD-STATION-COMPLETE.md` - 287 features RD Station
+- `/protocol/RD-STATION-UX-DEEP-ANALYSIS.md` - Análise UX profunda
 
 ### **Screenshots de Referência**
 - `Tela funil_RDStation_1.png` - Kanban básico
@@ -927,31 +804,30 @@ import type { Client } from '@/types'       // 5. Types
 
 ---
 
-## 📊 Resumo Estatístico
+## 📊 Resumo Estatístico (25 Out 2025)
 
-### **Features por Prioridade**
-| Prioridade | Features | Status | Progresso |
-|------------|----------|--------|-----------|
-| **P0.5** | 1 feature | **100% COMPLETO** | ✅ Sistema de Cotações MVP |
-| **P0** | 5 features | 60% completo | ✅ CRUD (100%), ⏳ Detalhes Oportunidade (0%), ⏳ Tarefas (0%), ⏳ Config Funis (0%), ⏳ Kanban Melhorias (0%) |
-| **P1** | 7 features | 14% completo | ✅ Resend Email (100%), ⏳ Outros (0%) |
-| **P2** | 6 features | 0% completo | Todos pendentes |
-| **P3** | 3 features | 0% completo | Todos pendentes |
+### **Sprint MVP State of Art**
+| Gap ID | Feature | Estimativa | Story |
+|--------|---------|------------|-------|
+| **G-001** | Barra de Filtros | 2 dias | 2.1 |
+| **G-002** | Tab Email | 1 dia | 1.1 |
+| **G-003** | Tab Produtos | 1 dia | 1.2 |
+| **G-004** | Tab Arquivos | 1 dia | 1.3 |
+| **G-005** | Quick Actions Cards | 4h | 3.2 |
+| **G-006** | Fix Botões ClientCard | 2h | 3.1 |
+| **G-007** | Layout Detalhe Match RD | 1 dia | 3.3 |
+| **TOTAL** | **MVP State of Art** | **7.5 dias** | 7 stories |
 
-### **Features Implementadas (Sprint 1 Day 1)**
-- ✅ Sistema de Cotações (P0.5) - **COMPLETO**
-  - Database: products + quotations
-  - Frontend: 9 componentes (100% Protocol Notecraft™)
-  - PDF Generation (@react-pdf/renderer)
-  - Email Integration (Supabase Edge Function + Resend)
+### **Documentação BMAD (25 Out 2025)**
+- ✅ **4 Architecture Shards** (1,301 linhas): tech-stack, database-schema, coding-standards, source-tree
+- ✅ **4 Epics** (P0/P1): EPIC-001 a EPIC-004
+- ✅ **7 Stories** (executáveis): 1.1 a 3.3
+- ✅ **1 Gap Analysis** (295 linhas): relatorios-avaliacao-critica.md
 
-### **Tempo Estimado (Features Restantes)**
-- Lista de Cotações + Itens Customizados: 2-3 dias
-- Detalhes Oportunidade: 2 semanas
-- Sistema de Tarefas: 1 semana
-- Configuração Funis: 1 semana
-- Melhorias Kanban: 1 semana
-- **Total Restante**: ~6-7 semanas
+### **Estimativas Corrigidas**
+- ~~Old estimate~~: 12-16 semanas (reports Oct 24)
+- **New estimate**: 7.5 dias (gap analysis Oct 25)
+- **Reason**: Contacts table, TopBar, tasks table já existem (implementados 23 Out)
 
 ---
 
@@ -1018,17 +894,20 @@ vercel --prod
 
 ## 🚨 LEMBRETE FINAL
 
-**ANTES DE FAZER QUALQUER ALTERAÇÃO:**
+**WORKFLOW BMAD - SEMPRE SEGUIR:**
 
-1. Leia `protocol/PRD.md` completo
-2. Leia `protocol/RD-STATION-ANALYSIS.md` completo
-3. Leia `protocol/GAP-ANALYSIS.md` completo
-4. Entenda qual feature você está implementando
-5. Verifique se não está duplicando código
-6. Siga rigorosamente o Protocol Notecraft™
+1. **Leia a STORY** (`docs/stories/*.md`) - AC + Tasks específicos
+2. **Leia o EPIC** (`docs/prd/*.md`) - Contexto da feature
+3. **Consulte ARCHITECTURE** (`docs/architecture/*.md`) - DB schema, coding standards, source tree
+4. **Implemente exatamente** o que está documentado nos Acceptance Criteria
+5. **Valide Protocol Notecraft™** (limites de linhas, TypeScript strict, Tailwind)
 
-**NÃO FAÇA CORREÇÕES VISUAIS SEM ENTENDER O FLUXO COMPLETO.**
-**NÃO TRABALHE SEM CONSULTAR A DOCUMENTAÇÃO.**
+**NÃO FAÇA:**
+- ❌ Correções visuais sem consultar stories
+- ❌ Trabalhar sem entender o fluxo completo (leia epic)
+- ❌ "Melhorias" não documentadas
+- ❌ Duplicar componentes existentes (consulte source-tree.md)
 
-Isso é um projeto REAL com requisitos ESPECÍFICOS. Sua responsabilidade é implementar EXATAMENTE o que está documentado, não "melhorar" sem contexto.
-- verificar sempre o contexto pra evitar que uma tarefa começe e não tenha tokens suficientes para terminar
+**PROJETO REAL COM ESTRUTURA BMAD. SIGA RIGOROSAMENTE.**
+
+**Última atualização**: 25 de Outubro de 2025 - Documentação BMAD completa (15 docs)

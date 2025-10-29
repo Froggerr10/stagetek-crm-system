@@ -38,7 +38,7 @@ export default function OpportunityCard({ opportunity, onClick }: { opportunity:
             <span className="text-base font-bold text-[#e90101]">{value}</span>
             <div className="flex items-center gap-1 text-xs text-gray-400"><Calendar className="w-3 h-3" /><span>{timeAgo}</span></div>
           </div>
-          <QuickActionsBar opportunityId={opportunity.id} clientId={opportunity.client_id} clientName={(opportunity.client as any)?.name || 'Cliente'} onCreateTask={createTask} />
+          <QuickActionsBar opportunityId={opportunity.id} clientId={opportunity.client_id} clientName={(opportunity.client as any)?.name || 'Cliente'} clientEmail={(opportunity.client as any)?.email} onCreateTask={createTask} />
         </div>
       </div>
     </div>

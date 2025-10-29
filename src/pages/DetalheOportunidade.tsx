@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { ArrowLeft, ThumbsUp, ThumbsDown, Settings, Trash2 } from 'lucide-react'
+import { ArrowLeft, ThumbsUp, ThumbsDown, Settings, Trash2, Flame, Droplet, Snowflake } from 'lucide-react'
+import { differenceInHours } from 'date-fns'
 import toast from 'react-hot-toast'
 import Breadcrumb from '@/components/molecules/Breadcrumb'
 import Spinner from '@/components/atoms/Spinner'
+import Banner from '@/components/atoms/Banner'
+import Avatar from '@/components/atoms/Avatar'
+import Stars from '@/components/atoms/Stars'
 import TaskList from '@/components/organisms/TaskList'
 import Timeline from '@/components/organisms/Timeline'
 import ContactList from '@/components/organisms/ContactList'
@@ -21,6 +25,7 @@ export default function DetalheOportunidade() {
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<TabType>('historico')
+  const [showBanner, setShowBanner] = useState(true)
 
   useEffect(() => { fetchOpportunity() }, [id])
 
@@ -82,8 +87,18 @@ export default function DetalheOportunidade() {
     { id: 'arquivos', label: 'Arquivos' },
   ] as const
 
+  const isNewOpportunity = differenceInHours(new Date(), new Date(opportunity.created_at)) < 24
+  const temperature = (opportunity as any).temperature || 'warm'
+  const tempConfig = { hot: { icon: Flame, color: 'text-red-500', label: 'Quente' }, warm: { icon: Droplet, color: 'text-orange-500', label: 'Morno' }, cold: { icon: Snowflake, color: 'text-blue-400', label: 'Frio' } }
+  const TempIcon = tempConfig[temperature as keyof typeof tempConfig]?.icon || Droplet
+  const tempColor = tempConfig[temperature as keyof typeof tempConfig]?.color || 'text-orange-500'
+  const tempLabel = tempConfig[temperature as keyof typeof tempConfig]?.label || 'Morno'
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+      {isNewOpportunity && showBanner && (
+        <Banner message="Nova oportunidade criada hoje. Entre em contato com o cliente o quanto antes!" onDismiss={() => setShowBanner(false)} />
+      )}
       <div className="border-b border-white/10 bg-[rgba(255,255,255,0.03)]">
         <div className="container mx-auto px-6 py-4">
           <Breadcrumb items={[
@@ -113,10 +128,12 @@ export default function DetalheOportunidade() {
           <aside className="lg:col-span-3 space-y-4">
             <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-gray-400 mb-3">Informações</h3>
-              <dl className="space-y-2">
+              <dl className="space-y-3">
                 <div><dt className="text-xs text-gray-400">Estágio</dt><dd className="text-sm font-medium text-white">{(opportunity.stage as any)?.name || '-'}</dd></div>
                 <div><dt className="text-xs text-gray-400">Valor</dt><dd className="text-sm font-medium text-white">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(opportunity.value || 0)}</dd></div>
                 <div><dt className="text-xs text-gray-400">Probabilidade</dt><dd className="text-sm font-medium text-white">{opportunity.probability || 0}%</dd></div>
+                <div><dt className="text-xs text-gray-400 mb-1">Qualificação</dt><dd><Stars rating={(opportunity as any).qualification || 3} /></dd></div>
+                <div><dt className="text-xs text-gray-400 mb-1">Temperatura</dt><dd className="flex items-center gap-2"><TempIcon className={`w-5 h-5 ${tempColor}`} /><span className={`text-sm font-medium ${tempColor}`}>{tempLabel}</span></dd></div>
                 <div><dt className="text-xs text-gray-400">Status</dt><dd className="text-sm font-medium text-white">{opportunity.status === 'open' ? 'Aberta' : opportunity.status === 'won' ? 'Ganha' : 'Perdida'}</dd></div>
               </dl>
             </div>
@@ -153,6 +170,16 @@ export default function DetalheOportunidade() {
               ) : (
                 <p className="text-xs text-gray-400">Nenhum cliente vinculado</p>
               )}
+            </div>
+            <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4">
+              <h3 className="text-sm font-semibold text-gray-400 mb-3">Responsável</h3>
+              <div className="flex items-center gap-3">
+                <Avatar name={(opportunity as any).owner_name || 'Sem responsável'} size="md" />
+                <div>
+                  <p className="text-sm font-medium text-white">{(opportunity as any).owner_name || 'Sem responsável'}</p>
+                  <p className="text-xs text-gray-400">Vendedor</p>
+                </div>
+              </div>
             </div>
           </aside>
         </div>

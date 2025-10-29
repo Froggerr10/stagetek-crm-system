@@ -1,15 +1,20 @@
-import { Phone, Mail } from 'lucide-react'
+import { useState } from 'react'
+import { Phone, Mail, X } from 'lucide-react'
 import toast from 'react-hot-toast'
+import EmailComposer from '@/components/organisms/EmailComposer'
 import type { TaskFormData } from '@/types'
 
 interface QuickActionsBarProps {
   opportunityId: string
   clientId: string | null
   clientName: string
+  clientEmail?: string
   onCreateTask: (taskData: Partial<TaskFormData>) => Promise<void>
 }
 
-export default function QuickActionsBar({ opportunityId, clientId, clientName, onCreateTask }: QuickActionsBarProps) {
+export default function QuickActionsBar({ opportunityId, clientId, clientName, clientEmail, onCreateTask }: QuickActionsBarProps) {
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
+
   const handleQuickCall = async (e: React.MouseEvent) => {
     e.stopPropagation()
     try {
@@ -17,12 +22,25 @@ export default function QuickActionsBar({ opportunityId, clientId, clientName, o
       toast.success('Tarefa de ligação criada!')
     } catch { toast.error('Erro ao criar tarefa') }
   }
-  const handleQuickEmail = (e: React.MouseEvent) => { e.stopPropagation(); toast.info('Compositor de email disponível na Story 1.1') }
+  const handleQuickEmail = (e: React.MouseEvent) => { e.stopPropagation(); setIsEmailModalOpen(true) }
   const btnClass = "flex-1 flex items-center justify-center gap-2 px-3 py-2 text-gray-400 hover:text-blue-400 hover:bg-blue-950/30 rounded-md transition-colors min-h-[44px]"
   return (
-    <div className="flex gap-2 pt-2 border-t border-white/10">
-      <button onClick={handleQuickCall} className={btnClass} title="Ligar"><Phone className="w-4 h-4" /></button>
-      <button onClick={handleQuickEmail} className={btnClass} title="Enviar Email"><Mail className="w-4 h-4" /></button>
-    </div>
+    <>
+      <div className="flex gap-2 pt-2 border-t border-white/10">
+        <button onClick={handleQuickCall} className={btnClass} title="Ligar"><Phone className="w-4 h-4" /></button>
+        <button onClick={handleQuickEmail} className={btnClass} title="Enviar Email"><Mail className="w-4 h-4" /></button>
+      </div>
+      {isEmailModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setIsEmailModalOpen(false)}>
+          <div className="bg-[#0a0a0a] border border-white/20 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">Enviar Email - {clientName}</h3>
+              <button onClick={() => setIsEmailModalOpen(false)} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>
+            </div>
+            <EmailComposer opportunityId={opportunityId} clientEmail={clientEmail} onEmailSent={() => setIsEmailModalOpen(false)} />
+          </div>
+        </div>
+      )}
+    </>
   )
 }

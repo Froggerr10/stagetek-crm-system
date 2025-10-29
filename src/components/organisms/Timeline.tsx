@@ -35,20 +35,24 @@ export default function Timeline({ opportunityId }: { opportunityId: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+      <div className="bg-white/8 border-2 border-[#e90101]/30 rounded-lg p-5 shadow-lg">
+        <div className="flex items-center gap-2 mb-3">
+          <Plus className="w-5 h-5 text-[#e90101]" />
+          <h3 className="text-base font-bold text-white uppercase tracking-wide">Criar Anotação</h3>
+        </div>
         <textarea
           value={newNote}
           onChange={(e) => setNewNote(e.target.value)}
-          placeholder="Adicionar anotação..."
-          className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white placeholder-gray-400 min-h-20 mb-3"
+          placeholder="Digite sua anotação aqui..."
+          className="w-full px-4 py-3 bg-black/30 border border-white/20 rounded-lg text-white placeholder-gray-500 min-h-24 mb-4 focus:border-[#e90101] focus:outline-none transition"
         />
         <button
           onClick={handleCreateNote}
           disabled={creating || !newNote.trim()}
-          className="flex items-center gap-2 px-4 py-2 bg-[#e90101] text-white rounded-lg hover:bg-[#c10101] disabled:opacity-50"
+          className="flex items-center gap-2 px-6 py-3 bg-[#e90101] text-white font-semibold rounded-lg hover:bg-[#c10101] disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           {creating ? <Spinner size="sm" /> : <Plus className="w-4 h-4" />}
-          <span>Adicionar</span>
+          <span>{creating ? 'Criando...' : 'Adicionar Anotação'}</span>
         </button>
       </div>
 
