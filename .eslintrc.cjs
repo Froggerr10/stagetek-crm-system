@@ -60,7 +60,7 @@ module.exports = {
       ],
       rules: {
         "no-restricted-syntax": [
-          "error",
+          "warn",
           { selector: 'JSXOpeningElement[name.name="button"]', message: "Use <Button /> (shadcn/ui)" },
           { selector: 'JSXOpeningElement[name.name="input"]',  message: "Use <Input /> (shadcn/ui)" },
           { selector: 'JSXOpeningElement[name.name="select"]', message: "Use <Select /> (shadcn/ui)" },

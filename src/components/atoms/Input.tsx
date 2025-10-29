@@ -1,19 +1,27 @@
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, forwardRef } from 'react'
+import { Input as ShadcnInput } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: boolean
 }
 
-export default function Input({ error, className = '', ...props }: InputProps) {
-  return (
-    <input
-      className={cn(
-        'flex h-10 w-full rounded-lg border px-4 py-2 text-sm bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#e90101] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50',
-        error && 'border-red-500 focus:ring-red-500',
-        className
-      )}
-      {...props}
-    />
-  )
-}
+const Input = forwardRef<HTMLInputElement, InputProps>(
+  ({ error, className = '', ...props }, ref) => {
+    return (
+      <ShadcnInput
+        ref={ref}
+        className={cn(
+          'bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:ring-[#e90101]',
+          error && 'border-red-500 focus:ring-red-500',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+
+Input.displayName = 'Input'
+
+export default Input

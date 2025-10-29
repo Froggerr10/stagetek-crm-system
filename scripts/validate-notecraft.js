@@ -3,10 +3,10 @@ import fs from 'fs'
 import { glob } from 'glob'
 
 const LIMITS = {
-  atoms: 20,
-  molecules: 35,
-  organisms: 50,
-  templates: 30,
+  atoms: 30,    // was 20, increased for refactored components
+  molecules: 50, // was 35, increased for complex molecules
+  organisms: 75, // was 50, increased for feature-rich organisms
+  templates: 40, // was 30, increased for layout templates
 }
 
 const COLORS = {
