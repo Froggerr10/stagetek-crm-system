@@ -57,23 +57,38 @@ CREATE INDEX IF NOT EXISTS idx_tasks_due_date_completed
   WHERE due_date IS NOT NULL;
 
 -- =====================================================
--- ADDITIONAL INDEX 4: opportunities.closed_at
+-- ADDITIONAL INDEX 4: opportunities.won_at (CORRECTED)
 -- =====================================================
--- Query use case: Relatórios de vendas por período
+-- Query use case: Relatórios de vendas ganhas por período
 -- Benefit: Faster queries para dashboard de conversão
 -- Example query:
---   SELECT status, COUNT(*), SUM(value)
+--   SELECT COUNT(*), SUM(value)
 --   FROM opportunities
---   WHERE closed_at BETWEEN '2025-01-01' AND '2025-12-31'
---   GROUP BY status;
+--   WHERE won_at BETWEEN '2025-01-01' AND '2025-12-31';
 -- =====================================================
 
-CREATE INDEX IF NOT EXISTS idx_opportunities_closed_at
-  ON opportunities(closed_at)
-  WHERE closed_at IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_opportunities_won_at
+  ON opportunities(won_at)
+  WHERE won_at IS NOT NULL;
 
 -- =====================================================
--- ADDITIONAL INDEX 5: opportunities.assigned_to (if not exists)
+-- ADDITIONAL INDEX 5: opportunities.lost_at (NEW)
+-- =====================================================
+-- Query use case: Análise de perdas por período
+-- Benefit: Faster queries para dashboard de motivos de perda
+-- Example query:
+--   SELECT loss_reason_id, COUNT(*), SUM(value)
+--   FROM opportunities
+--   WHERE lost_at BETWEEN '2025-01-01' AND '2025-12-31'
+--   GROUP BY loss_reason_id;
+-- =====================================================
+
+CREATE INDEX IF NOT EXISTS idx_opportunities_lost_at
+  ON opportunities(lost_at)
+  WHERE lost_at IS NOT NULL;
+
+-- =====================================================
+-- ADDITIONAL INDEX 6: opportunities.assigned_to (if not exists)
 -- =====================================================
 -- Query use case: "Minhas oportunidades", filtro por responsável
 -- Note: May already exist as idx_opportunities_owner_id
@@ -85,7 +100,7 @@ CREATE INDEX IF NOT EXISTS idx_opportunities_assigned_to
   WHERE assigned_to IS NOT NULL;
 
 -- =====================================================
--- ADDITIONAL INDEX 6: tasks.created_by
+-- ADDITIONAL INDEX 7: tasks.created_by
 -- =====================================================
 -- Query use case: "Tarefas criadas por mim"
 -- Benefit: Faster user-specific queries
@@ -96,7 +111,7 @@ CREATE INDEX IF NOT EXISTS idx_tasks_created_by_indexed
   WHERE created_by IS NOT NULL;
 
 -- =====================================================
--- COMPOSITE INDEX 7: quotations (status, created_at)
+-- COMPOSITE INDEX 8: quotations (status, created_at)
 -- =====================================================
 -- Query use case: Lista de cotações filtradas por status + ordenadas
 -- Benefit: Faster quotation list queries
@@ -110,7 +125,7 @@ CREATE INDEX IF NOT EXISTS idx_quotations_status_created_at
   ON quotations(status, created_at DESC);
 
 -- =====================================================
--- COMPOSITE INDEX 8: notes (opportunity_id, created_at)
+-- COMPOSITE INDEX 9: notes (opportunity_id, created_at)
 -- =====================================================
 -- Query use case: Timeline de notas em DetalheOportunidade
 -- Benefit: Faster timeline queries (já existe individual, mas composite é mais eficiente)
@@ -152,9 +167,11 @@ CREATE INDEX IF NOT EXISTS idx_notes_opportunity_created_at
 COMMENT ON INDEX idx_opportunities_expected_close_date IS 'Sprint 0: Performance. Forecast queries 7.5x faster.';
 COMMENT ON INDEX idx_opportunities_status_stage_id IS 'Sprint 0: Performance. Kanban queries 8x faster.';
 COMMENT ON INDEX idx_tasks_due_date_completed IS 'Sprint 0: Performance. Overdue tasks queries 10x faster.';
+COMMENT ON INDEX idx_opportunities_won_at IS 'Sprint 0: Performance. Won deals reports faster.';
+COMMENT ON INDEX idx_opportunities_lost_at IS 'Sprint 0: Performance. Lost deals analysis faster.';
 
 -- =====================================================
--- DONE! 8 performance indexes adicionados
+-- DONE! 9 performance indexes adicionados (corrected: closed_at → won_at + lost_at)
 -- =====================================================
 -- Next steps:
 -- 1. Aplicar migration: supabase db push
