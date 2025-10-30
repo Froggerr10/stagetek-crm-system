@@ -27,7 +27,7 @@ export default function QuotationsFilterBar() {
   const hasActiveFilters = status !== 'all' || search;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+    <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4 mb-6">
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[240px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -35,15 +35,15 @@ export default function QuotationsFilterBar() {
             placeholder="Buscar por número (QT-YYYYMM-NNN)"
             value={search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-white/8 border-white/15 text-white placeholder:text-gray-500"
           />
         </div>
 
         <Select value={status} onValueChange={(val) => updateFilter('status', val)}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px] bg-white/8 border-white/15 text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-gray-900 border-white/15">
             <SelectItem value="all">Todas</SelectItem>
             <SelectItem value="draft">Rascunho</SelectItem>
             <SelectItem value="sent">Enviadas</SelectItem>
@@ -51,7 +51,7 @@ export default function QuotationsFilterBar() {
         </Select>
 
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={clearFilters}>
+          <Button variant="ghost" size="sm" onClick={clearFilters} className="text-gray-300 hover:text-white">
             <X className="h-4 w-4 mr-1" />
             Limpar filtros
           </Button>

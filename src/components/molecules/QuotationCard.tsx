@@ -26,22 +26,22 @@ export default function QuotationCard({ quotation: q }: QuotationCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const h = useQuotationHandlers();
   return (<>
-    <Card className="group hover:border-red-600 transition-all">
+    <Card className="group bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border-white/15 hover:border-stagetek-red transition-all">
       <CardHeader className="flex-row justify-between items-start">
         <div>
-          <h3 className="font-semibold">{q.quotation_number}</h3>
-          {q.opportunity && <a href={`/oportunidades/${q.opportunity.id}/detalhes`} className="text-sm text-muted-foreground hover:text-red-600">{q.opportunity.title}</a>}
+          <h3 className="font-semibold text-white">{q.quotation_number}</h3>
+          {q.opportunity && <a href={`/oportunidades/${q.opportunity.id}/detalhes`} className="text-sm text-gray-400 hover:text-stagetek-red">{q.opportunity.title}</a>}
         </div>
         <QuotationBadge status={q.status} />
       </CardHeader>
       <CardContent className="space-y-2">
-        {q.opportunity?.client && <p className="text-sm flex items-center gap-1"><Building2 className="h-4 w-4" />{q.opportunity.client.name}</p>}
-        <p className="text-2xl font-bold text-red-600">{fmt(q.total)}</p>
-        <p className="text-xs text-muted-foreground">
+        {q.opportunity?.client && <p className="text-sm flex items-center gap-1 text-gray-300"><Building2 className="h-4 w-4" />{q.opportunity.client.name}</p>}
+        <p className="text-2xl font-bold text-stagetek-red">{fmt(q.total)}</p>
+        <p className="text-xs text-gray-400">
           Criada {formatDistanceToNow(new Date(q.created_at), { addSuffix: true, locale: ptBR })}
           {q.sent_to_email && ` • ${q.sent_to_email}`}</p>
       </CardContent>
-      <CardFooter className="pt-3 border-t">
+      <CardFooter className="pt-3 border-t border-white/10">
         <QuotationActions quotationId={q.id} status={q.status} onDownloadPDF={() => h.handleDownloadPDF(q.id, q.quotation_number)} onResendEmail={() => setIsOpen(true)} onEdit={() => q.opportunity && h.handleEdit(q.opportunity.id, q.id)} />
       </CardFooter>
     </Card>

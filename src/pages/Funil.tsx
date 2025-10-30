@@ -68,14 +68,14 @@ export default function Funil() {
   if (loading) return <div className="flex justify-center items-center min-h-screen"><Spinner size="lg" /></div>
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 p-6">
+    <div className="p-6">
       <div className="max-w-[1800px] mx-auto">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Funil de Vendas</h1>
             <p className="text-gray-400 mt-1">{opportunities.length} oportunidades</p>
           </div>
-          <button onClick={() => navigate('/oportunidades')} className="flex items-center gap-2 px-4 py-2 bg-[#e90101] text-white rounded-lg hover:bg-[#c10101] transition-all">
+          <button onClick={() => navigate('/oportunidades')} className="flex items-center gap-2 px-4 py-2 bg-stagetek-red text-white rounded-lg hover:bg-stagetek-red-medium transition-all">
             <Plus className="w-5 h-5" />
             <span>Nova Oportunidade</span>
           </button>
