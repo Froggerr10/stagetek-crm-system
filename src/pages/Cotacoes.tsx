@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react';
 import TopBar from '@/components/organisms/TopBar';
 import QuotationList from '@/components/organisms/QuotationList';
+import QuotationsFilterBar from '@/components/organisms/QuotationsFilterBar';
 import { useCotacoes } from '@/hooks/useCotacoes';
 
 export default function Cotacoes() {
@@ -21,6 +22,7 @@ export default function Cotacoes() {
           <h1 className="text-2xl font-bold text-gray-900">Cotações</h1>
         </div>
 
+        <QuotationsFilterBar />
         <QuotationList quotations={quotations} loading={loading} />
       </div>
     </div>

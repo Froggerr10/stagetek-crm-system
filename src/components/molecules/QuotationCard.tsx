@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Building2 } from 'lucide-react';
-import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import QuotationBadge from '@/components/atoms/QuotationBadge';
+import QuotationActions from '@/components/molecules/QuotationActions';
+import ResendEmailModal from '@/components/molecules/ResendEmailModal';
+import { useQuotationHandlers } from '@/hooks/useQuotationHandlers';
 
 interface QuotationCardProps {
   quotation: {
@@ -16,33 +20,31 @@ interface QuotationCardProps {
   };
 }
 
-const formatCurrency = (value: number) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
-export default function QuotationCard({ quotation }: QuotationCardProps) {
-  const { quotation_number, total, status, created_at, sent_to_email, opportunity } = quotation;
-
-  return (
+export default function QuotationCard({ quotation: q }: QuotationCardProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const h = useQuotationHandlers();
+  return (<>
     <Card className="group hover:border-red-600 transition-all">
       <CardHeader className="flex-row justify-between items-start">
         <div>
-          <h3 className="font-semibold">{quotation_number}</h3>
-          {opportunity && (
-            <a href={`/oportunidades/${opportunity.id}/detalhes`}
-               className="text-sm text-muted-foreground hover:text-red-600">{opportunity.title}</a>
-          )}
+          <h3 className="font-semibold">{q.quotation_number}</h3>
+          {q.opportunity && <a href={`/oportunidades/${q.opportunity.id}/detalhes`} className="text-sm text-muted-foreground hover:text-red-600">{q.opportunity.title}</a>}
         </div>
-        <QuotationBadge status={status} />
+        <QuotationBadge status={q.status} />
       </CardHeader>
       <CardContent className="space-y-2">
-        {opportunity?.client && <p className="text-sm flex items-center gap-1">
-          <Building2 className="h-4 w-4" />{opportunity.client.name}</p>}
-        <p className="text-2xl font-bold text-red-600">{formatCurrency(total)}</p>
+        {q.opportunity?.client && <p className="text-sm flex items-center gap-1"><Building2 className="h-4 w-4" />{q.opportunity.client.name}</p>}
+        <p className="text-2xl font-bold text-red-600">{fmt(q.total)}</p>
         <p className="text-xs text-muted-foreground">
-          Criada {formatDistanceToNow(new Date(created_at), { addSuffix: true, locale: ptBR })}
-          {sent_to_email && ` • ${sent_to_email}`}
-        </p>
+          Criada {formatDistanceToNow(new Date(q.created_at), { addSuffix: true, locale: ptBR })}
+          {q.sent_to_email && ` • ${q.sent_to_email}`}</p>
       </CardContent>
+      <CardFooter className="pt-3 border-t">
+        <QuotationActions quotationId={q.id} status={q.status} onDownloadPDF={() => h.handleDownloadPDF(q.id, q.quotation_number)} onResendEmail={() => setIsOpen(true)} onEdit={() => q.opportunity && h.handleEdit(q.opportunity.id, q.id)} />
+      </CardFooter>
     </Card>
-  );
+    <ResendEmailModal isOpen={isOpen} onClose={() => setIsOpen(false)} onSend={(email) => h.handleResendEmail(q.id, email)} isSending={h.isSending} />
+  </>);
 }

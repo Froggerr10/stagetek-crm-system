@@ -57,6 +57,12 @@ export const useCotacoes = () => {
         query = query.eq('status', statusFilter);
       }
 
+      // Filtro por busca (número)
+      const searchFilter = searchParams.get('search');
+      if (searchFilter) {
+        query = query.ilike('quotation_number', `%${searchFilter}%`);
+      }
+
       const { data, error: fetchError } = await query;
 
       if (fetchError) throw fetchError;
