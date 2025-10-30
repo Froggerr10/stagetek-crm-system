@@ -7,6 +7,7 @@ import Clientes from '@/pages/Clientes'
 import Oportunidades from '@/pages/Oportunidades'
 import DetalheOportunidade from '@/pages/DetalheOportunidade'
 import NovaCotacao from '@/pages/NovaCotacao'
+import Cotacoes from '@/pages/Cotacoes'
 import Funil from '@/pages/Funil'
 import Configuracoes from '@/pages/Configuracoes'
 import ConfigFunis from '@/pages/ConfigFunis'
@@ -40,6 +41,7 @@ function App() {
           <Route path="oportunidades/:id" element={<DetalheOportunidade />} />
           <Route path="oportunidades/:opportunityId/cotacao/nova" element={<NovaCotacao />} />
           <Route path="cotacao/nova" element={<NovaCotacao />} />
+          <Route path="cotacoes" element={<Cotacoes />} />
           <Route path="funil" element={<Funil />} />
         </Route>
 
