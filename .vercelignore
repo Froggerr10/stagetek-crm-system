@@ -1,10 +1,6 @@
 # Vercel Ignore File
 # Files and directories to ignore during deployment
 
-# Source files (only deploy built dist/)
-src/
-public/
-
 # Documentation
 docs/
 protocol/
