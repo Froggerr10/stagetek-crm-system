@@ -1,0 +1,57 @@
+# Vercel Ignore File
+# Files and directories to ignore during deployment
+
+# Source files (only deploy built dist/)
+src/
+public/
+
+# Documentation
+docs/
+protocol/
+.ai/
+*.md
+!README.md
+
+# Development
+.vscode/
+.idea/
+scripts/
+supabase/migrations/
+
+# Tests
+test/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+coverage/
+
+# Environment (managed via Vercel Dashboard)
+.env
+.env.local
+.env.*.local
+
+# Dependencies (installed during build)
+node_modules/
+
+# Build cache
+.cache/
+.turbo/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Husky
+.husky/
+
+# Storybook
+.storybook/
+storybook-static/
