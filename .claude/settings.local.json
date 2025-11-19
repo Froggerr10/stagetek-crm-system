@@ -12,7 +12,9 @@
       "Bash(npx shadcn@latest add:*)",
       "Bash(npx supabase:*)",
       "Bash(npx eslint:*)",
-      "Read(//c/Users/David/AppData/Roaming/Claude/**)"
+      "Read(//c/Users/David/AppData/Roaming/Claude/**)",
+      "Bash(npm run type-check:*)",
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []

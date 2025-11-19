@@ -45,3 +45,9 @@ Thumbs.db
 # Supabase
 .supabase/
 docs/FEATURE-COMPLETENESS-DASHBOARD.html
+
+# PowerShell scripts com tokens sensiveis
+setup-github-mcp-token.ps1
+
+# Windows shortcuts
+*.lnk
