@@ -21,7 +21,7 @@ export function useClienteForm({ cliente, onSuccess, createCliente, updateClient
       street: '',
       city: '',
       state: '',
-      zipcode: ''
+      zipCode: ''
     }
   })
 
@@ -38,7 +38,7 @@ export function useClienteForm({ cliente, onSuccess, createCliente, updateClient
           street: (cliente.address as any)?.street || '',
           city: (cliente.address as any)?.city || '',
           state: (cliente.address as any)?.state || '',
-          zipcode: (cliente.address as any)?.zipcode || ''
+          zipCode: (cliente.address as any)?.zipCode || ''
         }
       })
     }

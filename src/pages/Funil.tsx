@@ -38,7 +38,7 @@ export default function Funil() {
 
     let oppsQuery = supabase.from('opportunities').select('*, client:clients(name, email), stage:funnel_stages(*)')
     if (funnelId) oppsQuery = oppsQuery.eq('funnel_id', funnelId)
-    if (ownerId) oppsQuery = oppsQuery.eq('owner_id', ownerId)
+    if (ownerId) oppsQuery = oppsQuery.eq('assigned_to', ownerId)
     if (status !== 'all') oppsQuery = oppsQuery.eq('status', status)
     oppsQuery = oppsQuery.order('created_at', { ascending: false })
 

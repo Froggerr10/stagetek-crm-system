@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { Workflow, Users, Plug } from 'lucide-react'
+import { Workflow, Users, Package, Plug } from 'lucide-react'
 import TopBar from '@/components/organisms/TopBar'
 
 export default function Configuracoes() {
@@ -21,6 +21,10 @@ export default function Configuracoes() {
           <Link to="/configuracoes/usuarios" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${isActive('usuarios') ? 'bg-[#e90101] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
             <Users className="w-5 h-5" />
             <span>Usuários</span>
+          </Link>
+          <Link to="/configuracoes/produtos" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${isActive('produtos') ? 'bg-[#e90101] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
+            <Package className="w-5 h-5" />
+            <span>Produtos</span>
           </Link>
           <Link to="/configuracoes/integracoes" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition ${isActive('integracoes') ? 'bg-[#e90101] text-white' : 'text-gray-300 hover:bg-white/5'}`}>
             <Plug className="w-5 h-5" />
