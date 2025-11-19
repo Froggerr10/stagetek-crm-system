@@ -61,16 +61,37 @@ export default function Funil() {
     const opportunityId = active.id as string
     const newStageId = over.id as string
 
-    console.log('🎯 Drag-and-drop:', { opportunityId, newStageId })
+    console.log('🎯 Drag-and-drop EVENT:', {
+      'opportunityId (active.id)': opportunityId,
+      'newStageId (over.id)': newStageId,
+      'over object': over
+    })
 
     // Find current opportunity
     const currentOpp = opportunities.find(o => o.id === opportunityId)
-    console.log('📊 Current opportunity:', currentOpp)
+    console.log('📊 Current opportunity:', {
+      id: currentOpp?.id,
+      title: currentOpp?.title,
+      current_stage_id: currentOpp?.stage_id,
+      stage_name: currentOpp?.stage?.name
+    })
+
+    // Find target stage to verify it exists
+    const targetStage = stages.find(s => s.id === newStageId)
+    console.log('🎪 All stages loaded:', stages.map(s => ({ id: s.id, name: s.name })))
+    console.log('🎯 Target stage:', targetStage ? { id: targetStage.id, name: targetStage.name } : 'NOT FOUND!')
+
+    if (!targetStage) {
+      console.error('❌ CRITICAL: Target stage not found in stages array!')
+      console.error('Looking for stage ID:', newStageId)
+      console.error('Available stage IDs:', stages.map(s => s.id))
+      return
+    }
 
     // Optimistic update
     setOpportunities(prev => prev.map(o =>
       o.id === opportunityId
-        ? { ...o, stage_id: newStageId, stage: stages.find(s => s.id === newStageId) || o.stage }
+        ? { ...o, stage_id: newStageId, stage: targetStage }
         : o
     ))
 
