@@ -11,6 +11,7 @@ import Cotacoes from '@/pages/Cotacoes'
 import Funil from '@/pages/Funil'
 import Configuracoes from '@/pages/Configuracoes'
 import ConfigFunis from '@/pages/ConfigFunis'
+import ConfigUsuarios from '@/pages/ConfigUsuarios'
 import MainLayout from '@/components/layouts/MainLayout'
 import ProtectedRoute from '@/components/layouts/ProtectedRoute'
 
@@ -54,7 +55,7 @@ function App() {
           }
         >
           <Route path="funis" element={<ConfigFunis />} />
-          <Route path="usuarios" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Usuários</h1><p className="text-gray-400 mt-4">Gerencie permissões e acessos da equipe.</p></div>} />
+          <Route path="usuarios" element={<ConfigUsuarios />} />
           <Route path="integracoes" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Integrações</h1><p className="text-gray-400 mt-4">Conecte ferramentas externas ao seu CRM.</p></div>} />
         </Route>
 
