@@ -35,6 +35,8 @@ export default function Funil() {
 
   const fetchData = async () => {
     setLoading(true)
+    console.log('🔄 fetchData called with filters:', { funnelId, ownerId, status })
+
     let oppsQuery = supabase.from('opportunities').select('*, client:clients(name, email), stage:funnel_stages(*)')
     if (funnelId) oppsQuery = oppsQuery.eq('funnel_id', funnelId)
     if (ownerId) oppsQuery = oppsQuery.eq('owner_id', ownerId)
@@ -46,15 +48,35 @@ export default function Funil() {
     if (funnelId) stagesQuery = stagesQuery.eq('funnel_id', funnelId)
     stagesQuery = stagesQuery.order('order_position')
 
+    console.log('📋 Executing queries...')
     const [stagesRes, oppsRes, clientsRes] = await Promise.all([
       stagesQuery,
       oppsQuery,
       supabase.from('clients').select('*').order('name')
     ])
+
+    console.log('📊 Stages response:', {
+      data: stagesRes.data,
+      count: stagesRes.data?.length,
+      error: stagesRes.error,
+      funnelIdFilter: funnelId || 'NONE (all funnels)'
+    })
+
+    console.log('📊 Opportunities response:', {
+      count: oppsRes.data?.length,
+      error: oppsRes.error
+    })
+
+    if (stagesRes.error) {
+      console.error('❌ Stages query error:', stagesRes.error)
+    }
+
     if (stagesRes.data) setStages(stagesRes.data)
     if (oppsRes.data) setOpportunities(oppsRes.data as any)
     if (clientsRes.data) setClients(clientsRes.data)
     setLoading(false)
+
+    console.log('✅ fetchData completed. Stages loaded:', stagesRes.data?.length || 0)
   }
 
   const handleDragStart = (event: any) => setActiveId(event.active.id)
