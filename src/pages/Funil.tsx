@@ -61,9 +61,17 @@ export default function Funil() {
     const opportunityId = active.id as string
     const newStageId = over.id as string
 
+    // Optimistic update
     setOpportunities(prev => prev.map(o => o.id === opportunityId ? { ...o, stage_id: newStageId } : o))
-    await supabase.from('opportunities').update({ stage_id: newStageId }).eq('id', opportunityId)
-    fetchData()
+
+    // Save to DB (don't refetch - it would overwrite the optimistic update before DB saves)
+    const { error } = await supabase.from('opportunities').update({ stage_id: newStageId }).eq('id', opportunityId)
+
+    if (error) {
+      console.error('Failed to update stage:', error)
+      // Rollback on error
+      fetchData()
+    }
   }
 
   const handleCardClick = (opp: Opportunity) => navigate(`/oportunidades/${opp.id}`)
