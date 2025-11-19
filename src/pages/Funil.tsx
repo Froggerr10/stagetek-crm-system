@@ -6,6 +6,7 @@ import { useFilterStore } from '@/stores/useFilterStore'
 import FilterBar from '@/components/organisms/FilterBar'
 import KanbanColumn from '@/components/molecules/KanbanColumn'
 import OpportunityCard from '@/components/organisms/OpportunityCard'
+import OportunidadeModal from '@/components/organisms/OportunidadeModal'
 import Spinner from '@/components/atoms/Spinner'
 import { Plus } from 'lucide-react'
 import type { Opportunity, FunnelStage } from '@/types'
@@ -18,6 +19,7 @@ export default function Funil() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])
   const [loading, setLoading] = useState(true)
   const [activeId, setActiveId] = useState<string | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
 
   useEffect(() => { fetchData() }, [funnelId, ownerId, status])
@@ -63,6 +65,11 @@ export default function Funil() {
 
   const handleCardClick = (opp: Opportunity) => navigate(`/oportunidades/${opp.id}`)
 
+  const handleModalSuccess = () => {
+    setIsModalOpen(false)
+    fetchData()
+  }
+
   const activeOpp = activeId ? opportunities.find(o => o.id === activeId) : null
 
   if (loading) return <div className="flex justify-center items-center min-h-screen"><Spinner size="lg" /></div>
@@ -75,7 +82,7 @@ export default function Funil() {
             <h1 className="text-3xl font-bold text-white">Funil de Vendas</h1>
             <p className="text-gray-400 mt-1">{opportunities.length} oportunidades</p>
           </div>
-          <button onClick={() => navigate('/oportunidades')} className="flex items-center gap-2 px-4 py-2 bg-stagetek-red text-white rounded-lg hover:bg-stagetek-red-medium transition-all">
+          <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-stagetek-red text-white rounded-lg hover:bg-stagetek-red-medium transition-all">
             <Plus className="w-5 h-5" />
             <span>Nova Oportunidade</span>
           </button>
@@ -96,6 +103,8 @@ export default function Funil() {
           </div>
           <DragOverlay>{activeOpp && <OpportunityCard opportunity={activeOpp} onClick={() => {}} />}</DragOverlay>
         </DndContext>
+
+        <OportunidadeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleModalSuccess} />
       </div>
     </div>
   )

@@ -54,8 +54,8 @@ function App() {
           }
         >
           <Route path="funis" element={<ConfigFunis />} />
-          <Route path="usuarios" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Usuários</h1><p className="text-gray-400 mt-2">Em desenvolvimento...</p></div>} />
-          <Route path="integracoes" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Integrações</h1><p className="text-gray-400 mt-2">Em desenvolvimento...</p></div>} />
+          <Route path="usuarios" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Usuários</h1><p className="text-gray-400 mt-4">Gerencie permissões e acessos da equipe.</p></div>} />
+          <Route path="integracoes" element={<div className="p-8"><h1 className="text-3xl font-bold text-white">Integrações</h1><p className="text-gray-400 mt-4">Conecte ferramentas externas ao seu CRM.</p></div>} />
         </Route>
 
         <Route

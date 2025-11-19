@@ -20,7 +20,7 @@ export default function FilterBar({ onRefresh }: FilterBarProps) {
     fetchData()
   }, [])
 
-  const selectClass = "px-3 py-2 bg-white/5 border border-white/20 rounded-lg text-white text-sm"
+  const selectClass = "px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white text-sm hover:bg-gray-700 focus:ring-2 focus:ring-[#e90101] transition-colors"
   const filterCount = activeFiltersCount()
 
   return (
@@ -30,7 +30,7 @@ export default function FilterBar({ onRefresh }: FilterBarProps) {
           <option value="">Todos os funis</option>
           {funnels.map(f => <option key={f.id} value={f.id}>{f.name}</option>)}
         </select>
-        <select disabled className={`${selectClass} opacity-50 cursor-not-allowed`}><option>Visão (MVP)</option></select>
+        <select disabled className={`${selectClass} opacity-50 cursor-not-allowed`}><option>Visão de Trabalho</option></select>
         <select value={ownerId || ''} onChange={e => setOwnerId(e.target.value || null)} className={selectClass}>
           <option value="">Todos</option>
           {owners.map(o => <option key={o.id} value={o.id}>{o.name}</option>)}
