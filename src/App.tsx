@@ -13,6 +13,7 @@ import Configuracoes from '@/pages/Configuracoes'
 import ConfigFunis from '@/pages/ConfigFunis'
 import ConfigUsuarios from '@/pages/ConfigUsuarios'
 import ConfigProdutos from '@/pages/ConfigProdutos'
+import Perfil from '@/pages/Perfil'
 import MainLayout from '@/components/layouts/MainLayout'
 import ProtectedRoute from '@/components/layouts/ProtectedRoute'
 
@@ -45,6 +46,7 @@ function App() {
           <Route path="cotacao/nova" element={<NovaCotacao />} />
           <Route path="cotacoes" element={<Cotacoes />} />
           <Route path="funil" element={<Funil />} />
+          <Route path="perfil" element={<Perfil />} />
         </Route>
 
         <Route
