@@ -61,16 +61,38 @@ export default function Funil() {
     const opportunityId = active.id as string
     const newStageId = over.id as string
 
+    console.log('🎯 Drag-and-drop:', { opportunityId, newStageId })
+
+    // Find current opportunity
+    const currentOpp = opportunities.find(o => o.id === opportunityId)
+    console.log('📊 Current opportunity:', currentOpp)
+
     // Optimistic update
-    setOpportunities(prev => prev.map(o => o.id === opportunityId ? { ...o, stage_id: newStageId } : o))
+    setOpportunities(prev => prev.map(o =>
+      o.id === opportunityId
+        ? { ...o, stage_id: newStageId, stage: stages.find(s => s.id === newStageId) || o.stage }
+        : o
+    ))
 
     // Save to DB (don't refetch - it would overwrite the optimistic update before DB saves)
-    const { error } = await supabase.from('opportunities').update({ stage_id: newStageId }).eq('id', opportunityId)
+    const { data, error } = await supabase
+      .from('opportunities')
+      .update({ stage_id: newStageId, updated_at: new Date().toISOString() })
+      .eq('id', opportunityId)
+      .select()
 
     if (error) {
-      console.error('Failed to update stage:', error)
+      console.error('❌ Failed to update stage:', error)
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      })
       // Rollback on error
       fetchData()
+    } else {
+      console.log('✅ Stage updated successfully:', data)
     }
   }
 
