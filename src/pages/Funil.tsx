@@ -33,11 +33,8 @@ export default function Funil() {
     setSearchParams(params)
   }, [funnelId, ownerId, status, setSearchParams])
 
-  const fetchData = async (force = false) => {
+  const fetchData = async () => {
     setLoading(true)
-
-    // FORCE FRESH DATA - bypass ALL caches
-    const timestamp = force ? `?t=${Date.now()}` : ''
 
     let oppsQuery = supabase.from('opportunities').select('*, client:clients(name, email), stage:funnel_stages(*)')
     if (funnelId) oppsQuery = oppsQuery.eq('funnel_id', funnelId)
@@ -68,42 +65,40 @@ export default function Funil() {
     if (!over || active.id === over.id) return
 
     const opportunityId = active.id as string
-    const newStageId = over.id as string
-    const targetStage = stages.find(s => s.id === newStageId)
+    let targetStageId = over.id as string
+
+    // Check if dropped on another card (opportunity) instead of stage column
+    const targetStage = stages.find(s => s.id === targetStageId)
 
     if (!targetStage) {
-      console.warn('⚠️ Dados inválidos detectados (cache). Limpando...')
-      // FORCE HARD RELOAD - bypasses ALL caches (HTTP + React + Supabase)
-      setTimeout(() => window.location.reload(), 500)
-      return
+      // Dropped on an opportunity card, find which stage that opportunity belongs to
+      const targetOpp = opportunities.find(o => o.id === targetStageId)
+      if (targetOpp) {
+        targetStageId = targetOpp.stage_id
+      } else {
+        return
+      }
     }
+
+    const finalStage = stages.find(s => s.id === targetStageId)
+    if (!finalStage) return
 
     // Optimistic update
     setOpportunities(prev => prev.map(o =>
       o.id === opportunityId
-        ? { ...o, stage_id: newStageId, stage: targetStage }
+        ? { ...o, stage_id: targetStageId, stage: finalStage }
         : o
     ))
 
-    // Save to DB (don't refetch - it would overwrite the optimistic update before DB saves)
-    const { data, error } = await supabase
+    // Save to DB
+    const { error } = await supabase
       .from('opportunities')
-      .update({ stage_id: newStageId, updated_at: new Date().toISOString() })
+      .update({ stage_id: targetStageId, updated_at: new Date().toISOString() })
       .eq('id', opportunityId)
-      .select()
 
     if (error) {
-      console.error('❌ Failed to update stage:', error)
-      console.error('Error details:', {
-        code: error.code,
-        message: error.message,
-        details: error.details,
-        hint: error.hint
-      })
-      // Rollback on error
-      fetchData()
-    } else {
-      console.log('✅ Stage updated successfully:', data)
+      console.error('Failed to update opportunity stage:', error)
+      fetchData() // Rollback
     }
   }
 
@@ -134,7 +129,7 @@ export default function Funil() {
 
         <FilterBar onRefresh={fetchData} />
 
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} key={stages.map(s => s.id).join(',')}>
           <div className="flex gap-4 overflow-x-auto pb-4">
             {stages.map(stage => (
               <KanbanColumn

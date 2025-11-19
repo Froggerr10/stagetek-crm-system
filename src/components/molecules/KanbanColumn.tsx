@@ -16,7 +16,7 @@ export default function KanbanColumn({ stage, opportunities, onCardClick }: Kanb
 
   return (
     <div className="flex-shrink-0 w-80">
-      <div className="bg-[rgba(255,255,255,0.05)] rounded-lg p-4">
+      <div ref={setNodeRef} className={`bg-[rgba(255,255,255,0.05)] rounded-lg p-4 transition-all ${isOver ? 'bg-[rgba(233,1,1,0.15)] border-2 border-dashed border-[#e90101]' : 'border-2 border-transparent'}`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {/* eslint-disable-next-line no-restricted-syntax */}
@@ -26,7 +26,7 @@ export default function KanbanColumn({ stage, opportunities, onCardClick }: Kanb
           </div>
           <span className="text-sm font-medium text-[#e90101]">{formatCurrency(totalValue)}</span>
         </div>
-        <div ref={setNodeRef} className={`space-y-3 min-h-[200px] ${isOver ? 'bg-white/5 rounded-lg' : ''}`}>
+        <div className="space-y-3 min-h-[200px]">
           <SortableContext items={opportunities.map(o => o.id)} strategy={verticalListSortingStrategy}>
             {opportunities.map(opp => <OpportunityCard key={opp.id} opportunity={opp} onClick={() => onCardClick(opp)} />)}
           </SortableContext>
