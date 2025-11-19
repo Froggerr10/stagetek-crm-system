@@ -105,15 +105,12 @@ export default function Funil() {
       stage_name: currentOpp?.stage?.name
     })
 
-    // Find target stage to verify it exists
+    // PROTECTION: Validate target stage exists (prevents cache issues)
     const targetStage = stages.find(s => s.id === newStageId)
-    console.log('🎪 All stages loaded:', stages.map(s => ({ id: s.id, name: s.name })))
-    console.log('🎯 Target stage:', targetStage ? { id: targetStage.id, name: targetStage.name } : 'NOT FOUND!')
 
     if (!targetStage) {
-      console.error('❌ CRITICAL: Target stage not found in stages array!')
-      console.error('Looking for stage ID:', newStageId)
-      console.error('Available stage IDs:', stages.map(s => s.id))
+      console.warn('⚠️ Invalid stage ID (probably cached data). Reloading...')
+      fetchData() // Refresh data to clear cache
       return
     }
 
