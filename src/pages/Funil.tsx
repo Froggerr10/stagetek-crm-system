@@ -41,8 +41,13 @@ export default function Funil() {
     if (status !== 'all') oppsQuery = oppsQuery.eq('status', status)
     oppsQuery = oppsQuery.order('created_at', { ascending: false })
 
+    // FIX: Filter stages by same funnel as opportunities
+    let stagesQuery = supabase.from('funnel_stages').select('*')
+    if (funnelId) stagesQuery = stagesQuery.eq('funnel_id', funnelId)
+    stagesQuery = stagesQuery.order('order_position')
+
     const [stagesRes, oppsRes, clientsRes] = await Promise.all([
-      supabase.from('funnel_stages').select('*').order('order_position'),
+      stagesQuery,
       oppsQuery,
       supabase.from('clients').select('*').order('name')
     ])
