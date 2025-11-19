@@ -49,6 +49,8 @@ export default function Funil() {
     stagesQuery = stagesQuery.order('order_position')
 
     console.log('📋 Executing queries...')
+    console.log('🔍 Stages query filter:', { funnelId, hasFilter: !!funnelId })
+
     const [stagesRes, oppsRes, clientsRes] = await Promise.all([
       stagesQuery,
       oppsQuery,
@@ -154,6 +156,8 @@ export default function Funil() {
   const activeOpp = activeId ? opportunities.find(o => o.id === activeId) : null
 
   if (loading) return <div className="flex justify-center items-center min-h-screen"><Spinner size="lg" /></div>
+
+  console.log('🎨 RENDERING Funil. Stages to render:', stages.map(s => ({ id: s.id, name: s.name })))
 
   return (
     <div className="p-6">
