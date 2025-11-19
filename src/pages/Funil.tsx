@@ -72,7 +72,9 @@ export default function Funil() {
     const targetStage = stages.find(s => s.id === newStageId)
 
     if (!targetStage) {
-      fetchData(true) // Force fresh data
+      console.warn('⚠️ Dados inválidos detectados (cache). Limpando...')
+      // FORCE HARD RELOAD - bypasses ALL caches (HTTP + React + Supabase)
+      setTimeout(() => window.location.reload(), 500)
       return
     }
 
