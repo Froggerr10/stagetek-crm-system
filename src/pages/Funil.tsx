@@ -33,9 +33,11 @@ export default function Funil() {
     setSearchParams(params)
   }, [funnelId, ownerId, status, setSearchParams])
 
-  const fetchData = async () => {
+  const fetchData = async (force = false) => {
     setLoading(true)
-    console.log('🔄 fetchData called with filters:', { funnelId, ownerId, status })
+
+    // FORCE FRESH DATA - bypass ALL caches
+    const timestamp = force ? `?t=${Date.now()}` : ''
 
     let oppsQuery = supabase.from('opportunities').select('*, client:clients(name, email), stage:funnel_stages(*)')
     if (funnelId) oppsQuery = oppsQuery.eq('funnel_id', funnelId)
@@ -43,13 +45,9 @@ export default function Funil() {
     if (status !== 'all') oppsQuery = oppsQuery.eq('status', status)
     oppsQuery = oppsQuery.order('created_at', { ascending: false })
 
-    // FIX: Filter stages by same funnel as opportunities
     let stagesQuery = supabase.from('funnel_stages').select('*')
     if (funnelId) stagesQuery = stagesQuery.eq('funnel_id', funnelId)
     stagesQuery = stagesQuery.order('order_position')
-
-    console.log('📋 Executing queries...')
-    console.log('🔍 Stages query filter:', { funnelId, hasFilter: !!funnelId })
 
     const [stagesRes, oppsRes, clientsRes] = await Promise.all([
       stagesQuery,
@@ -57,28 +55,10 @@ export default function Funil() {
       supabase.from('clients').select('*').order('name')
     ])
 
-    console.log('📊 Stages response:', {
-      data: stagesRes.data,
-      count: stagesRes.data?.length,
-      error: stagesRes.error,
-      funnelIdFilter: funnelId || 'NONE (all funnels)'
-    })
-
-    console.log('📊 Opportunities response:', {
-      count: oppsRes.data?.length,
-      error: oppsRes.error
-    })
-
-    if (stagesRes.error) {
-      console.error('❌ Stages query error:', stagesRes.error)
-    }
-
     if (stagesRes.data) setStages(stagesRes.data)
     if (oppsRes.data) setOpportunities(oppsRes.data as any)
     if (clientsRes.data) setClients(clientsRes.data)
     setLoading(false)
-
-    console.log('✅ fetchData completed. Stages loaded:', stagesRes.data?.length || 0)
   }
 
   const handleDragStart = (event: any) => setActiveId(event.active.id)
@@ -89,28 +69,10 @@ export default function Funil() {
 
     const opportunityId = active.id as string
     const newStageId = over.id as string
-
-    console.log('🎯 Drag-and-drop EVENT:', {
-      'opportunityId (active.id)': opportunityId,
-      'newStageId (over.id)': newStageId,
-      'over object': over
-    })
-
-    // Find current opportunity
-    const currentOpp = opportunities.find(o => o.id === opportunityId)
-    console.log('📊 Current opportunity:', {
-      id: currentOpp?.id,
-      title: currentOpp?.title,
-      current_stage_id: currentOpp?.stage_id,
-      stage_name: currentOpp?.stage?.name
-    })
-
-    // PROTECTION: Validate target stage exists (prevents cache issues)
     const targetStage = stages.find(s => s.id === newStageId)
 
     if (!targetStage) {
-      console.warn('⚠️ Invalid stage ID (probably cached data). Reloading...')
-      fetchData() // Refresh data to clear cache
+      fetchData(true) // Force fresh data
       return
     }
 
@@ -153,8 +115,6 @@ export default function Funil() {
   const activeOpp = activeId ? opportunities.find(o => o.id === activeId) : null
 
   if (loading) return <div className="flex justify-center items-center min-h-screen"><Spinner size="lg" /></div>
-
-  console.log('🎨 RENDERING Funil. Stages to render:', stages.map(s => ({ id: s.id, name: s.name })))
 
   return (
     <div className="p-6">
