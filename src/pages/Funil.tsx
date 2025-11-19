@@ -17,6 +17,7 @@ export default function Funil() {
   const { funnelId, ownerId, status } = useFilterStore()
   const [stages, setStages] = useState<FunnelStage[]>([])
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])
+  const [clients, setClients] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -40,12 +41,14 @@ export default function Funil() {
     if (status !== 'all') oppsQuery = oppsQuery.eq('status', status)
     oppsQuery = oppsQuery.order('created_at', { ascending: false })
 
-    const [stagesRes, oppsRes] = await Promise.all([
+    const [stagesRes, oppsRes, clientsRes] = await Promise.all([
       supabase.from('funnel_stages').select('*').order('order_position'),
-      oppsQuery
+      oppsQuery,
+      supabase.from('clients').select('*').order('name')
     ])
     if (stagesRes.data) setStages(stagesRes.data)
     if (oppsRes.data) setOpportunities(oppsRes.data as any)
+    if (clientsRes.data) setClients(clientsRes.data)
     setLoading(false)
   }
 
@@ -65,7 +68,7 @@ export default function Funil() {
 
   const handleCardClick = (opp: Opportunity) => navigate(`/oportunidades/${opp.id}`)
 
-  const handleModalSuccess = () => {
+  const handleModalClose = () => {
     setIsModalOpen(false)
     fetchData()
   }
@@ -104,7 +107,7 @@ export default function Funil() {
           <DragOverlay>{activeOpp && <OpportunityCard opportunity={activeOpp} onClick={() => {}} />}</DragOverlay>
         </DndContext>
 
-        <OportunidadeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSuccess={handleModalSuccess} />
+        {isModalOpen && <OportunidadeModal opportunity={null} clients={clients} stages={stages} onClose={handleModalClose} />}
       </div>
     </div>
   )
