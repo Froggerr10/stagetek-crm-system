@@ -36,14 +36,21 @@ export default function Oportunidades() {
       setOpportunities(oppsRes.data as any)
     } else {
       console.error('Erro ao buscar oportunidades:', oppsRes.error)
+      toast.error('Erro ao carregar oportunidades')
     }
 
     if (!clientsRes.error && clientsRes.data) {
       setClients(clientsRes.data)
+    } else if (clientsRes.error) {
+      console.error('Erro ao buscar clientes:', clientsRes.error)
+      toast.error('Erro ao carregar lista de clientes')
     }
 
     if (!stagesRes.error && stagesRes.data) {
       setStages(stagesRes.data)
+    } else if (stagesRes.error) {
+      console.error('Erro ao buscar estágios:', stagesRes.error)
+      toast.error('Erro ao carregar estágios do funil')
     }
 
     setLoading(false)

@@ -1,5 +1,7 @@
+import { Search } from 'lucide-react'
 import type { Client } from '@/types'
 import { useClienteForm } from '@/hooks/useClienteForm'
+import { useCNPJSearch } from '@/hooks/useCNPJSearch'
 import ModalHeader from '@/components/molecules/ModalHeader'
 import ModalActions from '@/components/molecules/ModalActions'
 import FormField from '@/components/molecules/FormField'
@@ -18,6 +20,14 @@ interface ClienteModalProps {
 
 export default function ClienteModal({ cliente, onClose, createCliente, updateCliente }: ClienteModalProps) {
   const { formData, setFormData, loading, handleSubmit } = useClienteForm({ cliente, onSuccess: onClose, createCliente, updateCliente })
+  const { searchCNPJ, searching } = useCNPJSearch()
+
+  const handleCNPJSearch = async () => {
+    const data = await searchCNPJ(formData.cnpj)
+    if (data) {
+      setFormData({ ...formData, ...data })
+    }
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -28,7 +38,18 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
           <FormField label="Nome da Empresa" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Ex: ACME Corporation Ltda" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField label="CNPJ" value={formData.cnpj} onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })} placeholder="00.000.000/0000-00" />
+            <div className="relative">
+              <FormField label="CNPJ" value={formData.cnpj} onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })} placeholder="00.000.000/0000-00" />
+              <button
+                type="button"
+                onClick={handleCNPJSearch}
+                disabled={searching || !formData.cnpj}
+                className="absolute right-2 top-9 p-2 text-gray-400 hover:text-[#e90101] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Buscar dados do CNPJ"
+              >
+                <Search className={`w-4 h-4 ${searching ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
             <FormField label="Email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="contato@empresa.com.br" />
           </div>
 

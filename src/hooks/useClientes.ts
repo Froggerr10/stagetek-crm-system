@@ -29,7 +29,7 @@ export const useClientes = (filters?: ClientFilters) => {
       }
 
       if (filters?.search) {
-        query = query.ilike('name', `%${filters.search}%`)
+        query = query.or(`name.ilike.%${filters.search}%,cnpj.ilike.%${filters.search}%,email.ilike.%${filters.search}%`)
       }
 
       const { data, error } = await query

@@ -9,6 +9,7 @@ import OpportunityCard from '@/components/organisms/OpportunityCard'
 import OportunidadeModal from '@/components/organisms/OportunidadeModal'
 import Spinner from '@/components/atoms/Spinner'
 import { Plus } from 'lucide-react'
+import toast from 'react-hot-toast'
 import type { Opportunity, FunnelStage } from '@/types'
 
 export default function Funil() {
@@ -52,9 +53,27 @@ export default function Funil() {
       supabase.from('clients').select('*').order('name')
     ])
 
-    if (stagesRes.data) setStages(stagesRes.data)
-    if (oppsRes.data) setOpportunities(oppsRes.data as any)
-    if (clientsRes.data) setClients(clientsRes.data)
+    if (stagesRes.error) {
+      console.error('Erro ao carregar estágios:', stagesRes.error)
+      toast.error('Erro ao carregar estágios do funil')
+    } else if (stagesRes.data) {
+      setStages(stagesRes.data)
+    }
+
+    if (oppsRes.error) {
+      console.error('Erro ao carregar oportunidades:', oppsRes.error)
+      toast.error('Erro ao carregar oportunidades')
+    } else if (oppsRes.data) {
+      setOpportunities(oppsRes.data as any)
+    }
+
+    if (clientsRes.error) {
+      console.error('Erro ao carregar clientes:', clientsRes.error)
+      toast.error('Erro ao carregar lista de clientes')
+    } else if (clientsRes.data) {
+      setClients(clientsRes.data)
+    }
+
     setLoading(false)
   }
 
@@ -98,6 +117,7 @@ export default function Funil() {
 
     if (error) {
       console.error('Failed to update opportunity stage:', error)
+      toast.error('Erro ao mover card para novo estágio')
       fetchData() // Rollback
     }
   }

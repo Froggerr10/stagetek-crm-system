@@ -1,22 +1,50 @@
-import { MoreVertical } from 'lucide-react'
-import Badge from '@/components/molecules/Badge'
-
-const data = [
-  { id: 1, name: 'Joao Silva', value: 'R$ 45.000', stage: 'negotiation', label: 'Negociacao', date: 'Hoje', avatar: 'JS' },
-  { id: 2, name: 'Maria Costa', value: 'R$ 12.500', stage: 'proposal', label: 'Proposta', date: 'Ontem', avatar: 'MC' },
-  { id: 3, name: 'Pedro Santos', value: 'R$ 8.200', stage: 'contact', label: 'Contato', date: '2 dias atras', avatar: 'PS' },
-  { id: 4, name: 'Ana Oliveira', value: 'R$ 28.700', stage: 'closing', label: 'Fechamento', date: '3 dias atras', avatar: 'AO' },
-  { id: 5, name: 'Carlos Lima', value: 'R$ 15.900', stage: 'lead', label: 'Lead', date: '1 semana atras', avatar: 'CL' }
-]
-
-const variants: Record<string, 'success' | 'warning' | 'info' | 'neutral'> = { lead: 'neutral', contact: 'info', proposal: 'warning', negotiation: 'warning', closing: 'success' }
+import { ChevronRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import Spinner from '@/components/atoms/Spinner'
+import OpportunityRow from '@/components/molecules/OpportunityRow'
+import { useRecentOpportunities } from '@/hooks/useRecentOpportunities'
 
 export default function OpportunitiesTable() {
+  const navigate = useNavigate()
+  const { opportunities, isLoading, error } = useRecentOpportunities(5)
+
+  if (isLoading) {
+    return (
+      <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6">
+        <div className="flex justify-center items-center py-12">
+          <Spinner size="md" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-500/10 border border-red-500/50 rounded-lg p-4">
+        <p className="text-red-400 text-sm">{error}</p>
+      </div>
+    )
+  }
+
+  if (opportunities.length === 0) {
+    return (
+      <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">Oportunidades Recentes</h3>
+        <p className="text-gray-400 text-center py-8">Nenhuma oportunidade encontrada</p>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold text-white">Oportunidades Recentes</h3>
-        <a href="#" className="text-sm text-[#e90101] hover:text-[#ff0101]">Ver todas �</a>
+        <button
+          onClick={() => navigate('/oportunidades')}
+          className="flex items-center gap-1 text-sm text-[#e90101] hover:text-[#ff0101] transition-colors"
+        >
+          Ver todas <ChevronRight className="w-4 h-4" />
+        </button>
       </div>
 
       <table className="w-full">
@@ -30,17 +58,8 @@ export default function OpportunitiesTable() {
           </tr>
         </thead>
         <tbody>
-          {data.map(o => (
-            <tr key={o.id} className="border-b border-white/5 hover:bg-white/5">
-              <td className="py-4 px-4 flex items-center gap-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-[#e90101] to-[#c10101] rounded-full flex items-center justify-center text-white text-xs font-semibold">{o.avatar}</div>
-                <span className="text-base font-medium text-white">{o.name}</span>
-              </td>
-              <td className="py-4 px-4 text-base font-semibold text-white">{o.value}</td>
-              <td className="py-4 px-4"><Badge variant={variants[o.stage]}>{o.label}</Badge></td>
-              <td className="py-4 px-4 text-base text-gray-300">{o.date}</td>
-              <td className="py-4 px-4"><button className="p-3 text-gray-300 hover:text-white"><MoreVertical className="w-4 h-4" /></button></td>
-            </tr>
+          {opportunities.map(opp => (
+            <OpportunityRow key={opp.id} opportunity={opp} />
           ))}
         </tbody>
       </table>

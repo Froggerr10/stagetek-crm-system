@@ -42,7 +42,18 @@ export default function DetalheOportunidade() {
       toast.error('Erro ao carregar oportunidade')
       navigate('/oportunidades')
     } else {
-      setOpportunity(data as any)
+      const oppWithOwner = data as any
+
+      if (oppWithOwner.assigned_to) {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user && user.id === oppWithOwner.assigned_to) {
+          oppWithOwner.owner_name = user.email || user.id
+        } else {
+          oppWithOwner.owner_name = `Usuário (${oppWithOwner.assigned_to.slice(0, 8)}...)`
+        }
+      }
+
+      setOpportunity(oppWithOwner)
     }
     setLoading(false)
   }
