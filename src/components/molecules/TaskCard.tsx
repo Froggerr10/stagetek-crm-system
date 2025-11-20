@@ -22,9 +22,20 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleComplete }: {
           <p className={`text-xs mt-2 ${isOverdue ? 'text-red-500 font-medium' : 'text-gray-400'}`}>{dueText}</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={() => onToggleComplete(task.id, completed)} className="text-gray-400 hover:text-[#e90101]">{completed ? <CheckCircle className="w-5 h-5" /> : <Circle className="w-5 h-5" />}</button>
-          <button onClick={() => onEdit(task)} className="text-gray-400 hover:text-[#e90101]"><Pencil className="w-4 h-4" /></button>
-          <button onClick={() => onDelete(task.id)} className="text-gray-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+          <button onClick={() => onToggleComplete(task.id, completed)}
+            className="p-1 text-gray-400 hover:text-[#e90101] hover:bg-white/5 rounded transition-colors"
+            aria-label={completed ? 'Marcar como pendente' : 'Marcar como concluída'}
+            title={completed ? 'Marcar como pendente' : 'Marcar como concluída'}>
+            {completed ? <CheckCircle className="w-5 h-5" /> : <Circle className="w-5 h-5" />}
+          </button>
+          <button onClick={() => onEdit(task)} className="p-1 text-gray-400 hover:text-[#e90101] hover:bg-white/5 rounded transition-colors"
+            aria-label="Editar tarefa" title="Editar tarefa">
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button onClick={() => onDelete(task.id)} className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-950/30 rounded transition-colors"
+            aria-label="Excluir tarefa" title="Excluir tarefa">
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </div>

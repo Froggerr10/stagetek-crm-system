@@ -16,8 +16,22 @@ export default function ContactCard({ contact, onEdit, onDelete }: ContactCardPr
           {contact.is_primary && <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />}
         </div>
         <div className="flex gap-2">
-          <button onClick={() => onEdit(contact)} className="text-gray-400 hover:text-white"><Edit className="w-4 h-4" /></button>
-          <button onClick={() => onDelete(contact.id)} className="text-gray-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+          <button
+            onClick={() => onEdit(contact)}
+            className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded transition-colors"
+            aria-label="Editar contato"
+            title="Editar contato"
+          >
+            <Edit className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => onDelete(contact.id)}
+            className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-950/30 rounded transition-colors"
+            aria-label="Excluir contato"
+            title="Excluir contato"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         </div>
       </div>
       {contact.position && <p className="text-sm text-gray-400 flex items-center gap-2 mb-2"><User className="w-3 h-3" />{contact.position}</p>}

@@ -24,8 +24,8 @@ export default function ClientTableRow({ cliente, onEdit, onDelete }: ClientTabl
         </Badge>
       </td>
       <td className={`${td} text-right space-x-4`}>
-        <Button variant="ghost" size="sm" onClick={() => onEdit(cliente)}>Editar</Button>
-        <Button variant="ghost" size="sm" onClick={() => onDelete(cliente.id)} className="text-red-400 hover:text-red-300">Excluir</Button>
+        <Button variant="outline" size="sm" onClick={() => onEdit(cliente)}>Editar</Button>
+        <Button variant="outline" size="sm" onClick={() => onDelete(cliente.id)} className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-950/50">Excluir</Button>
       </td>
     </tr>
   )

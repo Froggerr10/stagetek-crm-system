@@ -24,12 +24,15 @@ export default function QuickActionsBar({ opportunityId, clientId, clientName, c
     } catch { toast.error('Erro ao criar tarefa') }
   }
   const handleQuickEmail = (e: React.MouseEvent) => { e.stopPropagation(); setIsEmailModalOpen(true) }
-  const btnClass = "flex-1 flex items-center justify-center gap-2 px-3 py-2 text-gray-400 hover:text-blue-400 hover:bg-blue-950/30 rounded-md transition-colors min-h-[44px]"
   return (
     <>
       <div className="flex gap-2 pt-2 border-t border-white/10">
-        <Button onClick={handleQuickCall} className={btnClass} title="Ligar" variant="ghost"><Phone className="w-4 h-4" /></Button>
-        <Button onClick={handleQuickEmail} className={btnClass} title="Enviar Email" variant="ghost"><Mail className="w-4 h-4" /></Button>
+        <Button onClick={handleQuickCall} variant="outline" size="sm" className="flex-1">
+          <Phone className="w-4 h-4 mr-2" />Ligar
+        </Button>
+        <Button onClick={handleQuickEmail} variant="outline" size="sm" className="flex-1">
+          <Mail className="w-4 h-4 mr-2" />Email
+        </Button>
       </div>
       {isEmailModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80" onClick={() => setIsEmailModalOpen(false)}>

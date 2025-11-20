@@ -34,7 +34,12 @@ export default function OpportunityRow({ opportunity }: Props) {
         {formatDistanceToNow(new Date(opportunity.created_at), { addSuffix: true, locale: ptBR })}
       </td>
       <td className="py-4 px-4">
-        <button className="p-3 text-gray-300 hover:text-white" onClick={(e) => e.stopPropagation()}>
+        <button
+          className="p-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-md transition-colors"
+          onClick={(e) => e.stopPropagation()}
+          aria-label="Mais opções"
+          title="Mais opções"
+        >
           <MoreVertical className="w-4 h-4" />
         </button>
       </td>
