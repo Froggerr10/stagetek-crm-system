@@ -14,7 +14,7 @@ export default function ClientCard({ cliente, onEdit, onDelete }: ClientCardProp
           <h3 className="font-semibold text-white">{cliente.name}</h3>
           <p className="text-sm text-gray-400" title={cliente.cnpj || 'Sem CNPJ'}>{cliente.cnpj ? maskCNPJ(cliente.cnpj) : 'Sem CNPJ'}</p>
         </div>
-        <Badge variant={cliente.status === 'active' ? 'success' : 'default'}>
+        <Badge variant={cliente.status === 'active' ? 'success' : 'neutral'}>
           {cliente.status === 'active' ? 'Ativo' : 'Inativo'}
         </Badge>
       </div>
@@ -33,10 +33,10 @@ export default function ClientCard({ cliente, onEdit, onDelete }: ClientCardProp
         )}
       </div>
       <div className="flex justify-end space-x-3">
-        <Button variant="outline" size="sm" onClick={onEdit}>
+        <Button variant="secondary" size="sm" onClick={onEdit}>
           <Edit className="w-4 h-4 mr-2" />Editar
         </Button>
-        <Button variant="outline" size="sm" onClick={onDelete} className="text-red-400 hover:text-red-300 hover:bg-red-950">
+        <Button variant="secondary" size="sm" onClick={onDelete} className="text-red-400 hover:text-red-300 hover:bg-red-950">
           <Trash2 className="w-4 h-4 mr-2" />Excluir
         </Button>
       </div>

@@ -6,7 +6,7 @@ interface Address {
   street: string
   city: string
   state: string
-  zipcode: string
+  zipCode: string
 }
 
 export function useAddressWithCEP(address: Address, onChange: (address: Address) => void) {
@@ -14,19 +14,19 @@ export function useAddressWithCEP(address: Address, onChange: (address: Address)
   const { searchCEP, loading } = useCEPSearch()
 
   useEffect(() => {
-    cepMask.setValue(address.zipcode)
+    cepMask.setValue(address.zipCode)
   }, [])
 
   const handleCEPChange = async (value: string) => {
     const masked = cepMask.handleChange(value)
-    onChange({ ...address, zipcode: masked })
+    onChange({ ...address, zipCode: masked })
 
     if (masked.replace(/\D/g, '').length === 8) {
       const data = await searchCEP(masked)
       if (data) {
         onChange({
           ...address,
-          zipcode: masked,
+          zipCode: masked,
           street: data.street || address.street,
           city: data.city || address.city,
           state: data.state || address.state

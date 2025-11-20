@@ -5,13 +5,13 @@ import StatusSelect from '@/components/molecules/StatusSelect'
 
 interface ClienteFormData {
   name: string; cnpj: string; email: string; phone: string; website: string
-  address: { street: string; city: string; state: string; zipcode: string }; status: string
+  address: { street: string; city: string; state: string; zipCode: string }; status: 'active' | 'inactive'
 }
 
 interface ClienteFormFieldsProps {
   formData: ClienteFormData; onFieldChange: (field: keyof ClienteFormData, value: string) => void
   onCNPJChange: (value: string) => void; onPhoneChange: (value: string) => void
-  onAddressChange: (address: ClienteFormData['address']) => void; onStatusChange: (status: string) => void
+  onAddressChange: (address: ClienteFormData['address']) => void; onStatusChange: (status: 'active' | 'inactive') => void
   onCNPJBlur: () => void; onEmailBlur: () => void; onPhoneBlur: () => void; onCNPJSearch: () => void
   cnpjError?: string; emailError?: string; phoneError?: string
   cnpjMaxLength: number; phoneMaxLength: number; searching: boolean

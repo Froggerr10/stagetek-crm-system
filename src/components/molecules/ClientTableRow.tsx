@@ -19,13 +19,13 @@ export default function ClientTableRow({ cliente, onEdit, onDelete }: ClientTabl
       <td className={`${td} text-gray-300`} title={cliente.email || '-'}>{cliente.email ? maskEmail(cliente.email) : '-'}</td>
       <td className={`${td} text-gray-300`} title={cliente.phone || '-'}>{cliente.phone ? maskPhone(cliente.phone) : '-'}</td>
       <td className={td}>
-        <Badge variant={cliente.status === 'active' ? 'success' : 'default'}>
+        <Badge variant={cliente.status === 'active' ? 'success' : 'neutral'}>
           {cliente.status === 'active' ? 'Ativo' : 'Inativo'}
         </Badge>
       </td>
       <td className={`${td} text-right space-x-4`}>
-        <Button variant="outline" size="sm" onClick={() => onEdit(cliente)}>Editar</Button>
-        <Button variant="outline" size="sm" onClick={() => onDelete(cliente.id)} className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-950/50">Excluir</Button>
+        <Button variant="secondary" size="sm" onClick={() => onEdit(cliente)}>Editar</Button>
+        <Button variant="secondary" size="sm" onClick={() => onDelete(cliente.id)} className="text-red-400 hover:text-red-300 border-red-500/30 hover:bg-red-950/50">Excluir</Button>
       </td>
     </tr>
   )

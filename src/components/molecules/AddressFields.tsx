@@ -3,8 +3,8 @@ import FormField from '@/components/molecules/FormField'
 import CEPField from '@/components/molecules/CEPField'
 
 interface AddressFieldsProps {
-  address: { street: string; city: string; state: string; zipcode: string }
-  onChange: (address: { street: string; city: string; state: string; zipcode: string }) => void
+  address: { street: string; city: string; state: string; zipCode: string }
+  onChange: (address: { street: string; city: string; state: string; zipCode: string }) => void
 }
 
 export default function AddressFields({ address, onChange }: AddressFieldsProps) {
@@ -34,7 +34,7 @@ export default function AddressFields({ address, onChange }: AddressFieldsProps)
             placeholder="SP"
           />
           <CEPField
-            value={address.zipcode}
+            value={address.zipCode}
             onChange={handleCEPChange}
             maxLength={maxLength}
             loading={loading}
