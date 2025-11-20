@@ -1,14 +1,21 @@
 import { useState } from 'react'
-import { Plus, Edit, Trash2, ChevronRight } from 'lucide-react'
+import { Plus, Edit, Trash2, ChevronRight, Check, X } from 'lucide-react'
 import { useFunnels } from '@/hooks/useFunnels'
+import { useConfirm } from '@/hooks/useConfirm'
+import ConfirmDialog from '@/components/molecules/ConfirmDialog'
 import Spinner from '@/components/atoms/Spinner'
 
 export default function ConfigFunis() {
-  const { funnels, loading, createFunnel, deleteFunnel, createStage, deleteStage } = useFunnels()
+  const { funnels, loading, createFunnel, updateFunnel, deleteFunnel, createStage, updateStage, deleteStage } = useFunnels()
+  const { isOpen, options, confirm, handleConfirm, handleCancel } = useConfirm()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newFunnelName, setNewFunnelName] = useState('')
   const [newStageModal, setNewStageModal] = useState<{ funnelId: string; open: boolean } | null>(null)
   const [newStageName, setNewStageName] = useState('')
+  const [editingFunnelId, setEditingFunnelId] = useState<string | null>(null)
+  const [editingFunnelName, setEditingFunnelName] = useState('')
+  const [editingStageId, setEditingStageId] = useState<string | null>(null)
+  const [editingStageName, setEditingStageName] = useState('')
 
   const handleCreateFunnel = async () => {
     if (!newFunnelName.trim()) return
@@ -18,9 +25,27 @@ export default function ConfigFunis() {
   }
 
   const handleDeleteFunnel = async (id: string, name: string) => {
-    if (confirm(`Excluir o funil "${name}"? Esta ação não pode ser desfeita.`)) {
+    const confirmed = await confirm({
+      title: 'Excluir Funil',
+      message: `Tem certeza que deseja excluir o funil "${name}"? Esta ação não pode ser desfeita.`,
+      confirmText: 'Excluir',
+      variant: 'danger'
+    })
+    if (confirmed) {
       await deleteFunnel(id)
     }
+  }
+
+  const handleSaveFunnelName = async (id: string) => {
+    if (!editingFunnelName.trim()) return
+    await updateFunnel(id, { name: editingFunnelName })
+    setEditingFunnelId(null)
+  }
+
+  const handleSaveStageName = async (id: string) => {
+    if (!editingStageName.trim()) return
+    await updateStage(id, { name: editingStageName })
+    setEditingStageId(null)
   }
 
   const handleCreateStage = async () => {
@@ -39,7 +64,13 @@ export default function ConfigFunis() {
   }
 
   const handleDeleteStage = async (stageId: string, stageName: string) => {
-    if (confirm(`Excluir a etapa "${stageName}"?`)) {
+    const confirmed = await confirm({
+      title: 'Excluir Etapa',
+      message: `Tem certeza que deseja excluir a etapa "${stageName}"? Esta ação não pode ser desfeita.`,
+      confirmText: 'Excluir',
+      variant: 'danger'
+    })
+    if (confirmed) {
       await deleteStage(stageId)
     }
   }
@@ -70,9 +101,45 @@ export default function ConfigFunis() {
           >
             {/* Header do Funil */}
             <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-xl md:text-2xl font-bold text-white">{funnel.name}</h2>
-                <p className="text-gray-400 text-sm mt-1">{funnel.stages.length} etapas configuradas</p>
+              <div className="flex items-center gap-3 flex-1">
+                {editingFunnelId === funnel.id ? (
+                  <div className="flex items-center gap-2 flex-1">
+                    <input
+                      type="text"
+                      value={editingFunnelName}
+                      onChange={(e) => setEditingFunnelName(e.target.value)}
+                      className="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-xl font-bold focus:ring-2 focus:ring-[#e90101] flex-1 max-w-md"
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleSaveFunnelName(funnel.id)
+                        if (e.key === 'Escape') setEditingFunnelId(null)
+                      }}
+                    />
+                    <button onClick={() => handleSaveFunnelName(funnel.id)} className="p-2 text-green-400 hover:bg-green-400/10 rounded-lg transition-all">
+                      <Check className="w-5 h-5" />
+                    </button>
+                    <button onClick={() => setEditingFunnelId(null)} className="p-2 text-gray-400 hover:bg-white/10 rounded-lg transition-all">
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <h2 className="text-xl md:text-2xl font-bold text-white">{funnel.name}</h2>
+                      <p className="text-gray-400 text-sm mt-1">{funnel.stages.length} etapas configuradas</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setEditingFunnelId(funnel.id)
+                        setEditingFunnelName(funnel.name)
+                      }}
+                      className="p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                      title="Editar nome do funil"
+                    >
+                      <Edit className="w-4 h-4" />
+                    </button>
+                  </>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => handleDeleteFunnel(funnel.id, funnel.name)} className="p-2 text-gray-400 hover:text-[#e90101] hover:bg-[#e90101]/10 rounded-lg transition-all">
@@ -99,19 +166,57 @@ export default function ConfigFunis() {
                     </div>
 
                     {/* Nome da Etapa */}
-                    <div className="text-center">
-                      <p className="text-white font-semibold text-sm">{stage.name}</p>
-                      <p className="text-gray-500 text-xs mt-1">Etapa {stage.order_position}</p>
-                    </div>
+                    {editingStageId === stage.id ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <input
+                          type="text"
+                          value={editingStageName}
+                          onChange={(e) => setEditingStageName(e.target.value)}
+                          className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm font-semibold focus:ring-2 focus:ring-[#e90101] text-center"
+                          autoFocus
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleSaveStageName(stage.id)
+                            if (e.key === 'Escape') setEditingStageId(null)
+                          }}
+                        />
+                        <div className="flex gap-1">
+                          <button onClick={() => handleSaveStageName(stage.id)} className="p-1 text-green-400 hover:bg-green-400/10 rounded">
+                            <Check className="w-3 h-3" />
+                          </button>
+                          <button onClick={() => setEditingStageId(null)} className="p-1 text-gray-400 hover:bg-white/10 rounded">
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <div className="flex items-center gap-1 justify-center">
+                          <p className="text-white font-semibold text-sm">{stage.name}</p>
+                          <button
+                            onClick={() => {
+                              setEditingStageId(stage.id)
+                              setEditingStageName(stage.name)
+                            }}
+                            className="opacity-0 group-hover/stage:opacity-100 transition-opacity p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded"
+                            title="Editar nome"
+                          >
+                            <Edit className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <p className="text-gray-500 text-xs mt-1">Etapa {stage.order_position}</p>
+                      </div>
+                    )}
 
                     {/* Botão Delete (aparece no hover) */}
-                    <button
-                      onClick={() => handleDeleteStage(stage.id, stage.name)}
-                      className="opacity-0 group-hover/stage:opacity-100 transition-opacity p-1.5 text-gray-400 hover:text-[#e90101] hover:bg-[#e90101]/10 rounded-lg"
-                      title="Excluir etapa"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    {editingStageId !== stage.id && (
+                      <button
+                        onClick={() => handleDeleteStage(stage.id, stage.name)}
+                        className="opacity-0 group-hover/stage:opacity-100 transition-opacity p-1.5 text-gray-400 hover:text-[#e90101] hover:bg-[#e90101]/10 rounded-lg"
+                        title="Excluir etapa"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
 
                   {/* Conector (seta) */}
@@ -216,6 +321,19 @@ export default function ConfigFunis() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* ConfirmDialog */}
+      {isOpen && (
+        <ConfirmDialog
+          title={options.title}
+          message={options.message}
+          confirmText={options.confirmText}
+          cancelText={options.cancelText}
+          variant={options.variant}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   )

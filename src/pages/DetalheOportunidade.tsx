@@ -15,6 +15,9 @@ import ContactList from '@/components/organisms/ContactList'
 import EmailComposer from '@/components/organisms/EmailComposer'
 import ProductLink from '@/components/organisms/ProductLink'
 import FileManager from '@/components/organisms/FileManager'
+import OportunidadeModal from '@/components/organisms/OportunidadeModal'
+import ConfirmDialog from '@/components/molecules/ConfirmDialog'
+import { useConfirm } from '@/hooks/useConfirm'
 import type { Opportunity, Client, FunnelStage } from '@/types'
 
 type TabType = 'historico' | 'email' | 'tarefas' | 'contatos' | 'produtos' | 'arquivos'
@@ -22,27 +25,32 @@ type TabType = 'historico' | 'email' | 'tarefas' | 'contatos' | 'produtos' | 'ar
 export default function DetalheOportunidade() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { isOpen, options, confirm, handleConfirm, handleCancel } = useConfirm()
   const [opportunity, setOpportunity] = useState<Opportunity | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<TabType>('historico')
   const [showBanner, setShowBanner] = useState(true)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [clients, setClients] = useState<Client[]>([])
+  const [stages, setStages] = useState<FunnelStage[]>([])
 
   useEffect(() => { fetchOpportunity() }, [id])
 
   const fetchOpportunity = async () => {
     if (!id) return
     setLoading(true)
-    const { data, error } = await supabase
-      .from('opportunities')
-      .select('*, client:clients(*), stage:funnel_stages(*)')
-      .eq('id', id)
-      .single()
 
-    if (error) {
+    const [oppRes, clientsRes, stagesRes] = await Promise.all([
+      supabase.from('opportunities').select('*, client:clients(*), stage:funnel_stages(*)').eq('id', id).single(),
+      supabase.from('clients').select('*').order('name'),
+      supabase.from('funnel_stages').select('*').order('order_position')
+    ])
+
+    if (oppRes.error) {
       toast.error('Erro ao carregar oportunidade')
       navigate('/oportunidades')
     } else {
-      const oppWithOwner = data as any
+      const oppWithOwner = oppRes.data as any
 
       if (oppWithOwner.assigned_to) {
         const { data: { user } } = await supabase.auth.getUser()
@@ -55,11 +63,23 @@ export default function DetalheOportunidade() {
 
       setOpportunity(oppWithOwner)
     }
+
+    if (clientsRes.data) setClients(clientsRes.data)
+    if (stagesRes.data) setStages(stagesRes.data)
+
     setLoading(false)
   }
 
   const handleWin = async () => {
-    if (!id || !confirm('Marcar esta oportunidade como ganha?')) return
+    if (!id) return
+    const confirmed = await confirm({
+      title: 'Marcar como Venda Ganha',
+      message: 'Confirmar que esta oportunidade foi ganha?',
+      confirmText: 'Sim, Marcar',
+      variant: 'info'
+    })
+    if (!confirmed) return
+
     const { error } = await supabase
       .from('opportunities')
       .update({ status: 'won', won_at: new Date().toISOString() })
@@ -69,18 +89,34 @@ export default function DetalheOportunidade() {
   }
 
   const handleLoss = async () => {
-    const reason = prompt('Motivo da perda:')
-    if (!id || !reason) return
+    if (!id) return
+    const confirmed = await confirm({
+      title: 'Marcar como Venda Perdida',
+      message: 'Confirmar que esta oportunidade foi perdida?',
+      confirmText: 'Sim, Marcar',
+      variant: 'warning'
+    })
+    if (!confirmed) return
+
+    const reason = prompt('Motivo da perda (opcional):')
     const { error } = await supabase
       .from('opportunities')
-      .update({ status: 'lost', lost_at: new Date().toISOString(), lost_reason: reason })
+      .update({ status: 'lost', lost_at: new Date().toISOString(), lost_reason: reason || '' })
       .eq('id', id)
     if (error) toast.error('Erro ao atualizar')
     else { toast.success('Oportunidade marcada como perdida'); fetchOpportunity() }
   }
 
   const handleDelete = async () => {
-    if (!id || !confirm('Excluir esta oportunidade permanentemente?')) return
+    if (!id) return
+    const confirmed = await confirm({
+      title: 'Excluir Oportunidade',
+      message: 'Tem certeza que deseja excluir esta oportunidade permanentemente? Esta ação não pode ser desfeita.',
+      confirmText: 'Excluir',
+      variant: 'danger'
+    })
+    if (!confirmed) return
+
     const { error } = await supabase.from('opportunities').delete().eq('id', id)
     if (error) toast.error('Erro ao excluir')
     else { toast.success('Oportunidade excluída'); navigate('/oportunidades') }
@@ -127,7 +163,7 @@ export default function DetalheOportunidade() {
             <div className="flex gap-2">
               <button onClick={handleWin} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2"><ThumbsUp className="w-4 h-4" />Marcar Venda</button>
               <button onClick={handleLoss} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-2"><ThumbsDown className="w-4 h-4" />Marcar Perda</button>
-              <button className="p-2 text-gray-400 hover:text-white"><Settings className="w-5 h-5" /></button>
+              <button onClick={() => setShowEditModal(true)} className="p-2 text-gray-400 hover:text-white" title="Editar oportunidade"><Settings className="w-5 h-5" /></button>
               <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
             </div>
           </div>
@@ -195,6 +231,30 @@ export default function DetalheOportunidade() {
           </aside>
         </div>
       </div>
+
+      {showEditModal && (
+        <OportunidadeModal
+          opportunity={opportunity}
+          clients={clients}
+          stages={stages}
+          onClose={() => {
+            setShowEditModal(false)
+            fetchOpportunity()
+          }}
+        />
+      )}
+
+      {isOpen && (
+        <ConfirmDialog
+          title={options.title}
+          message={options.message}
+          confirmText={options.confirmText}
+          cancelText={options.cancelText}
+          variant={options.variant}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
+      )}
     </div>
   )
 }
