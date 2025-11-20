@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Heart } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/hooks/useAuth'
@@ -121,7 +121,7 @@ export default function Login() {
         </div>
 
         <footer className="mt-8 pt-6 border-t border-white/10 text-center">
-          <p className="text-[11px] text-gray-500">Built with ❤️ following Protocol Notecraft™</p>
+          <p className="text-[11px] text-gray-500">Built with <Heart className="inline w-3 h-3 text-stagetek-red fill-stagetek-red" /> following Protocol Notecraft™</p>
           <p className="text-[11px] text-gray-500 mt-1">STAGETEK Engineering Team</p>
         </footer>
       </div>

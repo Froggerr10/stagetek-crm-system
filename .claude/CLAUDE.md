@@ -70,10 +70,10 @@
 ## ⚠️ PROTOCOL NOTECRAFT™ (RÍGIDO)
 
 ### Limites de Linhas
-- Atoms: ≤20 linhas
-- Molecules: ≤35 linhas
-- Organisms: ≤50 linhas
-- Templates: ≤30 linhas
+- Atoms: ≤30 linhas
+- Molecules: ≤50 linhas
+- Organisms: ≤75 linhas
+- Templates: ≤40 linhas
 
 ### Regras Absolutas
 - ✅ TypeScript strict (zero `any`)
