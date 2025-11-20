@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { pdf } from '@react-pdf/renderer'
 import QuotationPDF from '@/components/templates/QuotationPDF'
 import { sendQuotationEmail } from '@/lib/email'
+import toast from 'react-hot-toast'
 import type { QuotationItem } from '@/types'
 
 export function useEmailSending() {
@@ -30,11 +31,11 @@ export function useEmailSending() {
       // 4. Update status to 'sent'
       await supabase.from('quotations').update({ status: 'sent', sent_at: new Date().toISOString(), sent_to_email: email }).eq('id', quotation.id)
 
-      alert(`Email enviado para ${email} com sucesso!`)
+      toast.success(`Email enviado para ${email} com sucesso!`)
       navigate(-1)
     } catch (error: any) {
       console.error('Erro:', error)
-      alert(error.message || 'Erro ao enviar email. Verifique a configuração do Resend.')
+      toast.error(error.message || 'Erro ao enviar email. Verifique a configuração do Resend.')
     } finally {
       setSending(false)
     }

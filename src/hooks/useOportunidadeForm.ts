@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import toast from 'react-hot-toast'
 import type { Opportunity, FunnelStage } from '@/types'
 
 export function useOportunidadeForm(opportunity: Opportunity | null, stages: FunnelStage[], onSuccess: () => void) {
@@ -72,7 +73,7 @@ export function useOportunidadeForm(opportunity: Opportunity | null, stages: Fun
       if (error) throw error
       onSuccess()
     } catch (error: any) {
-      alert(error.message)
+      toast.error(error.message)
     } finally {
       setLoading(false)
     }

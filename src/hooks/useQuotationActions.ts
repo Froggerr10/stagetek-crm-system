@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import { usePDFGeneration } from '@/hooks/usePDFGeneration.tsx'
+import toast from 'react-hot-toast'
 import type { QuotationItem } from '@/types'
 
 export function useQuotationActions() {
@@ -12,7 +13,7 @@ export function useQuotationActions() {
   const saveDraft = async (items: QuotationItem[], subtotal: number, freight: number, total: number, opportunityId?: string) => {
     const { error } = await supabase.from('quotations').insert({ opportunity_id: opportunityId || null, items: JSON.stringify(items), subtotal, freight, total, status: 'draft', created_by: user?.id })
     if (!error) {
-      alert('Cotação salva como rascunho!')
+      toast.success('Cotação salva como rascunho!')
       navigate(-1)
     }
   }
