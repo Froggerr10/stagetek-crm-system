@@ -1,12 +1,11 @@
-import { Search } from 'lucide-react'
 import type { Client } from '@/types'
 import { useClienteForm } from '@/hooks/useClienteForm'
 import { useCNPJSearch } from '@/hooks/useCNPJSearch'
+import { useInputMask } from '@/hooks/useInputMask'
+import { useFieldValidation } from '@/hooks/useFieldValidation'
 import ModalHeader from '@/components/molecules/ModalHeader'
 import ModalActions from '@/components/molecules/ModalActions'
-import FormField from '@/components/molecules/FormField'
-import AddressFields from '@/components/molecules/AddressFields'
-import StatusSelect from '@/components/molecules/StatusSelect'
+import ClienteFormFields from '@/components/organisms/ClienteFormFields'
 
 type CreateClienteFn = (data: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => Promise<Client | undefined>
 type UpdateClienteFn = (id: string, data: Partial<Client>) => Promise<Client | undefined>
@@ -21,12 +20,27 @@ interface ClienteModalProps {
 export default function ClienteModal({ cliente, onClose, createCliente, updateCliente }: ClienteModalProps) {
   const { formData, setFormData, loading, handleSubmit } = useClienteForm({ cliente, onSuccess: onClose, createCliente, updateCliente })
   const { searchCNPJ, searching } = useCNPJSearch()
+  const cnpjMask = useInputMask('cnpj')
+  const phoneMask = useInputMask('phone')
+  const { validate, getError } = useFieldValidation()
 
   const handleCNPJSearch = async () => {
     const data = await searchCNPJ(formData.cnpj)
     if (data) {
       setFormData({ ...formData, ...data })
+      cnpjMask.setValue(data.cnpj)
+      phoneMask.setValue(data.phone)
     }
+  }
+
+  const handleCNPJChange = (value: string) => {
+    const masked = cnpjMask.handleChange(value)
+    setFormData({ ...formData, cnpj: masked })
+  }
+
+  const handlePhoneChange = (value: string) => {
+    const masked = phoneMask.handleChange(value)
+    setFormData({ ...formData, phone: masked })
   }
 
   return (
@@ -35,31 +49,24 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
         <ModalHeader title={cliente ? 'Editar Cliente' : 'Novo Cliente'} onClose={onClose} />
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          <FormField label="Nome da Empresa" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Ex: ACME Corporation Ltda" />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="relative">
-              <FormField label="CNPJ" value={formData.cnpj} onChange={(e) => setFormData({ ...formData, cnpj: e.target.value })} placeholder="00.000.000/0000-00" />
-              <button
-                type="button"
-                onClick={handleCNPJSearch}
-                disabled={searching || !formData.cnpj}
-                className="absolute right-2 top-9 p-2 text-gray-400 hover:text-[#e90101] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                title="Buscar dados do CNPJ"
-              >
-                <Search className={`w-4 h-4 ${searching ? 'animate-spin' : ''}`} />
-              </button>
-            </div>
-            <FormField label="Email" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="contato@empresa.com.br" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField label="Telefone" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="(11) 98765-4321" />
-            <FormField label="Website" type="url" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} placeholder="https://empresa.com.br" />
-          </div>
-
-          <AddressFields address={formData.address} onChange={(address) => setFormData({ ...formData, address })} />
-          <StatusSelect value={formData.status} onChange={(status) => setFormData({ ...formData, status })} />
+          <ClienteFormFields
+            formData={formData}
+            onFieldChange={(field, value) => setFormData({ ...formData, [field]: value })}
+            onCNPJChange={handleCNPJChange}
+            onPhoneChange={handlePhoneChange}
+            onAddressChange={(address) => setFormData({ ...formData, address })}
+            onStatusChange={(status) => setFormData({ ...formData, status })}
+            onCNPJBlur={() => validate('cnpj', formData.cnpj, 'cnpj')}
+            onEmailBlur={() => validate('email', formData.email, 'email')}
+            onPhoneBlur={() => validate('phone', formData.phone, 'phone')}
+            onCNPJSearch={handleCNPJSearch}
+            cnpjError={getError('cnpj')}
+            emailError={getError('email')}
+            phoneError={getError('phone')}
+            cnpjMaxLength={cnpjMask.maxLength}
+            phoneMaxLength={phoneMask.maxLength}
+            searching={searching}
+          />
           <ModalActions onCancel={onClose} loading={loading} submitText={cliente ? 'Atualizar' : 'Criar Cliente'} />
         </form>
       </div>
