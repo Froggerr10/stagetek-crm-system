@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { useConfirm } from '@/hooks/useConfirm'
 import ContactCard from '@/components/molecules/ContactCard'
 import ContactModal from '@/components/molecules/ContactModal'
 import Spinner from '@/components/atoms/Spinner'
 import type { Contact, ContactFormData } from '@/types'
 
 export default function ContactList({ opportunityId, clientId }: { opportunityId?: string; clientId?: string }) {
+  const confirm = useConfirm()
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [modalOpen, setModalOpen] = useState(false)
@@ -41,7 +43,13 @@ export default function ContactList({ opportunityId, clientId }: { opportunityId
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Excluir este contato?')) return
+    const confirmed = await confirm({
+      title: 'Excluir Contato',
+      message: 'Tem certeza que deseja excluir este contato?',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar'
+    })
+    if (!confirmed) return
     const { error } = await supabase.from('contacts').delete().eq('id', id)
     if (error) toast.error('Erro ao excluir')
     else { toast.success('Contato excluído'); fetchContacts() }

@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useClientes } from '@/hooks/useClientes'
+import toast from 'react-hot-toast'
+import { useConfirm } from '@/hooks/useConfirm'
 import type { Client } from '@/types'
 import Button from '@/components/molecules/Button'
 import Spinner from '@/components/atoms/Spinner'
@@ -10,6 +12,7 @@ import ClientTable from '@/components/organisms/ClientTable'
 import ClienteModal from '@/components/organisms/ClienteModal'
 
 export default function Clientes() {
+  const confirm = useConfirm()
   const [searchInput, setSearchInput] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState<'active' | 'inactive' | 'all'>('active')
@@ -36,7 +39,13 @@ export default function Clientes() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja desativar este cliente?')) return
+    const confirmed = await confirm({
+      title: 'Desativar Cliente',
+      message: 'Tem certeza que deseja desativar este cliente? Ele não será excluído, apenas marcado como inativo.',
+      confirmText: 'Desativar',
+      cancelText: 'Cancelar'
+    })
+    if (!confirmed) return
     await deleteCliente(id)
   }
 

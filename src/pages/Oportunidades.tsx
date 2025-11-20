@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import type { Opportunity, Client, FunnelStage } from '@/types'
+import toast from 'react-hot-toast'
+import { useConfirm } from '@/hooks/useConfirm'
 import OportunidadeModal from '@/components/organisms/OportunidadeModal'
 
 export default function Oportunidades() {
   const navigate = useNavigate()
+  const confirm = useConfirm()
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])
   const [clients, setClients] = useState<Client[]>([])
   const [stages, setStages] = useState<FunnelStage[]>([])
@@ -67,13 +70,19 @@ export default function Oportunidades() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Tem certeza que deseja excluir esta oportunidade?')) return
+    const confirmed = await confirm({
+      title: 'Excluir Oportunidade',
+      message: 'Tem certeza que deseja excluir esta oportunidade? Esta ação não pode ser desfeita.',
+      confirmText: 'Excluir',
+      cancelText: 'Cancelar'
+    })
+    if (!confirmed) return
 
     const { error } = await supabase.from('opportunities').delete().eq('id', id)
 
     if (error) {
       console.error('Erro ao deletar oportunidade:', error)
-      alert('Erro ao deletar oportunidade: ' + error.message)
+      toast.error('Erro ao deletar oportunidade: ' + error.message)
     } else {
       fetchData()
     }

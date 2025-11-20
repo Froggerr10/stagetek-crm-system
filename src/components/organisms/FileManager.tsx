@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
+import { useConfirm } from '@/hooks/useConfirm'
 import toast from 'react-hot-toast'
 import { Upload, Download, Trash2, File } from 'lucide-react'
 import Spinner from '@/components/atoms/Spinner'
@@ -8,6 +9,7 @@ type FileRec = { id: string; filename: string; file_url: string; file_size: numb
 
 export default function FileManager({ opportunityId }: { opportunityId: string }) {
   const [files, setFiles] = useState<FileRec[]>([])
+  const confirm = useConfirm()
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
   const fetchFiles = useCallback(async () => { setLoading(true); const { data } = await supabase.from('files').select('*').eq('opportunity_id', opportunityId).order('uploaded_at', { ascending: false }); setFiles(data || []); setLoading(false) }, [opportunityId])
@@ -28,7 +30,8 @@ export default function FileManager({ opportunityId }: { opportunityId: string }
     catch { toast.error('Erro') }
   }
   const handleDelete = async (id: string, fileUrl: string) => {
-    if (!confirm('Excluir?')) return
+    const confirmed = await confirm({ title: 'Excluir Arquivo', message: 'Tem certeza que deseja excluir este arquivo?', confirmText: 'Excluir', cancelText: 'Cancelar' })
+    if (!confirmed) return
     try { const path = fileUrl.split('/').slice(-3).join('/'); await supabase.storage.from('attachments').remove([path]); await supabase.from('files').delete().eq('id', id); toast.success('Excluído!'); fetchFiles() }
     catch { toast.error('Erro') }
   }
