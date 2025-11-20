@@ -2,7 +2,7 @@ import Badge from '@/components/molecules/Badge'
 import Button from '@/components/molecules/Button'
 import { maskEmail, maskPhone, maskCNPJ } from '@/lib/utils'
 import type { Client } from '@/types'
-import { Edit, Trash2 } from 'lucide-react'
+import { Edit, Trash2, Mail, Phone } from 'lucide-react'
 
 interface ClientCardProps { cliente: Client; onEdit: () => void; onDelete: () => void }
 
@@ -19,8 +19,18 @@ export default function ClientCard({ cliente, onEdit, onDelete }: ClientCardProp
         </Badge>
       </div>
       <div className="space-y-1 mb-3">
-        {cliente.email && <p className="text-sm text-gray-300" title={cliente.email}>📧 {maskEmail(cliente.email)}</p>}
-        {cliente.phone && <p className="text-sm text-gray-300" title={cliente.phone}>📱 {maskPhone(cliente.phone)}</p>}
+        {cliente.email && (
+          <p className="text-sm text-gray-300 flex items-center gap-2" title={cliente.email}>
+            <Mail className="w-4 h-4 text-gray-400" />
+            {maskEmail(cliente.email)}
+          </p>
+        )}
+        {cliente.phone && (
+          <p className="text-sm text-gray-300 flex items-center gap-2" title={cliente.phone}>
+            <Phone className="w-4 h-4 text-gray-400" />
+            {maskPhone(cliente.phone)}
+          </p>
+        )}
       </div>
       <div className="flex justify-end space-x-3">
         <Button variant="outline" size="sm" onClick={onEdit}>
