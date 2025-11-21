@@ -147,7 +147,7 @@ export default function Funil() {
           </button>
         </div>
 
-        <div className="sticky top-0 z-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 pb-4">
+        <div className="sticky top-0 z-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 mb-4">
           <FilterBar onRefresh={fetchData} />
         </div>
 
