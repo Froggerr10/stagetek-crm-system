@@ -1,14 +1,14 @@
 import { formatDistanceToNow } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { MessageSquare, CheckCircle, CircleDot, TrendingUp, TrendingDown } from 'lucide-react'
+import { MessageSquare, CheckCircle, CircleDot, TrendingUp, TrendingDown, Mail } from 'lucide-react'
 
 const config = {
-  icons: { note: MessageSquare, task_created: CircleDot, task_completed: CheckCircle, status_won: TrendingUp, status_lost: TrendingDown, stage_changed: CircleDot },
-  colors: { note: 'bg-blue-500', task_created: 'bg-purple-500', task_completed: 'bg-green-500', status_won: 'bg-green-600', status_lost: 'bg-red-600', stage_changed: 'bg-yellow-500' }
+  icons: { note: MessageSquare, task_created: CircleDot, task_completed: CheckCircle, status_won: TrendingUp, status_lost: TrendingDown, stage_changed: CircleDot, email_sent: Mail },
+  colors: { note: 'bg-blue-500', task_created: 'bg-purple-500', task_completed: 'bg-green-500', status_won: 'bg-green-600', status_lost: 'bg-red-600', stage_changed: 'bg-yellow-500', email_sent: 'bg-[#e90101]' }
 }
 
 export default function TimelineItem({ type, content, createdAt, userName }: {
-  type: 'note' | 'task_created' | 'task_completed' | 'status_won' | 'status_lost' | 'stage_changed'
+  type: 'note' | 'task_created' | 'task_completed' | 'status_won' | 'status_lost' | 'stage_changed' | 'email_sent'
   content: string; createdAt: string; userName?: string
 }) {
   const Icon = config.icons[type]
