@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
-import { Send } from 'lucide-react'
+import { Send, X } from 'lucide-react'
 
 interface EmailComposerProps { opportunityId: string; clientEmail?: string; onEmailSent?: () => void }
 
@@ -27,6 +27,10 @@ export default function EmailComposer({ opportunityId, clientEmail, onEmailSent 
     }
   }
 
+  const handleCancel = () => {
+    setSubject(''); setBody(''); onEmailSent?.()
+  }
+
   const inputClass = "w-full px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-gray-500 focus:outline-none focus:border-[#e90101]"
   return (
     <div className="space-y-4">
@@ -39,9 +43,14 @@ export default function EmailComposer({ opportunityId, clientEmail, onEmailSent 
       <div><label className="block text-sm font-medium text-white mb-2">Mensagem</label>
         <textarea value={body} onChange={e => setBody(e.target.value)} placeholder="Digite sua mensagem..." rows={8} className={`${inputClass} resize-none`} />
       </div>
-      <button onClick={handleSend} disabled={sending || !to || !subject || !body} className="w-full px-6 py-3 bg-[#e90101] hover:bg-[#c10101] text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed">
-        <Send className="w-4 h-4" />{sending ? 'Enviando...' : 'Enviar Email'}
-      </button>
+      <div className="flex gap-3">
+        <button onClick={handleCancel} disabled={sending} className="flex-1 px-6 py-3 bg-white/5 hover:bg-white/10 text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition border border-white/10 disabled:opacity-50 disabled:cursor-not-allowed">
+          <X className="w-4 h-4" />Cancelar
+        </button>
+        <button onClick={handleSend} disabled={sending || !to || !subject || !body} className="flex-1 px-6 py-3 bg-[#e90101] hover:bg-[#c10101] text-white font-semibold rounded-lg flex items-center justify-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          <Send className="w-4 h-4" />{sending ? 'Enviando...' : 'Enviar Email'}
+        </button>
+      </div>
     </div>
   )
 }
