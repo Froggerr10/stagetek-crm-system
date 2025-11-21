@@ -33,7 +33,13 @@ async function validateFiles() {
     for (const file of files) {
       const parts = file.split(/[\\/]/)
       const layer = parts[2]
-      const limit = LIMITS[layer]
+      let limit = LIMITS[layer]
+
+      // Exception: Modals can be up to 170 lines (complex forms)
+      if (file.endsWith('Modal.tsx') && layer === 'organisms') {
+        limit = 170
+      }
+
       const content = fs.readFileSync(file, 'utf-8')
       const lines = content.split('\n').length
 
