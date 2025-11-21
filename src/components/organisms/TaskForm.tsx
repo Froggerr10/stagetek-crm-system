@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { X } from 'lucide-react'
 import Button from '@/components/molecules/Button'
 import Input from '@/components/atoms/Input'

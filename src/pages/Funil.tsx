@@ -14,7 +14,7 @@ import type { Opportunity, FunnelStage } from '@/types'
 
 export default function Funil() {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [_searchParams, setSearchParams] = useSearchParams()
   const { funnelId, ownerId, status } = useFilterStore()
   const [stages, setStages] = useState<FunnelStage[]>([])
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])

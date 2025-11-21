@@ -6,7 +6,7 @@ import { RefreshCw, Filter } from 'lucide-react'
 interface FilterBarProps { onRefresh: () => void }
 
 export default function FilterBar({ onRefresh }: FilterBarProps) {
-  const { funnelId, ownerId, status, setFunnelId, setOwnerId, setStatus, resetFilters, activeFiltersCount } = useFilterStore()
+  const { funnelId, ownerId, status, setFunnelId, setOwnerId, setStatus, _resetFilters, activeFiltersCount } = useFilterStore()
   const [funnels, setFunnels] = useState<Array<{ id: string; name: string }>>([])
   const [owners, setOwners] = useState<Array<{ id: string; name: string }>>([])
 

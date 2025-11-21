@@ -12,7 +12,7 @@ export default function FunnelPieChart() {
   return (
     <ResponsiveContainer width="100%" height={280}>
       <PieChart>
-        <Pie data={data} cx="50%" cy="45%" outerRadius={70} fill="#8884d8" dataKey="value" label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} labelLine={false}>
+        <Pie data={data} cx="50%" cy="45%" outerRadius={70} fill="#8884d8" dataKey="value" label={({ percent }) => `${(percent * 100).toFixed(0)}%`} labelLine={false}>
           {data.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />)}
         </Pie>
         <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', borderRadius: '8px', padding: '8px 12px' }} labelStyle={{ color: '#fff' }} itemStyle={{ color: '#fff' }} wrapperStyle={{ zIndex: 100 }} />

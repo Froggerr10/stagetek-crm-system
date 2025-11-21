@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useClientes } from '@/hooks/useClientes'
-import toast from 'react-hot-toast'
+import _toast from 'react-hot-toast'
 import { useConfirm } from '@/hooks/useConfirm'
 import type { Client } from '@/types'
 import Button from '@/components/molecules/Button'

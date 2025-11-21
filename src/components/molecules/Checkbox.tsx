@@ -1,6 +1,6 @@
 import { Checkbox as ShadcnCheckbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { cn as _cn } from '@/lib/utils'
 
 interface CheckboxProps {
   label?: string
