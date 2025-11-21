@@ -35,7 +35,7 @@ export default function QuickActionsBar({ opportunityId, clientId, clientName, c
         </Button>
       </div>
       {isEmailModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setIsEmailModalOpen(false)}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md" onClick={() => setIsEmailModalOpen(false)}>
           <div className="bg-[#0f0f0f] border border-white/30 rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-white">Enviar Email - {clientName}</h3>

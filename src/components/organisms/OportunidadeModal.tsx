@@ -11,6 +11,7 @@ export default function OportunidadeModal({ opportunity, clients, stages, onClos
   const { formData, setFormData, loading, handleSubmit } = useOportunidadeForm(opportunity, stages, onClose)
   const { validate, getError } = useNumberValidation()
   const inputClass = "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:ring-2 focus:ring-stagetek-red"
+  const optClass = "bg-gray-900 text-white"
 
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
@@ -22,45 +23,39 @@ export default function OportunidadeModal({ opportunity, clients, stages, onClos
           </FormField>
           <FormField label="Cliente" required>
             <select value={formData.client_id || ''} onChange={(e) => setFormData({ ...formData, client_id: e.target.value })} required className={inputClass}>
-              <option value="" className="bg-gray-900 text-white">Selecione um cliente</option>
-              {clients.map((client) => <option key={client.id} value={client.id} className="bg-gray-900 text-white">{client.name}</option>)}
+              <option value="" className={optClass}>Selecione um cliente</option>
+              {clients.map((c) => <option key={c.id} value={c.id} className={optClass}>{c.name}</option>)}
             </select>
           </FormField>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField label="Valor (R$)" required error={getError('value')}>
-              <input
-                type="number"
-                value={formData.value || 0}
-                onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
-                onBlur={(e) => validate('value', parseFloat(e.target.value), 0)}
-                required
-                min="0"
-                step="0.01"
-                className={inputClass}
-              />
+              <input type="number" value={formData.value || 0} onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })} onBlur={(e) => validate('value', parseFloat(e.target.value), 0)} required min="0" step="0.01" className={inputClass} />
             </FormField>
             <FormField label="Probabilidade (%)" required error={getError('probability')}>
-              <input
-                type="number"
-                value={formData.probability || 0}
-                onChange={(e) => setFormData({ ...formData, probability: parseInt(e.target.value) || 0 })}
-                onBlur={(e) => validate('probability', parseInt(e.target.value), 0, 100)}
-                required
-                min="0"
-                max="100"
-                className={inputClass}
-              />
+              <input type="number" value={formData.probability || 0} onChange={(e) => setFormData({ ...formData, probability: parseInt(e.target.value) || 0 })} onBlur={(e) => validate('probability', parseInt(e.target.value), 0, 100)} required min="0" max="100" className={inputClass} />
             </FormField>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField label="Estágio" required>
               <select value={formData.stage_id || ''} onChange={(e) => setFormData({ ...formData, stage_id: e.target.value })} required className={inputClass}>
-                <option value="" className="bg-gray-900 text-white">Selecione um estágio</option>
-                {stages.map((stage) => <option key={stage.id} value={stage.id} className="bg-gray-900 text-white">{stage.name}</option>)}
+                <option value="" className={optClass}>Selecione um estágio</option>
+                {stages.map((s) => <option key={s.id} value={s.id} className={optClass}>{s.name}</option>)}
               </select>
             </FormField>
             <FormField label="Data de Fechamento">
               <input type="date" value={formData.expected_close_date || ''} onChange={(e) => setFormData({ ...formData, expected_close_date: e.target.value })} className={inputClass} />
+            </FormField>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FormField label="Temperatura">
+              <select value={formData.temperature} onChange={(e) => setFormData({ ...formData, temperature: e.target.value as any })} className={inputClass}>
+                <option value="hot" className={optClass}>🔥 Quente</option>
+                <option value="warm" className={optClass}>💧 Morno</option>
+                <option value="cold" className={optClass}>❄️ Frio</option>
+              </select>
+            </FormField>
+            <FormField label="Qualificação (1-5)">
+              <input type="number" value={formData.qualification} onChange={(e) => setFormData({ ...formData, qualification: parseInt(e.target.value) || 3 })} min="1" max="5" className={inputClass} />
             </FormField>
           </div>
           <ModalActions onCancel={onClose} loading={loading} submitText={opportunity ? 'Atualizar' : 'Criar Oportunidade'} />

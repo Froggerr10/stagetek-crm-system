@@ -12,6 +12,8 @@ export function useOportunidadeForm(opportunity: Opportunity | null, stages: Fun
     stage_id: stages[0]?.id || '',
     probability: 0,
     expected_close_date: '',
+    temperature: 'warm' as 'hot' | 'warm' | 'cold',
+    qualification: 3,
   })
 
   useEffect(() => {
@@ -30,6 +32,8 @@ export function useOportunidadeForm(opportunity: Opportunity | null, stages: Fun
         stage_id: opportunity.stage_id || '',
         probability: opportunity.probability || 0,
         expected_close_date: dateValue,
+        temperature: (opportunity as any).temperature || 'warm',
+        qualification: (opportunity as any).qualification || 3,
       })
     } else if (stages[0]) {
       setFormData(prev => ({ ...prev, stage_id: stages[0].id }))
@@ -55,6 +59,8 @@ export function useOportunidadeForm(opportunity: Opportunity | null, stages: Fun
         stage_id: formData.stage_id,
         probability: formData.probability,
         expected_close_date: formData.expected_close_date || null,
+        temperature: formData.temperature,
+        qualification: formData.qualification,
       } : {
         title: formData.title,
         client_id: formData.client_id,
@@ -63,6 +69,8 @@ export function useOportunidadeForm(opportunity: Opportunity | null, stages: Fun
         value: formData.value,
         probability: formData.probability,
         expected_close_date: formData.expected_close_date || null,
+        temperature: formData.temperature,
+        qualification: formData.qualification,
         status: 'open',
       }
 
