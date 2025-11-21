@@ -7,7 +7,7 @@ VALUES
   ('11111111-1111-1111-1111-111111111111', 'Empresa Teste A', '12.345.678/0001-90', 'contato@empresaa.com', '(11) 98765-4321'),
   ('22222222-2222-2222-2222-222222222222', 'Empresa Teste B', '98.765.432/0001-10', 'contato@empresab.com', '(21) 91234-5678'),
   ('33333333-3333-3333-3333-333333333333', 'Empresa Teste C', '11.222.333/0001-44', 'contato@empresac.com', '(47) 99999-8888')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (cnpj) DO NOTHING;
 
 -- 2. Pegar ID do primeiro estágio do primeiro funil
 DO $$
