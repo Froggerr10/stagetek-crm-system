@@ -8,7 +8,7 @@ interface ClientCardProps { cliente: Client; onEdit: () => void; onDelete: () =>
 
 export default function ClientCard({ cliente, onEdit, onDelete }: ClientCardProps) {
   return (
-    <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg shadow-lg p-4">
+    <div className="bg-[rgba(255,255,255,0.12)] backdrop-blur-sm border border-white/20 rounded-lg shadow-lg p-4">
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="font-semibold text-white">{cliente.name}</h3>

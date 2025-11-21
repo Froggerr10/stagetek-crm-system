@@ -18,8 +18,8 @@ export default function ConfirmDialog({
   const iconColor = variant === 'danger' ? 'text-red-400' : 'text-yellow-400'
 
   return (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-2xl shadow-2xl max-w-md w-full p-6">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+      <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl max-w-md w-full p-6">
         <div className="flex items-start gap-4 mb-6">
           <div className={`p-3 rounded-full ${iconBg}`}>
             <AlertTriangle className={`w-6 h-6 ${iconColor}`} />

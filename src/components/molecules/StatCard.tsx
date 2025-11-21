@@ -11,7 +11,7 @@ export default function StatCard({ icon: Icon, value, label, change }: StatCardP
   const isPositive = change !== undefined && change >= 0
 
   return (
-    <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(233,1,1,0.15)] transition-all">
+    <div className="bg-[rgba(255,255,255,0.12)] backdrop-blur-sm border border-white/20 rounded-lg p-6 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(233,1,1,0.15)] transition-all">
       <div className="w-12 h-12 bg-gradient-to-br from-[rgba(233,1,1,0.2)] to-[rgba(233,1,1,0.05)] rounded-lg flex items-center justify-center mb-4">
         <Icon className="w-6 h-6 text-[#e90101]" />
       </div>

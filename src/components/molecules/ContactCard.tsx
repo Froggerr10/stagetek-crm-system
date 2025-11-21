@@ -9,7 +9,7 @@ interface ContactCardProps {
 
 export default function ContactCard({ contact, onEdit, onDelete }: ContactCardProps) {
   return (
-    <div className="bg-[rgba(255,255,255,0.08)] border border-white/15 rounded-lg p-4 hover:border-white/30 transition-all">
+    <div className="bg-[rgba(255,255,255,0.12)] border border-white/20 rounded-lg p-4 hover:border-white/30 transition-all">
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <h4 className="font-semibold text-white">{contact.name}</h4>

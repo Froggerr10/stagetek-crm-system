@@ -20,8 +20,8 @@ export default function ContactModal({ contact, clientId, opportunityId, onSave,
   const handleSubmit = async (e: React.FormEvent) => { e.preventDefault(); await onSave(formData); onClose() }
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-[rgba(20,20,20,0.98)] backdrop-blur-xl border border-white/20 rounded-lg w-full max-w-md p-6">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 p-4">
+      <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 rounded-lg w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-white">{contact ? 'Editar Contato' : 'Novo Contato'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white"><X className="w-5 h-5" /></button>

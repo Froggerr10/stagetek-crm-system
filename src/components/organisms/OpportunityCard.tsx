@@ -21,7 +21,7 @@ export default function OpportunityCard({ opportunity, onClick }: { opportunity:
 
   return (
     /* eslint-disable-next-line no-restricted-syntax */
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={`bg-[rgba(255,255,255,0.08)] border border-white/15 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:border-white/30 transition-all ${isDragging ? 'opacity-50 shadow-2xl' : ''}`}>
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className={`bg-[rgba(255,255,255,0.12)] border border-white/20 rounded-lg p-3 cursor-grab active:cursor-grabbing hover:border-white/30 transition-all ${isDragging ? 'opacity-50 shadow-2xl' : ''}`}>
       <div className="flex gap-2">
         <div className="text-gray-400 mt-1"><GripVertical className="w-4 h-4" /></div>
         <div className="flex-1 min-w-0" onClick={onClick}>

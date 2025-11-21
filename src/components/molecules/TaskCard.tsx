@@ -13,7 +13,7 @@ export default function TaskCard({ task, onEdit, onDelete, onToggleComplete }: {
   const completed = task.is_completed
   const dueText = task.due_date ? formatDistanceToNow(new Date(task.due_date), { addSuffix: true, locale: ptBR }) : 'Sem prazo'
   return (
-    <div className={`p-4 rounded-lg border ${completed ? 'bg-white/5 border-white/10 opacity-60' : 'bg-[rgba(255,255,255,0.08)] border-white/15'}`}>
+    <div className={`p-4 rounded-lg border ${completed ? 'bg-white/5 border-white/10 opacity-60' : 'bg-[rgba(255,255,255,0.12)] border-white/20'}`}>
       <div className="flex items-start gap-3">
         <Icon className={`w-5 h-5 mt-0.5 ${completed ? 'text-gray-400' : 'text-[#e90101]'}`} />
         <div className="flex-1 min-w-0">
