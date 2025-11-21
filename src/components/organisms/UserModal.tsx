@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, AlertCircle } from 'lucide-react'
 import { UserProfile, UserFormData } from '@/hooks/useUsers'
-import RoleSelector from '@/molecules/RoleSelector'
+import RoleSelector from '@/components/molecules/RoleSelector'
 
 interface UserModalProps {
   user: UserProfile | null

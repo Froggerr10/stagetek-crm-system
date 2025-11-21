@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import { Product, ProductFormData } from '@/hooks/useProducts'
-import ProductPriceFields from '@/molecules/ProductPriceFields'
+import ProductPriceFields from '@/components/molecules/ProductPriceFields'
 
 interface ProductModalProps {
   product: Product | null

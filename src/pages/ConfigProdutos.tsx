@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Package, Plus, Edit2, Trash2, Power, PowerOff } from 'lucide-react'
 import { useProducts } from '@/hooks/useProducts'
-import ProductModal from '@/organisms/ProductModal'
-import Spinner from '@/atoms/Spinner'
+import ProductModal from '@/components/organisms/ProductModal'
+import Spinner from '@/components/atoms/Spinner'
 
 export default function ConfigProdutos() {
   const { products, loading, createProduct, updateProduct, deleteProduct, toggleActive } = useProducts()

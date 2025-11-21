@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Users, Plus, Edit2, Trash2, Shield, User as UserIcon } from 'lucide-react'
 import { useUsers } from '@/hooks/useUsers'
-import UserModal from '@/organisms/UserModal'
-import Spinner from '@/atoms/Spinner'
+import UserModal from '@/components/organisms/UserModal'
+import Spinner from '@/components/atoms/Spinner'
 
 const ROLE_LABELS = {
   admin: { label: 'Administrador', color: 'red', icon: Shield },
