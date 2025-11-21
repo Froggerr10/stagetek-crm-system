@@ -19,6 +19,20 @@ export default defineConfig({
       '@/templates': path.resolve(__dirname, './src/components/templates'),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-select', '@radix-ui/react-checkbox'],
+          'vendor-charts': ['recharts'],
+          'vendor-pdf': ['@react-pdf/renderer'],
+          'vendor-dnd': ['@dnd-kit/core', '@dnd-kit/sortable'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+        },
+      },
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
