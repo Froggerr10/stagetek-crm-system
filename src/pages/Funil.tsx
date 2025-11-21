@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors, closestCenter } from '@dnd-kit/core'
 import { supabase } from '@/lib/supabase'
 import { useFilterStore } from '@/stores/useFilterStore'
 import FilterBar from '@/components/organisms/FilterBar'
@@ -147,9 +147,11 @@ export default function Funil() {
           </button>
         </div>
 
-        <FilterBar onRefresh={fetchData} />
+        <div className="sticky top-0 z-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 pb-4">
+          <FilterBar onRefresh={fetchData} />
+        </div>
 
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd} key={stages.map(s => s.id).join(',')}>
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} key={stages.map(s => s.id).join(',')}>
           <div className="flex gap-4 overflow-x-auto pb-4">
             {stages.map(stage => (
               <KanbanColumn
