@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
 
 export interface FilterState {
   funnelId: string | null
@@ -11,20 +12,21 @@ export interface FilterState {
   activeFiltersCount: () => number
 }
 
-export const useFilterStore = create<FilterState>((set, get) => ({
-  funnelId: null,
-  ownerId: null,
-  status: 'open',
-  setFunnelId: (id) => set({ funnelId: id }),
-  setOwnerId: (id) => set({ ownerId: id }),
-  setStatus: (status) => set({ status }),
-  resetFilters: () => set({ funnelId: null, ownerId: null, status: 'open' }),
-  activeFiltersCount: () => {
-    const { funnelId, ownerId, status } = get()
-    let count = 0
-    if (funnelId) count++
-    if (ownerId) count++
-    if (status !== 'open') count++
-    return count
-  },
-}))
+export const useFilterStore = create<FilterState>()(
+  persist(
+    (set, get) => ({
+      funnelId: null,
+      ownerId: null,
+      status: 'open',
+      setFunnelId: (id) => set({ funnelId: id }),
+      setOwnerId: (id) => set({ ownerId: id }),
+      setStatus: (status) => set({ status }),
+      resetFilters: () => set({ funnelId: null, ownerId: null, status: 'open' }),
+      activeFiltersCount: () => {
+        const { funnelId, ownerId, status } = get()
+        return (funnelId ? 1 : 0) + (ownerId ? 1 : 0) + (status !== 'open' ? 1 : 0)
+      },
+    }),
+    { name: 'stagetek-filters' }
+  )
+)
