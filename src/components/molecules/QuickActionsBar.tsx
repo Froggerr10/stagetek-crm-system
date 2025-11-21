@@ -27,10 +27,10 @@ export default function QuickActionsBar({ opportunityId, clientId, clientName, c
   return (
     <>
       <div className="flex gap-2 pt-2 border-t border-white/10">
-        <Button onClick={handleQuickCall} variant="secondary" size="sm" className="flex-1">
+        <Button onClick={handleQuickCall} variant="primary" size="sm" className="flex-1">
           <Phone className="w-4 h-4 mr-2" />Ligar
         </Button>
-        <Button onClick={handleQuickEmail} variant="secondary" size="sm" className="flex-1">
+        <Button onClick={handleQuickEmail} variant="primary" size="sm" className="flex-1">
           <Mail className="w-4 h-4 mr-2" />Email
         </Button>
       </div>
