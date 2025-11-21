@@ -24,9 +24,9 @@ export default function Dashboard() {
           <SalesLineChart />
         </div>
 
-        <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Oportunidades por Estagio</h3>
-          <FunnelPieChart />
+        <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6 overflow-visible">
+          <h3 className="text-lg font-semibold text-white mb-4">Oportunidades por Estágio</h3>
+          <div className="overflow-visible"><FunnelPieChart /></div>
         </div>
       </div>
 
