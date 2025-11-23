@@ -50,19 +50,24 @@ export async function fetchCNPJData(cnpj: string): Promise<CNPJData | null> {
 
     const data = await response.json()
 
+    // Montar endereço sem undefined
+    const tipoLog = data.descricao_tipo_logradouro || ''
+    const logradouro = data.logradouro || ''
+    const endereco = tipoLog && logradouro ? `${tipoLog} ${logradouro}` : logradouro
+
     return {
       cnpj: data.cnpj,
-      nome: data.razao_social,
+      nome: data.nome_fantasia || data.razao_social, // Prioriza nome fantasia
       fantasia: data.nome_fantasia,
-      email: data.ddd_telefone_1,
-      telefone: data.ddd_telefone_1,
-      logradouro: data.descricao_tipo_logradouro + ' ' + data.logradouro,
-      numero: data.numero,
-      complemento: data.complemento,
-      bairro: data.bairro,
-      municipio: data.municipio,
-      uf: data.uf,
-      cep: data.cep
+      email: data.email || '', // Corrigido - não é ddd_telefone
+      telefone: data.ddd_telefone_1 || '',
+      logradouro: endereco,
+      numero: data.numero || '',
+      complemento: data.complemento || '',
+      bairro: data.bairro || '',
+      municipio: data.municipio || '',
+      uf: data.uf || '',
+      cep: data.cep || ''
     }
   } catch (error: unknown) {
     if (error instanceof Error) {
