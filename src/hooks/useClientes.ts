@@ -20,7 +20,14 @@ export const useClientes = (filters?: ClientFilters) => {
 
       let query = supabase
         .from('clients')
-        .select('*')
+        .select(`
+          *,
+          compliance:client_compliance(
+            situacao_cadastral,
+            opcao_simples,
+            opcao_mei
+          )
+        `)
         .order('name', { ascending: true })
 
       // Apply filters

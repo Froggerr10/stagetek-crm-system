@@ -21,9 +21,11 @@ export async function fetchCNPJData(cnpj: string): Promise<CNPJData | null> {
   }
 
   try {
-    const response = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCNPJ}`)
+    // 1. Buscar primeiro na Brasil API
+    const brasilApiResponse = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cleanCNPJ}`)
 
-    if (!response.ok) {
+    if (!brasilApiResponse.ok) {
+      // Se Brasil API falhar, usar apenas ReceitaWS
       const fallbackResponse = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cleanCNPJ}`)
 
       if (!fallbackResponse.ok) {
@@ -48,27 +50,53 @@ export async function fetchCNPJData(cnpj: string): Promise<CNPJData | null> {
       }
     }
 
-    const data = await response.json()
+    const brasilData = await brasilApiResponse.json()
 
     // Montar endereço sem undefined
-    const tipoLog = data.descricao_tipo_logradouro || ''
-    const logradouro = data.logradouro || ''
+    const tipoLog = brasilData.descricao_tipo_logradouro || ''
+    const logradouro = brasilData.logradouro || ''
     const endereco = tipoLog && logradouro ? `${tipoLog} ${logradouro}` : logradouro
 
-    return {
-      cnpj: data.cnpj,
-      nome: data.nome_fantasia || data.razao_social, // Prioriza nome fantasia
-      fantasia: data.nome_fantasia,
-      email: data.email || '', // Corrigido - não é ddd_telefone
-      telefone: data.ddd_telefone_1 || '',
+    // Montar resultado da Brasil API
+    const result: CNPJData = {
+      cnpj: brasilData.cnpj,
+      nome: brasilData.nome_fantasia || brasilData.razao_social,
+      fantasia: brasilData.nome_fantasia,
+      email: brasilData.email || '',
+      telefone: brasilData.ddd_telefone_1 || '',
       logradouro: endereco,
-      numero: data.numero || '',
-      complemento: data.complemento || '',
-      bairro: data.bairro || '',
-      municipio: data.municipio || '',
-      uf: data.uf || '',
-      cep: data.cep || ''
+      numero: brasilData.numero || '',
+      complemento: brasilData.complemento || '',
+      bairro: brasilData.bairro || '',
+      municipio: brasilData.municipio || '',
+      uf: brasilData.uf || '',
+      cep: brasilData.cep || ''
     }
+
+    // 2. Se campos críticos estão vazios, buscar da ReceitaWS para completar
+    const needsEmailOrPhone = !result.email || !result.telefone
+
+    if (needsEmailOrPhone) {
+      try {
+        const receitaResponse = await fetch(`https://www.receitaws.com.br/v1/cnpj/${cleanCNPJ}`)
+
+        if (receitaResponse.ok) {
+          const receitaData = await receitaResponse.json()
+
+          // Merge: preencher apenas campos vazios com dados da ReceitaWS
+          if (!result.email && receitaData.email) {
+            result.email = receitaData.email
+          }
+          if (!result.telefone && receitaData.telefone) {
+            result.telefone = receitaData.telefone
+          }
+        }
+      } catch {
+        // Se ReceitaWS falhar, continuar com dados da Brasil API
+      }
+    }
+
+    return result
   } catch (error: unknown) {
     if (error instanceof Error) {
       throw error

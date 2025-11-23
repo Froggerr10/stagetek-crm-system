@@ -3,7 +3,7 @@ import type { Client } from '@/types'
 
 interface UseClienteFormProps {
   cliente: Client | null
-  onSuccess: () => void
+  onSuccess: (savedClient?: Client) => void
   createCliente: (data: Omit<Client, 'id' | 'created_at' | 'updated_at'>) => Promise<Client | undefined>
   updateCliente: (id: string, data: Partial<Client>) => Promise<Client | undefined>
 }
@@ -59,13 +59,15 @@ export function useClienteForm({ cliente, onSuccess, createCliente, updateClient
         address: formData.address.city || formData.address.state ? formData.address : null
       } as any
 
+      let savedClient: Client | undefined
+
       if (cliente) {
-        await updateCliente(cliente.id, payload)
+        savedClient = await updateCliente(cliente.id, payload)
       } else {
-        await createCliente(payload)
+        savedClient = await createCliente(payload)
       }
 
-      onSuccess()
+      onSuccess(savedClient)
     } catch (error: any) {
       // Error handling is done in useClientes hook with toast
       console.error('Erro ao salvar cliente:', error)
