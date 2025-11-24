@@ -12,6 +12,7 @@ import ConfigProdutos from '@/pages/ConfigProdutos'
 import Perfil from '@/pages/Perfil'
 import MainLayout from '@/components/layouts/MainLayout'
 import ProtectedRoute from '@/components/layouts/ProtectedRoute'
+import PageViewTracker from '@/components/atoms/PageViewTracker'
 
 // Lazy load heavy pages
 const Dashboard = lazy(() => import('@/pages/Dashboard'))
@@ -29,6 +30,7 @@ const PageLoader = () => (
 function App() {
   return (
     <BrowserRouter>
+      <PageViewTracker />
       <Toaster position="top-right" toastOptions={{
         style: { background: '#1f2937', color: '#fff', border: '1px solid #374151' },
         success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
