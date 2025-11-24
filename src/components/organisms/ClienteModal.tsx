@@ -106,15 +106,7 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
 
   return (
     <>
-      {showComplianceModal && (
-        <ComplianceModal
-          data={complianceData}
-          onClose={() => setShowComplianceModal(false)}
-          onRefresh={cliente?.id ? handleRefreshCompliance : undefined}
-        />
-      )}
-
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
+      <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
       <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <ModalHeader title={cliente ? 'Editar Cliente' : 'Novo Cliente'} onClose={onClose} />
 
@@ -163,6 +155,14 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
         </form>
       </div>
     </div>
+
+      {showComplianceModal && (
+        <ComplianceModal
+          data={complianceData}
+          onClose={() => setShowComplianceModal(false)}
+          onRefresh={cliente?.id ? handleRefreshCompliance : undefined}
+        />
+      )}
     </>
   )
 }
