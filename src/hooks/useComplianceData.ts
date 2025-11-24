@@ -90,11 +90,20 @@ export function useComplianceData() {
   }
 
   async function saveComplianceData(clientId: string, data: ComplianceData) {
+    // Remove campos vazios e strings vazias de datas
+    const cleanData = Object.entries(data).reduce((acc, [key, value]) => {
+      if (value === '' || value === null || value === undefined) {
+        return acc
+      }
+      acc[key] = value
+      return acc
+    }, {} as any)
+
     const { error } = await supabase
       .from('client_compliance')
       .upsert({
         client_id: clientId,
-        ...data,
+        ...cleanData,
         data_consulta: new Date().toISOString()
       }, {
         onConflict: 'client_id'

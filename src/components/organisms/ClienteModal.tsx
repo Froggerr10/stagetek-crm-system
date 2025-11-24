@@ -123,10 +123,15 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
             <button
               type="button"
               onClick={async () => {
+                console.log('🔵 Botão clicado, buscando compliance...')
                 const data = await fetchAndSave(formData.cnpj, cliente.id)
+                console.log('🔵 Dados recebidos:', data)
                 if (data) {
                   setComplianceData(data)
+                  console.log('🔵 Abrindo modal...')
                   setShowComplianceModal(true)
+                } else {
+                  console.error('❌ Dados vazios!')
                 }
               }}
               className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition border border-blue-500"
