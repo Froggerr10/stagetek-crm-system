@@ -113,6 +113,13 @@ export function useUserInteractions() {
     })
   }, [logInteraction])
 
+  /**
+   * Log page view
+   */
+  const logPageView = useCallback((path: string) => {
+    return logInteraction('page_view', {}, path)
+  }, [logInteraction])
+
   // Track page views automatically
   useEffect(() => {
     const handleRouteChange = () => {
@@ -144,6 +151,7 @@ export function useUserInteractions() {
     logFilter,
     logModal,
     logNavigation,
+    logPageView,
     sessionId: sessionId.current
   }
 }
