@@ -22,6 +22,7 @@ interface ClienteModalProps {
 }
 
 export default function ClienteModal({ cliente, onClose, createCliente, updateCliente }: ClienteModalProps) {
+  console.log('🚀 ClienteModal aberto com cliente:', cliente)
   const [complianceData, setComplianceData] = useState<ComplianceData | null>(null)
   const [showComplianceModal, setShowComplianceModal] = useState(false)
 
@@ -48,9 +49,16 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
 
   useEffect(() => {
     if (cliente?.id) {
-      getComplianceData(cliente.id).then(data => setComplianceData(data))
+      console.log('🔍 Buscando compliance data para cliente:', cliente.id)
+      getComplianceData(cliente.id).then(data => {
+        console.log('📊 Compliance data recebida:', data)
+        setComplianceData(data)
+      })
+    } else {
+      console.log('🆕 Novo cliente - resetando compliance data')
+      setComplianceData(null)
     }
-  }, [cliente?.id])
+  }, [cliente?.id, getComplianceData])
 
   const handleCNPJSearch = async () => {
     const data = await searchCNPJ(formData.cnpj)
@@ -111,14 +119,20 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
         <ModalHeader title={cliente ? 'Editar Cliente' : 'Novo Cliente'} onClose={onClose} />
 
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {complianceData && (
+          {cliente?.id && (
             <button
               type="button"
-              onClick={() => setShowComplianceModal(true)}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition border border-gray-700"
+              onClick={async () => {
+                const data = await fetchAndSave(formData.cnpj, cliente.id)
+                if (data) {
+                  setComplianceData(data)
+                  setShowComplianceModal(true)
+                }
+              }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition border border-blue-500"
             >
               <FileText className="w-4 h-4" />
-              Ver Dados da Receita Federal
+              {complianceData ? 'Ver Dados da Receita Federal' : 'Buscar Dados da Receita Federal'}
             </button>
           )}
 
