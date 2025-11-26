@@ -1,9 +1,6 @@
-import { useState, useEffect } from 'react'
 import type { Client } from '@/types'
 import { useClienteForm } from '@/hooks/useClienteForm'
-import { useCNPJSearch } from '@/hooks/useCNPJSearch'
-import { useComplianceData, ComplianceData } from '@/hooks/useComplianceData'
-import { useInputMask } from '@/hooks/useInputMask'
+import { useClienteCompliance } from '@/hooks/useClienteCompliance'
 import { useFieldValidation } from '@/hooks/useFieldValidation'
 import ModalHeader from '@/components/molecules/ModalHeader'
 import ModalActions from '@/components/molecules/ModalActions'
@@ -22,20 +19,11 @@ interface ClienteModalProps {
 }
 
 export default function ClienteModal({ cliente, onClose, createCliente, updateCliente }: ClienteModalProps) {
-  console.log('🚀 ClienteModal aberto com cliente:', cliente)
-  const [complianceData, setComplianceData] = useState<ComplianceData | null>(null)
-  const [showComplianceModal, setShowComplianceModal] = useState(false)
-
-  const { searchCNPJ, searching } = useCNPJSearch()
-  const { getComplianceData, fetchAndSave, fetchFromOpenCNPJ, saveComplianceData } = useComplianceData()
-  const cnpjMask = useInputMask('cnpj')
-  const phoneMask = useInputMask('phone')
   const { validate, getError } = useFieldValidation()
 
   const handleSuccess = async (savedClient?: Client) => {
-    // Salvar dados de compliance se existirem
-    if (complianceData && savedClient?.id) {
-      await saveComplianceData(savedClient.id, complianceData)
+    if (compliance.complianceData && savedClient?.id) {
+      await compliance.saveComplianceData(savedClient.id, compliance.complianceData)
     }
     onClose()
   }
@@ -47,121 +35,54 @@ export default function ClienteModal({ cliente, onClose, createCliente, updateCl
     updateCliente
   })
 
-  useEffect(() => {
-    if (cliente?.id) {
-      console.log('🔍 Buscando compliance data para cliente:', cliente.id)
-      getComplianceData(cliente.id).then(data => {
-        console.log('📊 Compliance data recebida:', data)
-        setComplianceData(data)
-      })
-    } else {
-      console.log('🆕 Novo cliente - resetando compliance data')
-      setComplianceData(null)
-    }
-  }, [cliente?.id, getComplianceData])
-
-  const handleCNPJSearch = async () => {
-    const data = await searchCNPJ(formData.cnpj)
-    if (data) {
-      // Aplicar máscara do telefone ANTES de fazer spread
-      const maskedPhone = phoneMask.handleChange(data.phone || '')
-
-      // Remover phone de data e adicionar maskedPhone separadamente
-      const { phone: _, ...dataWithoutPhone } = data
-      setFormData({
-        ...formData,
-        ...dataWithoutPhone,
-        phone: maskedPhone
-      })
-      cnpjMask.setValue(data.cnpj)
-
-      // Buscar dados de compliance do OpenCNPJ
-      try {
-        const complianceInfo = await fetchFromOpenCNPJ(formData.cnpj)
-        if (complianceInfo) {
-          setComplianceData(complianceInfo)
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados de compliance:', error)
-      }
-    }
-  }
+  const compliance = useClienteCompliance({ cliente, formData, setFormData })
 
   const handleCNPJChange = (value: string) => {
-    const masked = cnpjMask.handleChange(value)
+    const masked = compliance.cnpjMask.handleChange(value)
     setFormData({ ...formData, cnpj: masked })
   }
 
   const handlePhoneChange = (value: string) => {
-    const masked = phoneMask.handleChange(value)
+    const masked = compliance.phoneMask.handleChange(value)
     setFormData({ ...formData, phone: masked })
-  }
-
-  const handleRefreshCompliance = async () => {
-    if (cliente?.id && formData.cnpj) {
-      const data = await fetchAndSave(formData.cnpj, cliente.id)
-      if (data) setComplianceData(data)
-    }
   }
 
   return (
     <>
       <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
-      <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <ModalHeader title={cliente ? 'Editar Cliente' : 'Novo Cliente'} onClose={onClose} />
-
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {cliente?.id && (
-            <button
-              type="button"
-              onClick={async () => {
-                console.log('🔵 Botão clicado, buscando compliance...')
-                const data = await fetchAndSave(formData.cnpj, cliente.id)
-                console.log('🔵 Dados recebidos:', data)
-                if (data) {
-                  setComplianceData(data)
-                  console.log('🔵 Abrindo modal...')
-                  setShowComplianceModal(true)
-                } else {
-                  console.error('❌ Dados vazios!')
-                }
-              }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition border border-blue-500"
-            >
-              <FileText className="w-4 h-4" />
-              {complianceData ? 'Ver Dados da Receita Federal' : 'Buscar Dados da Receita Federal'}
-            </button>
-          )}
-
-          <ClienteFormFields
-            formData={formData}
-            onFieldChange={(field, value) => setFormData({ ...formData, [field]: value })}
-            onCNPJChange={handleCNPJChange}
-            onPhoneChange={handlePhoneChange}
-            onAddressChange={(address) => setFormData({ ...formData, address })}
-            onStatusChange={(status) => setFormData({ ...formData, status })}
-            onCNPJBlur={() => validate('cnpj', formData.cnpj, 'cnpj')}
-            onEmailBlur={() => validate('email', formData.email, 'email')}
-            onPhoneBlur={() => validate('phone', formData.phone, 'phone')}
-            onCNPJSearch={handleCNPJSearch}
-            cnpjError={getError('cnpj')}
-            emailError={getError('email')}
-            phoneError={getError('phone')}
-            cnpjMaxLength={cnpjMask.maxLength}
-            phoneMaxLength={phoneMask.maxLength}
-            searching={searching}
-          />
-          <ModalActions onCancel={onClose} loading={loading} submitText={cliente ? 'Atualizar' : 'Criar Cliente'} />
-        </form>
+        <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <ModalHeader title={cliente ? 'Editar Cliente' : 'Novo Cliente'} onClose={onClose} />
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
+            {cliente?.id && (
+              <button type="button" onClick={() => { compliance.handleRefreshCompliance().then(() => compliance.setShowComplianceModal(true)) }} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition border border-blue-500">
+                <FileText className="w-4 h-4" />
+                {compliance.complianceData ? 'Ver Dados da Receita Federal' : 'Buscar Dados da Receita Federal'}
+              </button>
+            )}
+            <ClienteFormFields
+              formData={formData}
+              onFieldChange={(field, value) => setFormData({ ...formData, [field]: value })}
+              onCNPJChange={handleCNPJChange}
+              onPhoneChange={handlePhoneChange}
+              onAddressChange={(address) => setFormData({ ...formData, address })}
+              onStatusChange={(status) => setFormData({ ...formData, status })}
+              onCNPJBlur={() => validate('cnpj', formData.cnpj, 'cnpj')}
+              onEmailBlur={() => validate('email', formData.email, 'email')}
+              onPhoneBlur={() => validate('phone', formData.phone, 'phone')}
+              onCNPJSearch={compliance.handleCNPJSearch}
+              cnpjError={getError('cnpj')}
+              emailError={getError('email')}
+              phoneError={getError('phone')}
+              cnpjMaxLength={compliance.cnpjMask.maxLength}
+              phoneMaxLength={compliance.phoneMask.maxLength}
+              searching={compliance.searching}
+            />
+            <ModalActions onCancel={onClose} loading={loading} submitText={cliente ? 'Atualizar' : 'Criar Cliente'} />
+          </form>
+        </div>
       </div>
-    </div>
-
-      {showComplianceModal && (
-        <ComplianceModal
-          data={complianceData}
-          onClose={() => setShowComplianceModal(false)}
-          onRefresh={cliente?.id ? handleRefreshCompliance : undefined}
-        />
+      {compliance.showComplianceModal && (
+        <ComplianceModal data={compliance.complianceData} onClose={() => compliance.setShowComplianceModal(false)} onRefresh={cliente?.id ? compliance.handleRefreshCompliance : undefined} />
       )}
     </>
   )

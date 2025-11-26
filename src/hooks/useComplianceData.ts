@@ -18,6 +18,12 @@ export interface ComplianceData {
   data_inicio_atividade?: string
   cnae_principal?: string
   cnae_principal_descricao?: string
+  qsa?: Array<{
+    nome_socio: string
+    cnpj_cpf_socio: string
+    qualificacao_socio: number
+    descricao_qualificacao_socio: string
+  }>
   data_consulta?: string
   api_source?: string
   raw_data?: any
@@ -42,8 +48,76 @@ interface OpenCNPJResponse {
   cnae_principal_descricao?: string
 }
 
+interface MinhaReceitaResponse {
+  cnpj: string
+  razao_social: string
+  nome_fantasia?: string
+  descricao_situacao_cadastral: string
+  data_situacao_cadastral: string
+  motivo_situacao_cadastral?: number
+  opcao_simples?: boolean | null
+  data_opcao_simples?: string | null
+  data_exclusao_simples?: string | null
+  opcao_mei?: boolean | null
+  data_opcao_mei?: string | null
+  data_exclusao_mei?: string | null
+  porte: number
+  descricao_porte?: string
+  descricao_natureza_juridica?: string
+  capital_social?: number
+  data_inicio_atividade: string
+  cnae_fiscal?: number
+  cnae_fiscal_descricao?: string
+  qsa?: Array<{
+    nome_socio: string
+    cnpj_cpf_socio: string
+    qualificacao_socio: number
+    descricao_qualificacao_socio: string
+  }>
+}
+
 export function useComplianceData() {
   const [loading, setLoading] = useState(false)
+
+  async function fetchFromMinhaReceita(cnpj: string): Promise<ComplianceData | null> {
+    const cleanCNPJ = cnpj.replace(/\D/g, '')
+
+    if (cleanCNPJ.length !== 14) {
+      throw new Error('CNPJ deve ter 14 dígitos')
+    }
+
+    try {
+      const response = await fetch(`https://minhareceita.org/${cleanCNPJ}`)
+
+      if (!response.ok) {
+        throw new Error('CNPJ não encontrado na Receita Federal')
+      }
+
+      const data: MinhaReceitaResponse = await response.json()
+
+      return {
+        situacao_cadastral: data.descricao_situacao_cadastral,
+        data_situacao_cadastral: data.data_situacao_cadastral,
+        motivo_situacao_cadastral: data.motivo_situacao_cadastral?.toString(),
+        opcao_simples: data.opcao_simples ?? false,
+        data_opcao_simples: data.data_opcao_simples,
+        data_exclusao_simples: data.data_exclusao_simples,
+        opcao_mei: data.opcao_mei ?? false,
+        porte: data.descricao_porte,
+        natureza_juridica: data.descricao_natureza_juridica,
+        capital_social: data.capital_social,
+        data_inicio_atividade: data.data_inicio_atividade,
+        cnae_principal: data.cnae_fiscal?.toString(),
+        cnae_principal_descricao: data.cnae_fiscal_descricao,
+        qsa: data.qsa,
+        api_source: 'minhareceita',
+        raw_data: data
+      }
+    } catch (error) {
+      console.error('Erro ao buscar dados da Minha Receita:', error)
+      throw error
+    }
+  }
 
   async function fetchFromOpenCNPJ(cnpj: string): Promise<ComplianceData | null> {
     const cleanCNPJ = cnpj.replace(/\D/g, '')
@@ -133,10 +207,28 @@ export function useComplianceData() {
   async function fetchAndSave(cnpj: string, clientId: string) {
     setLoading(true)
     try {
-      const data = await fetchFromOpenCNPJ(cnpj)
+      // Tentar primeiro Minha Receita (mais completo, sem limite)
+      let data: ComplianceData | null = null
+
+      try {
+        data = await fetchFromMinhaReceita(cnpj)
+        console.log('✅ Dados obtidos da Minha Receita')
+      } catch (minhaReceitaError) {
+        console.warn('⚠️ Minha Receita falhou, tentando OpenCNPJ...', minhaReceitaError)
+
+        // Fallback para OpenCNPJ
+        try {
+          data = await fetchFromOpenCNPJ(cnpj)
+          console.log('✅ Dados obtidos do OpenCNPJ (fallback)')
+        } catch (openCNPJError) {
+          console.error('❌ OpenCNPJ também falhou', openCNPJError)
+          throw new Error('Nenhuma API de compliance disponível no momento')
+        }
+      }
+
       if (data && clientId) {
         await saveComplianceData(clientId, data)
-        toast.success('Dados da Receita Federal atualizados!')
+        toast.success(`Dados da Receita Federal atualizados! (fonte: ${data.api_source})`)
         return data
       }
       return null
@@ -151,6 +243,7 @@ export function useComplianceData() {
 
   return {
     loading,
+    fetchFromMinhaReceita,
     fetchFromOpenCNPJ,
     saveComplianceData,
     getComplianceData,
