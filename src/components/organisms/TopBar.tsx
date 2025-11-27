@@ -27,7 +27,9 @@ export default function TopBar() {
           <SearchBar value="" onChange={() => {}} placeholder="Buscar..." className="h-10" />
         </div>
 
-        <TopBarActions />
+        <div className="hidden md:flex items-center gap-0">
+          <TopBarActions />
+        </div>
 
         <div className="relative">
           <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="w-11 h-11 bg-gradient-to-br from-[#e90101] to-[#c10101] rounded-full flex items-center justify-center text-white text-sm font-semibold hover:shadow-lg transition">

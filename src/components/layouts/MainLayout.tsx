@@ -1,7 +1,12 @@
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import TopBar from '@/components/organisms/TopBar'
+import MobileBottomNav from '@/components/molecules/MobileBottomNav'
+import MobileDrawer from '@/components/organisms/MobileDrawer'
 
 export default function MainLayout() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+
   return (
     <div className="min-h-screen" style={{ background: 'radial-gradient(circle at top left, #1a0404, #0a0a0a)' }}>
       {/* Background Effects */}
@@ -12,9 +17,13 @@ export default function MainLayout() {
       <TopBar />
 
       {/* Main Content */}
-      <main className="relative z-10">
+      <main className="relative z-10 pb-20 md:pb-0">
         <Outlet />
       </main>
+
+      {/* Mobile Navigation */}
+      <MobileBottomNav onMenuClick={() => setIsDrawerOpen(true)} />
+      <MobileDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} />
     </div>
   )
 }
