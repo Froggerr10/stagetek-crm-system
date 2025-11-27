@@ -6,7 +6,7 @@ import FunnelPieChart from '@/components/molecules/FunnelPieChart'
 
 export default function Dashboard() {
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-gray-300 mb-6">
         <Home className="w-4 h-4" />

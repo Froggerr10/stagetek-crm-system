@@ -147,7 +147,7 @@ export default function DetalheOportunidade() {
         <Banner message="Nova oportunidade criada hoje. Entre em contato com o cliente o quanto antes!" onDismiss={() => setShowBanner(false)} />
       )}
       <div className="border-b border-white/10 bg-[rgba(255,255,255,0.03)]">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 md:px-6 py-4">
           <Breadcrumb items={[
             { label: 'Oportunidades', href: '/oportunidades' },
             { label: opportunity.title }
@@ -170,7 +170,7 @@ export default function DetalheOportunidade() {
         </div>
       </div>
 
-      <div className="container mx-auto px-6 py-6">
+      <div className="container mx-auto px-4 md:px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <aside className="lg:col-span-3 space-y-4">
             <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4">

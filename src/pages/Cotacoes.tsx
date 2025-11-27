@@ -8,7 +8,7 @@ export default function Cotacoes() {
   const { quotations, loading } = useCotacoes();
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
         <Link to="/dashboard" className="hover:text-stagetek-red transition">Dashboard</Link>
         <ChevronRight className="h-4 w-4" />

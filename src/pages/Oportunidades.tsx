@@ -129,14 +129,14 @@ export default function Oportunidades() {
   }
 
   return (
-    <div className="p-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white mb-4 md:mb-0">
+    <div className="p-4 md:p-8">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-white">
             Oportunidades
           </h1>
           <button
             onClick={() => setShowModal(true)}
-            className="px-6 py-3 bg-stagetek-red hover:bg-stagetek-red-medium text-white rounded-lg font-semibold transition shadow-lg hover:shadow-xl"
+            className="w-full md:w-auto px-6 py-3 bg-stagetek-red hover:bg-stagetek-red-medium text-white rounded-lg font-semibold transition shadow-lg hover:shadow-xl"
           >
             + Nova Oportunidade
           </button>
