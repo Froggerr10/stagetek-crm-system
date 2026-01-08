@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { DndContext, DragEndEvent, DragOverlay, PointerSensor, useSensor, useSensors, closestCenter } from '@dnd-kit/core'
 import { supabase } from '@/lib/supabase'
@@ -8,7 +8,8 @@ import KanbanColumn from '@/components/molecules/KanbanColumn'
 import OpportunityCard from '@/components/organisms/OpportunityCard'
 import OportunidadeModal from '@/components/organisms/OportunidadeModal'
 import Spinner from '@/components/atoms/Spinner'
-import { Plus } from 'lucide-react'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Plus, Filter, ChevronDown } from 'lucide-react'
 import toast from 'react-hot-toast'
 import type { Opportunity, FunnelStage } from '@/types'
 
@@ -22,6 +23,8 @@ export default function Funil() {
   const [loading, setLoading] = useState(true)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [activeStageIndex, setActiveStageIndex] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }))
 
   useEffect(() => { fetchData() }, [funnelId, ownerId, status])
@@ -129,6 +132,14 @@ export default function Funil() {
     fetchData()
   }
 
+  const handleScroll = () => {
+    if (!scrollRef.current) return
+    const scrollLeft = scrollRef.current.scrollLeft
+    const columnWidth = 320 + 16 // w-80 (320px) + gap-4 (16px)
+    const index = Math.round(scrollLeft / columnWidth)
+    setActiveStageIndex(Math.min(index, stages.length - 1))
+  }
+
   const activeOpp = activeId ? opportunities.find(o => o.id === activeId) : null
 
   if (loading) return <div className="flex justify-center items-center min-h-screen"><Spinner size="lg" /></div>
@@ -147,20 +158,71 @@ export default function Funil() {
           </button>
         </div>
 
-        <div className="sticky top-0 z-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 mb-4">
+        {/* Desktop: Sticky FilterBar */}
+        <div className="hidden md:block sticky top-0 z-20 bg-gradient-to-br from-gray-900 via-black to-gray-900 mb-4">
           <FilterBar onRefresh={fetchData} />
         </div>
 
+        {/* Mobile: Collapsible FilterBar */}
+        <div className="md:hidden mb-4">
+          <Sheet>
+            <SheetTrigger asChild>
+              <button className="w-full flex items-center justify-between px-4 py-3 bg-[rgba(255,255,255,0.08)] border border-white/15 rounded-lg text-white hover:bg-[rgba(255,255,255,0.12)] transition-colors">
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  <span className="text-sm font-medium">Filtros</span>
+                  {useFilterStore.getState().activeFiltersCount() > 0 && (
+                    <div className="px-2 py-0.5 bg-[#e90101]/20 border border-[#e90101] rounded-full text-[#e90101] text-xs">
+                      {useFilterStore.getState().activeFiltersCount()}
+                    </div>
+                  )}
+                </div>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[80vh] bg-gradient-to-br from-gray-900 via-black to-gray-900">
+              <FilterBar onRefresh={fetchData} />
+            </SheetContent>
+          </Sheet>
+        </div>
+
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragStart={handleDragStart} onDragEnd={handleDragEnd} key={stages.map(s => s.id).join(',')}>
-          <div className="flex gap-4 overflow-x-auto pb-4">
-            {stages.map(stage => (
-              <KanbanColumn
-                key={stage.id}
-                stage={stage}
-                opportunities={opportunities.filter(o => o.stage_id === stage.id)}
-                onCardClick={handleCardClick}
-              />
-            ))}
+          <div className="relative">
+            {/* Kanban columns with snap scroll */}
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              className="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-hide"
+            >
+              {stages.map(stage => (
+                <KanbanColumn
+                  key={stage.id}
+                  stage={stage}
+                  opportunities={opportunities.filter(o => o.stage_id === stage.id)}
+                  onCardClick={handleCardClick}
+                  className="snap-center"
+                />
+              ))}
+            </div>
+
+            {/* Gradiente à direita (affordance de mais colunas) */}
+            {stages.length > 1 && (
+              <div className="absolute right-0 top-0 bottom-4 w-16 bg-gradient-to-l from-black to-transparent pointer-events-none md:hidden" />
+            )}
+
+            {/* Dots indicator (mobile only) */}
+            {stages.length > 1 && (
+              <div className="flex justify-center gap-1.5 mt-2 md:hidden">
+                {stages.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                      i === activeStageIndex ? 'bg-[#e90101]' : 'bg-white/20'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <DragOverlay>{activeOpp && <OpportunityCard opportunity={activeOpp} onClick={() => {}} />}</DragOverlay>
         </DndContext>

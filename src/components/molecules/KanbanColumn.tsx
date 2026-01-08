@@ -7,15 +7,16 @@ interface KanbanColumnProps {
   stage: FunnelStage
   opportunities: Opportunity[]
   onCardClick: (opportunity: Opportunity) => void
+  className?: string
 }
 
-export default function KanbanColumn({ stage, opportunities, onCardClick }: KanbanColumnProps) {
+export default function KanbanColumn({ stage, opportunities, onCardClick, className }: KanbanColumnProps) {
   const { setNodeRef, isOver } = useDroppable({ id: stage.id })
   const totalValue = opportunities.reduce((sum, opp) => sum + (opp.value || 0), 0)
   const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val)
 
   return (
-    <div className="flex-shrink-0 w-80 flex flex-col" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+    <div className={`flex-shrink-0 w-80 flex flex-col max-h-[calc(100vh-280px)] ${className || ''}`}>
       <div ref={setNodeRef} className="bg-[rgba(255,255,255,0.05)] rounded-lg p-4 relative flex flex-col h-full">
         {isOver && (
           <div className="absolute inset-0 bg-[rgba(233,1,1,0.1)] rounded-lg pointer-events-none border-2 border-dashed border-[rgba(233,1,1,0.4)]" />
