@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
-import { ArrowLeft, ThumbsUp, ThumbsDown, Settings, Trash2, Flame, Droplet, Snowflake } from 'lucide-react'
+import { ArrowLeft, ThumbsUp, ThumbsDown, Settings, Trash2, Flame, Droplet, Snowflake, ChevronDown, MoreVertical } from 'lucide-react'
 import { differenceInHours } from 'date-fns'
 import toast from 'react-hot-toast'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import Breadcrumb from '@/components/molecules/Breadcrumb'
 import Spinner from '@/components/atoms/Spinner'
 import Banner from '@/components/atoms/Banner'
@@ -152,27 +159,63 @@ export default function DetalheOportunidade() {
             { label: 'Oportunidades', href: '/oportunidades' },
             { label: opportunity.title }
           ]} />
-          <div className="flex items-center justify-between mt-2">
-            <div className="flex items-center gap-4">
-              <button onClick={() => navigate('/oportunidades')} className="text-gray-400 hover:text-white"><ArrowLeft className="w-5 h-5" /></button>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 md:gap-0 mt-2">
+            <div className="flex items-center gap-3 md:gap-4">
+              <button onClick={() => navigate('/oportunidades')} className="p-2 text-gray-400 hover:text-white transition-colors" aria-label="Voltar para oportunidades">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
               <div>
-                <h1 className="text-2xl font-bold text-white">{opportunity.title}</h1>
-                <p className="text-sm text-gray-400">{(opportunity.client as any)?.name || 'Sem cliente'}</p>
+                <h1 className="text-xl md:text-2xl font-bold text-white">{opportunity.title}</h1>
+                <p className="text-xs md:text-sm text-gray-400">{(opportunity.client as any)?.name || 'Sem cliente'}</p>
               </div>
             </div>
-            <div className="flex gap-2">
+            {/* Mobile: Dropdown menu */}
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="px-4 py-2 bg-[rgba(255,255,255,0.08)] hover:bg-[rgba(255,255,255,0.12)] border border-white/15 text-white rounded-lg flex items-center gap-2 transition-colors">
+                    <MoreVertical className="w-4 h-4" />
+                    <span>Ações</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-gray-900 border-white/15">
+                  <DropdownMenuItem onClick={handleWin} className="text-green-400 hover:bg-green-500/10 cursor-pointer">
+                    <ThumbsUp className="w-4 h-4 mr-2" />
+                    Marcar Venda
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLoss} className="text-orange-400 hover:bg-orange-500/10 cursor-pointer">
+                    <ThumbsDown className="w-4 h-4 mr-2" />
+                    Marcar Perda
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-white/10" />
+                  <DropdownMenuItem onClick={() => setShowEditModal(true)} className="hover:bg-white/5 cursor-pointer">
+                    <Settings className="w-4 h-4 mr-2" />
+                    Editar
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDelete} className="text-red-400 hover:bg-red-500/10 cursor-pointer">
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Excluir
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Desktop: Horizontal buttons */}
+            <div className="hidden md:flex gap-2">
               <button onClick={handleWin} className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg flex items-center gap-2"><ThumbsUp className="w-4 h-4" />Marcar Venda</button>
               <button onClick={handleLoss} className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg flex items-center gap-2"><ThumbsDown className="w-4 h-4" />Marcar Perda</button>
               <button onClick={() => setShowEditModal(true)} className="p-2 text-gray-400 hover:text-white" title="Editar oportunidade"><Settings className="w-5 h-5" /></button>
-              <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-500"><Trash2 className="w-5 h-5" /></button>
+              <button onClick={handleDelete} className="p-2 text-gray-400 hover:text-red-500" title="Excluir oportunidade"><Trash2 className="w-5 h-5" /></button>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 md:px-6 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <aside className="lg:col-span-3 space-y-4">
+        <div className="flex flex-col lg:grid lg:grid-cols-12 gap-4 md:gap-6">
+          {/* Mobile order: Info (1) → Tabs (2) → Cliente/Responsável (3) */}
+          <aside className="order-1 lg:col-span-3 space-y-4">
             <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-gray-400 mb-3">Informações</h3>
               <dl className="space-y-3">
@@ -186,16 +229,44 @@ export default function DetalheOportunidade() {
             </div>
           </aside>
 
-          <main className="lg:col-span-6">
+          <main className="order-2 lg:col-span-6">
             <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg">
-              <div className="border-b border-white/10">
-                <nav className="flex -mb-px overflow-x-auto">
+              <div className="border-b border-white/10 p-3 md:p-0">
+                {/* Mobile: Grid 3x2 */}
+                <nav className="grid grid-cols-3 gap-2 md:hidden">
                   {tabs.map((tab) => (
-                    <button key={tab.id} onClick={() => setActiveTab(tab.id as TabType)} className={`px-6 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap ${activeTab === tab.id ? 'border-[#e90101] text-[#e90101]' : 'border-transparent text-gray-400 hover:text-white hover:border-white/20'}`}>{tab.label}</button>
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as TabType)}
+                      className={`px-3 py-2 text-xs font-medium rounded-lg transition-colors ${
+                        activeTab === tab.id
+                          ? 'bg-[#e90101] text-white'
+                          : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </nav>
+
+                {/* Desktop: Horizontal tabs */}
+                <nav className="hidden md:flex -mb-px overflow-x-auto">
+                  {tabs.map((tab) => (
+                    <button
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as TabType)}
+                      className={`px-6 py-3 text-sm font-medium border-b-2 transition whitespace-nowrap ${
+                        activeTab === tab.id
+                          ? 'border-[#e90101] text-[#e90101]'
+                          : 'border-transparent text-gray-400 hover:text-white hover:border-white/20'
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
                   ))}
                 </nav>
               </div>
-              <div className="p-6">
+              <div className="p-4 md:p-6">
                 {activeTab === 'historico' && <Timeline opportunityId={id!} />}
                 {activeTab === 'email' && <EmailComposer opportunityId={id!} clientEmail={(opportunity.client as any)?.email} onEmailSent={() => setActiveTab('historico')} />}
                 {activeTab === 'tarefas' && <TaskList opportunityId={id} />}
@@ -206,7 +277,7 @@ export default function DetalheOportunidade() {
             </div>
           </main>
 
-          <aside className="lg:col-span-3 space-y-4">
+          <aside className="order-3 lg:col-span-3 space-y-4">
             <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4">
               <h3 className="text-sm font-semibold text-gray-400 mb-3">Cliente</h3>
               {opportunity.client ? (
