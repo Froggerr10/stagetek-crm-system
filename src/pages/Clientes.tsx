@@ -103,11 +103,11 @@ export default function Clientes() {
       </div>
 
       {clientes.length === 0 ? (
-        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-12 text-center">
-          <p className="text-gray-400 text-lg">
+        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-6 md:p-12 text-center">
+          <p className="text-gray-400 text-sm md:text-lg">
             {searchTerm || statusFilter !== 'active' ? 'Nenhum cliente encontrado' : 'Nenhum cliente cadastrado'}
           </p>
-          <p className="text-gray-500 text-sm mt-2">
+          <p className="text-gray-500 text-xs md:text-sm mt-2">
             {searchTerm || statusFilter !== 'active'
               ? 'Tente ajustar os filtros de busca ou status'
               : 'Clique em "Novo Cliente" para adicionar o primeiro cliente'

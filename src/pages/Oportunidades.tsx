@@ -168,7 +168,7 @@ export default function Oportunidades() {
             <tbody className="divide-y divide-white/5">
               {filteredOpportunities.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-300">
+                  <td colSpan={6} className="px-6 py-6 md:py-12 text-center text-gray-300">
                     Nenhuma oportunidade encontrada
                   </td>
                 </tr>
@@ -222,10 +222,10 @@ export default function Oportunidades() {
                   <span className="text-lg font-bold text-white">{formatCurrency(opp.value)}</span>
                   <span className="text-sm text-gray-300">{(opp.stage as any)?.name}</span>
                 </div>
-                <div className="flex justify-end space-x-3">
-                  <button onClick={() => navigate(`/oportunidades/${opp.id}/cotacao/nova`)} className="text-sm text-blue-400 hover:text-blue-300">Nova Cotação</button>
-                  <button onClick={() => handleEdit(opp)} className="text-sm text-stagetek-red hover:text-[#ff0101]">Editar</button>
-                  <button onClick={() => handleDelete(opp.id)} className="text-sm text-danger hover:text-red-400">Excluir</button>
+                <div className="flex justify-end gap-2">
+                  <button onClick={() => navigate(`/oportunidades/${opp.id}/cotacao/nova`)} className="px-3 py-2 text-sm text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">Nova Cotação</button>
+                  <button onClick={() => handleEdit(opp)} className="px-3 py-2 text-sm text-stagetek-red hover:bg-[#e90101]/10 rounded-lg transition-colors">Editar</button>
+                  <button onClick={() => handleDelete(opp.id)} className="px-3 py-2 text-sm text-danger hover:bg-red-500/10 rounded-lg transition-colors">Excluir</button>
                 </div>
               </div>
             ))

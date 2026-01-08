@@ -19,14 +19,16 @@ export default function Dashboard() {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
-        <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Vendas ao Longo do Tempo</h3>
-          <SalesLineChart />
+        <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4 md:p-6">
+          <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">Vendas ao Longo do Tempo</h3>
+          <div className="h-48 md:h-64">
+            <SalesLineChart />
+          </div>
         </div>
 
-        <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-6 overflow-visible">
-          <h3 className="text-lg font-semibold text-white mb-4">Oportunidades por Estágio</h3>
-          <div className="overflow-visible"><FunnelPieChart /></div>
+        <div className="bg-[rgba(255,255,255,0.08)] backdrop-blur-lg border border-white/15 rounded-lg p-4 md:p-6 overflow-visible">
+          <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">Oportunidades por Estágio</h3>
+          <div className="h-48 md:h-64 overflow-visible"><FunnelPieChart /></div>
         </div>
       </div>
 

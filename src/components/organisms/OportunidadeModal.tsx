@@ -14,8 +14,8 @@ export default function OportunidadeModal({ opportunity, clients, stages, onClos
   const optClass = "bg-gray-900 text-white"
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 z-50">
-      <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-0 md:p-4 z-50">
+      <div className="bg-[#0f0f0f]/98 backdrop-blur-sm border border-white/20 h-full w-full max-w-full m-0 rounded-none md:h-auto md:w-auto md:max-w-2xl md:m-4 md:rounded-2xl shadow-2xl max-h-screen md:max-h-[90vh] overflow-y-auto">
         <ModalHeader title={opportunity ? 'Editar Oportunidade' : 'Nova Oportunidade'} onClose={onClose} />
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <FormField label="Nome da Oportunidade" required>
