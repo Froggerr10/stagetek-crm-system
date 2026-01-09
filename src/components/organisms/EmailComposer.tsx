@@ -17,7 +17,7 @@ export default function EmailComposer({ opportunityId, clientEmail, onEmailSent 
     try {
       const { data: { user } } = await supabase.auth.getUser()
       await supabase.from('emails_sent').insert({ opportunity_id: opportunityId, to_email: to, subject, body, sent_by: user?.id })
-      await supabase.functions.invoke('send-quotation-email', { body: { to, subject, body } })
+      await supabase.functions.invoke('send-email', { body: { to, subject, body } })
       toast.success('Email enviado!')
       setSubject(''); setBody(''); onEmailSent?.()
     } catch (err: any) {
